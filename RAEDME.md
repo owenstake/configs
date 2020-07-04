@@ -13,3 +13,17 @@ plugs - https://www.jianshu.com/p/a94e2c59f244
 * zsh - autosuggestions
 * zsh - syntax-highlighting
 * z for path cd
+
+# install
+
+1. install oh-my-*
+2. install depended software
+3. install plugin manager
+4. clone and cp configure files *.conf
+
+```bash
+git clone https://github.com/owenstake/configs.git
+chmod +x ./bootstrap.sh
+zsh ./bootstrap.sh
+```
+
