@@ -1,0 +1,108 @@
+{
+    "inbounds": [
+        {
+            "port": 1080,
+            "protocol": "socks",
+            "settings": {
+                "auth": "noauth",
+                "udp": true,
+                "userLevel": 8
+            },
+            "sniffing": {
+                "destOverride": [
+                    "http",
+                    "tls"
+                ],
+                "enabled": true
+            },
+            "tag": "socks"
+        },
+        {
+            "port": 1081,
+            "protocol": "http",
+            "settings": {
+                "userLevel": 8
+            },
+            "tag": "http"
+        }
+    ],
+    "log": {
+        "loglevel": "warning",
+        "access": "/etc/v2rayL/v2ray_access.log",
+        "error": "/etc/v2rayL/v2ray_error.log"
+    },
+    "outbounds": [
+        {
+            "mux": {
+                "enabled": true
+            },
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "jpb.cloudv2.top",
+                        "port": 443,
+                        "users": [
+                            {
+                                "id": "9CE77FA0-71DE-DD71-87BD-5FB5CA6E3429",
+                                "alterId": 0,
+                                "security": "auto",
+                                "level": 8
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "security": "tls",
+                "tlssettings": {
+                    "allowInsecure": true,
+                    "serverName": ""
+                },
+                "wssettings": {
+                    "connectionReuse": true,
+                    "headers": {
+                        "Host": ""
+                    },
+                    "path": "/ray"
+                }
+            },
+            "tag": "proxy"
+        },
+        {
+            "protocol": "freedom",
+            "settings": {},
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "settings": {
+                "response": {
+                    "type": "http"
+                }
+            },
+            "tag": "block"
+        }
+    ],
+    "policy": {
+        "levels": {
+            "8": {
+                "connIdle": 300,
+                "downlinkOnly": 1,
+                "handshake": 4,
+                "uplinkOnly": 1
+            }
+        },
+        "system": {
+            "statsInboundUplink": true,
+            "statsInboundDownlink": true
+        }
+    },
+    "dns": {},
+    "routing": {
+        "domainStrategy": "IPOnDemand",
+        "rules": []
+    },
+    "stats": {}
+}
