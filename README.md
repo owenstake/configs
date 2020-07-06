@@ -44,6 +44,9 @@ bash <(curl -L -s https://install.direct/go.sh)
 ```
 
 2. v2ray config - /etc/v2ray/config.json <- from gui config **[v2rayL](https://github.com/jiangxufeng/v2rayL)** 
+```zsh
+sudo cp v2rayL.json /etc/v2ray/config.json     # v2rayL.json if configured by me in the GUI v2rayL.
+```
 3. v2ray client start
 
 ```zsh
@@ -53,7 +56,7 @@ service v2ray restart
 service v2ray status
 ```
 
-4. http proxy config - 注意是小写
+4. http proxy config - It is about lowercase
 
    ```zsh
    export proxy="socks5://127.0.0.1:1080"   # or export proxy="http://127.0.0.1:1081"
@@ -79,7 +82,7 @@ service v2ray status
   sudo apt-get install proxychains
   sudo vim /etc/proxychains.conf   <=  socks5    127.0.0.1    1081
   proxychains curl www.google.com
-      ```
+  ```
 
       
 
