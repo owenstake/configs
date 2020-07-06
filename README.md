@@ -37,10 +37,10 @@ zsh ./bootstrap.sh
 
 ## Step
 
-1. install v2ray linux client
+1. install v2ray linux client (alse for server. The diff between client and server is the file config.json)
 
 ```zsh
-install - bash <(curl -L -s https://install.direct/go.sh)
+bash <(curl -L -s https://install.direct/go.sh)
 ```
 
 2. v2ray config - /etc/v2ray/config.json <- from gui config **[v2rayL](https://github.com/jiangxufeng/v2rayL)** 
