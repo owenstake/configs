@@ -1,3 +1,5 @@
+[TOC]
+
 # my config files
 
 | 配置文件 | 插件管理工具                               | 套装                                                  | 个性化参考                                                   |
@@ -44,9 +46,11 @@ bash <(curl -L -s https://install.direct/go.sh)
 ```
 
 2. v2ray config - /etc/v2ray/config.json <- from gui config **[v2rayL](https://github.com/jiangxufeng/v2rayL)** 
+
 ```zsh
 sudo cp v2rayL.json /etc/v2ray/config.json     # v2rayL.json if configured by me in the GUI v2rayL.
 ```
+
 3. v2ray client start
 
 ```zsh
@@ -84,7 +88,4 @@ service v2ray status
   proxychains curl www.google.com
   ```
 
-      
-
-
-
+​      
