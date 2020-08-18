@@ -135,6 +135,9 @@
 
     " set fdm=indent 
     autocmd BufRead *.vimrc set foldmethod=marker
+    autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
+    autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
+
 " }}}
 
 
