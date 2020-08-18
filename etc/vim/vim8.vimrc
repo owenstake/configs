@@ -120,6 +120,13 @@
         let g:gundo_prefer_python3 = 1
     endif
     noremap <f5> :GundoToggle<cr> " 将Gundo映射到<F5>
+
+    " keymap vim-preview
+    autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
+    autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
+    autocmd FileType qf nnoremap <silent><buffer> d j:PreviewQuickfix<cr>
+    autocmd FileType qf nnoremap <silent><buffer> u k:PreviewQuickfix<cr>
+
 " }}}
 
 " format doc {{{
@@ -135,8 +142,6 @@
 
     " set fdm=indent 
     autocmd BufRead *.vimrc set foldmethod=marker
-    autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
-    autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
 
 " }}}
 
