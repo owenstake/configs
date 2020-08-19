@@ -43,14 +43,32 @@
     " Unmanaged plugin (manually installed and updated)
     Plug '~/my-prototype-plugin'
 
-    Plug 'ctrlpvim/ctrlp.vim'
+    " Plug 'ctrlpvim/ctrlp.vim'
+    "{{{ YouCompleteMe
+        let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
+        Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 
-    " let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
-    " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+        let g:ycm_add_preview_to_completeopt = 0
+        let g:ycm_show_diagnostics_ui = 0
+        let g:ycm_server_log_level = 'info'
+        let g:ycm_min_num_identifier_candidate_chars = 2
+        let g:ycm_collect_identifiers_from_comments_and_strings = 1
+        let g:ycm_complete_in_strings=1
+        " let g:ycm_key_invoke_completion = '<c-z>'
+        set completeopt=menu,menuone
 
+        " noremap <c-z> <NOP>
+
+        let g:ycm_semantic_triggers =  {
+                   \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+                   \ 'cs,lua,javascript': ['re!\w{2}'],
+                   \ }
+        "}}}
+    "
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
+    Plug 'scrooloose/nerdcommenter'
 
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
@@ -82,6 +100,19 @@
 
         " change focus to quickfix window after search (optional).
         let g:gutentags_plus_switch = 1
+
+        "  disable the default keymaps and define new keymap
+        let g:gutentags_plus_nomap = 1
+        noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
+        noremap <silent> <leader>gg :GscopeFind g <C-R><C-W><cr>
+        noremap <silent> <leader>gc :GscopeFind c <C-R><C-W><cr>
+        noremap <silent> <leader>gt :GscopeFind t <C-R><C-W><cr>
+        noremap <silent> <leader>ge :GscopeFind e <C-R><C-W><cr>
+        noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
+        noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
+        noremap <silent> <leader>gd :GscopeFind d <C-R><C-W><cr>
+        noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
+        noremap <silent> <leader>gz :GscopeFind z <C-R><C-W><cr>
     " }}}
 
     Plug 'morhetz/gruvbox'
@@ -90,8 +121,73 @@
     Plug 'justinmk/vim-syntax-extra'
     Plug 'octol/vim-cpp-enhanced-highlight'
 
-    Plug 'dense-analysis/ale'
+    " Plug 'dense-analysis/ale'
+    Plug 'neomake/neomake'
+    " {{{ LeaderF
+        Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+        let g:Lf_ShortcutF = '<c-p>'
+        let g:Lf_ShortcutB = '<m-n>'
+        noremap <c-n> :LeaderfMru<cr>
+        noremap <m-p> :LeaderfFunction!<cr>
+        noremap <m-n> :LeaderfBuffer<cr>
+        noremap <m-m> :LeaderfTag<cr>
+        let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
 
+        let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+        let g:Lf_WorkingDirectoryMode = 'Ac'
+        let g:Lf_WindowHeight = 0.30
+        let g:Lf_CacheDirectory = expand('~/.vim/cache')
+        let g:Lf_ShowRelativePath = 0
+        let g:Lf_HideHelp = 1
+        let g:Lf_StlColorscheme = 'powerline'
+        let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+    " }}}
+
+
+    " {{{ vim-signify for git show
+        if has('nvim') || has('patch-8.0.902')
+          Plug 'mhinz/vim-signify'
+        else
+          Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+        endif
+        " default updatetime 4000ms is not good for async update
+        set updatetime=100
+    " }}}
+    " {{{ vim-textobj-user
+        Plug 'kana/vim-textobj-user'
+        Plug 'kana/vim-textobj-indent'
+        Plug 'kana/vim-textobj-syntax'
+        Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
+        Plug 'sgur/vim-textobj-parameter'
+    " }}}
+
+    Plug 'MarcWeber/vim-addon-mw-utils'
+    Plug 'tomtom/tlib_vim'
+    Plug 'garbas/vim-snipmate'
+    Plug 'honza/vim-snippets' "massive common snippets
+
+    "{{{ Tabular
+        Plug 'godlygeek/tabular'
+        if exists(":Tabularize")
+            nmap <Leader>a= :Tabularize /=<CR>
+            vmap <Leader>a= :Tabularize /=<CR>
+            nmap <Leader>a: :Tabularize /:\zs<CR>
+            vmap <Leader>a: :Tabularize /:\zs<CR>
+        endif
+
+        inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+
+        function! s:align()
+            let p = '^\s*|\s.*\s|\s*$'
+            if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+                let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+                let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+                Tabularize/|/l1
+                normal! 0
+                call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+            endif
+        endfunction
+    "}}}
     " Initialize plugin system
     call plug#end()
 " }}} end of plugin
@@ -105,9 +201,11 @@
     inoremap jj <esc>
     inoremap kk <esc>
 
+    noremap <leader>q :q<cr>
+    nmap gcc <leader>c<space>
 
     " 用先导键重新映射CtrlP的行为
-    let g:ctrlp_map = '<leader>p'
+    " let g:ctrlp_map = '<leader>p'
     noremap <leader>p :CtrlP<cr>
     noremap <leader>b :CtrlPBuffer<cr>
     noremap <leader>m :CtrlPMRU<cr>
@@ -126,6 +224,8 @@
     autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
     autocmd FileType qf nnoremap <silent><buffer> d j:PreviewQuickfix<cr>
     autocmd FileType qf nnoremap <silent><buffer> u k:PreviewQuickfix<cr>
+    autocmd FileType qf nnoremap <silent><buffer> c :q<cr> 
+    autocmd FileType vim-plug nnoremap <silent><buffer> c :q<cr> 
 
 " }}}
 
