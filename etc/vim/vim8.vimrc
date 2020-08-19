@@ -247,7 +247,7 @@
 
 
 " vim ui {{{
-    set termguicolors
+    set termguicolors " must be set for tmux vi color consistence
 
     " colorscheme gruvbox
     " colorscheme solarized
