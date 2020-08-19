@@ -224,7 +224,7 @@
     autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
     autocmd FileType qf nnoremap <silent><buffer> d j:PreviewQuickfix<cr>
     autocmd FileType qf nnoremap <silent><buffer> u k:PreviewQuickfix<cr>
-    autocmd FileType qf nnoremap <silent><buffer> c :q<cr> 
+    autocmd FileType qf nnoremap <silent><buffer> c :PreviewClose<cr>:q<cr> 
     autocmd FileType vim-plug nnoremap <silent><buffer> c :q<cr> 
 
 " }}}
