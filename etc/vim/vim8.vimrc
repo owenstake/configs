@@ -231,6 +231,8 @@
 
 " format doc {{{
     set number
+    set ignorecase
+    set smartcase
     " set relativenumber
     syntax on " 支持语法高亮显示
     filetype plugin indent on " 启用根据文件类型自动缩进
@@ -240,7 +242,7 @@
     set shiftwidth=4 " 用于自动缩进的空格数
     set backspace=2 " 在多数终端上修正退格键Backspace的行为
 
-    " set fdm=indent 
+    set fdm=indent 
     autocmd BufRead *.vimrc set foldmethod=marker
 
 " }}}
