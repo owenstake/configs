@@ -68,8 +68,14 @@
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
-    Plug 'scrooloose/nerdcommenter'
-
+    "{{{ nerdcommenter
+        Plug 'scrooloose/nerdcommenter'
+        " Add spaces after comment delimiters by default
+        let g:NERDSpaceDelims = 1
+        " Add your own custom formats or override the defaults
+        let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
+    "}}}
+    "
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
 
@@ -236,6 +242,7 @@
     " set relativenumber
     syntax on " 支持语法高亮显示
     filetype plugin indent on " 启用根据文件类型自动缩进
+    filetype plugin on
     set autoindent " 开始新行时处理缩进
     set expandtab " 将制表符Tab展开为空格， 这对于Python尤其有用
     set tabstop=4 " 要计算的空格数
