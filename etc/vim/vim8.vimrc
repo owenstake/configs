@@ -219,6 +219,9 @@
     " vim command-line keymap
     cnoremap vic vsp $MYVIMRC
     cnoremap vis write \|source $MYVIMRC \| PlugInstall 
+    cnoremap gca Gcommit -a -v
+    cnoremap gp Gpush
+    cnoremap gl Gpull
 
     if has('python3')
         let g:gundo_prefer_python3 = 1
