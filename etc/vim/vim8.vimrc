@@ -68,6 +68,10 @@
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
+
+    Plug 'tpope/vim-commentary'
+    autocmd FileType java,c,cpp set commentstring=//\ %s
+
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
 
@@ -199,6 +203,9 @@
     " 用leader-w保存文件
     " noremap <leader>w :w<cr>
     
+    " vim-commentary key map
+    vmap gcc gc
+
     " history scoll
     cnoremap <C-p> <Up> 
     cnoremap <C-n> <Down>
