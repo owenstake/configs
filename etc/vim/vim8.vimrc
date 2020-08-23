@@ -90,6 +90,8 @@
 
     Plug 'tpope/vim-unimpaired'
 
+    Plug 'nelstrom/vim-visual-star-search'
+
     " gtags config {{{ 
         Plug 'ludovicchabant/vim-gutentags'
         Plug 'skywind3000/gutentags_plus'
@@ -198,10 +200,25 @@
     call plug#end()
 " }}} end of plugin
 
+" basic setup {{{ 
+"}}}
+
 " key binding {{{
     " 用leader-w保存文件
     " noremap <leader>w :w<cr>
+    
+    " history scoll
+    cnoremap <C-p> <Up> 
+    cnoremap <C-n> <Down>
+    
+    " %% the dirname for eth current buf-file. It is so intuitive
+    cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
 
+    " for regexp very-magic-mode
+    cnoremap s/ s/\v
+    nnoremap / /\v
+
+    " for <ese> in insert mode
     inoremap jk <esc>
     inoremap kj <esc>
     inoremap jj <esc>
@@ -223,6 +240,7 @@
     cnoremap gp Gpush
     cnoremap gl Gpull
 
+    " Gundo undo tree setup
     if has('python3')
         let g:gundo_prefer_python3 = 1
     endif
@@ -239,9 +257,10 @@
 " }}}
 
 " format doc {{{
-    set number
-    set ignorecase
-    set smartcase
+    set hlsearch   " highlight search
+    set number     " show line number
+    set ignorecase " set for case search
+    set smartcase  " set for case search
     " set relativenumber
     syntax on " 支持语法高亮显示
     filetype plugin indent on " 启用根据文件类型自动缩进
@@ -259,17 +278,16 @@
 
 
 " vim ui {{{
+    " set t_Co=256 " for 256colors
     set termguicolors " must be set for tmux vi color consistence
 
-    " colorscheme gruvbox
     " colorscheme solarized
-    " colorscheme murphy " 修改配色
+    " let g:solarized_termcolors=256
 
-    let g:solarized_termcolors=256
-
-    syntax enable
     set background=dark
-    colorscheme solarized
+    " colorscheme murphy " 修改配色
+    colorscheme gruvbox
+    " colorscheme monokai
 
     autocmd filetype python echo "haha"
 " }}}
@@ -302,6 +320,5 @@
         autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
     augroup END 
 " }}}
-
 
 
