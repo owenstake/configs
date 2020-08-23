@@ -68,14 +68,6 @@
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
-    "{{{ nerdcommenter
-        Plug 'scrooloose/nerdcommenter'
-        " Add spaces after comment delimiters by default
-        let g:NERDSpaceDelims = 1
-        " Add your own custom formats or override the defaults
-        let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-    "}}}
-    "
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
 
@@ -225,7 +217,6 @@
     inoremap kk <esc>
 
     noremap <leader>q :q<cr>
-    nmap gcc <leader>c<space>
 
     " 用先导键重新映射CtrlP的行为
     " let g:ctrlp_map = '<leader>p'
