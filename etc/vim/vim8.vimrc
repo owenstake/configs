@@ -77,6 +77,9 @@
     Plug 'tpope/vim-speeddating'
     Plug 'tpope/vim-repeat'
 
+    Plug 'glts/vim-magnum'
+    Plug 'glts/vim-radical'
+
     Plug 'vim-airline/vim-airline'
 
     Plug 'mileszs/ack.vim'
