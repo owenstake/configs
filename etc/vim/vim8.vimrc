@@ -74,7 +74,8 @@
 
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/speeddating'
+    Plug 'tpope/vim-speeddating'
+    Plug 'tpope/vim-repeat'
 
     Plug 'vim-airline/vim-airline'
 
