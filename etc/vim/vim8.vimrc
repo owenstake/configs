@@ -125,6 +125,7 @@
     " }}}
 
     Plug 'morhetz/gruvbox'
+    Plug 'crusoexia/vim-monokai'
     Plug 'altercation/vim-colors-solarized'
 
     Plug 'justinmk/vim-syntax-extra'
@@ -282,15 +283,17 @@
 
 " vim ui {{{
     " set t_Co=256 " for 256colors
-    set termguicolors " must be set for tmux vi color consistence
+    " using a terminal which support truecolor like iterm2, enable the gui color
+    " must be set for tmux vi color consistence
+    set termguicolors 
 
     " colorscheme solarized
     " let g:solarized_termcolors=256
 
     set background=dark
     " colorscheme murphy " 修改配色
-    colorscheme gruvbox
-    " colorscheme monokai
+    " colorscheme gruvbox
+    colorscheme monokai
 
     autocmd filetype python echo "haha"
 " }}}
