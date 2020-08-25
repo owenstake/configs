@@ -287,6 +287,9 @@
 
 
 " vim ui {{{
+    set cursorline  " highlight cursor position
+    set cursorcolumn
+
     " set t_Co=256 " for 256colors
     " using a terminal which support truecolor like iterm2, enable the gui color
     " must be set for tmux vi color consistence
