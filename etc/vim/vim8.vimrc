@@ -53,12 +53,13 @@
         let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
         Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 
-        let g:ycm_add_preview_to_completeopt = 0
-        let g:ycm_show_diagnostics_ui = 0
-        let g:ycm_server_log_level = 'info'
-        let g:ycm_min_num_identifier_candidate_chars = 2
+        let g:ycm_add_preview_to_completeopt                    = 0
+        let g:ycm_show_diagnostics_ui                           = 0
+        let g:ycm_server_log_level                              = 'info'
+        let g:ycm_min_num_identifier_candidate_chars            = 2
         let g:ycm_collect_identifiers_from_comments_and_strings = 1
-        let g:ycm_complete_in_strings=1
+        let g:ycm_complete_in_strings                           = 1
+
         " let g:ycm_key_invoke_completion = '<c-z>'
         set completeopt=menu,menuone
 
@@ -155,16 +156,16 @@
         noremap q/          :Leaderf searchHistory<cr>
         noremap q:          :Leaderf cmdHistory<cr>
 
-        let g:Lf_ReverseOrder = 1
-        let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
-        let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+        let g:Lf_ReverseOrder         = 1
+        let g:Lf_StlSeparator         = { 'left': '', 'right': '', 'font': '' }
+        let g:Lf_RootMarkers          = ['.project', '.root', '.svn', '.git']
         let g:Lf_WorkingDirectoryMode = 'Ac'
-        let g:Lf_WindowHeight = 0.30
-        let g:Lf_CacheDirectory = expand('~/.vim/cache')
-        let g:Lf_ShowRelativePath = 0
-        let g:Lf_HideHelp = 1
-        let g:Lf_StlColorscheme = 'powerline'
-        let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+        let g:Lf_WindowHeight         = 0.30
+        let g:Lf_CacheDirectory       = expand('~/.vim/cache')
+        let g:Lf_ShowRelativePath     = 0
+        let g:Lf_HideHelp             = 1
+        let g:Lf_StlColorscheme       = 'powerline'
+        let g:Lf_PreviewResult        = {'Function':0, 'BufTag':0}
     " }}}
 
 
@@ -179,10 +180,11 @@
     " }}}
     " {{{ vim-textobj-user
         Plug 'kana/vim-textobj-user'
-        Plug 'kana/vim-textobj-indent'
-        Plug 'kana/vim-textobj-syntax'
-        Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
-        Plug 'sgur/vim-textobj-parameter'
+        Plug 'kana/vim-textobj-indent'      " vii
+        Plug 'kana/vim-textobj-syntax'  
+        Plug 'kana/vim-textobj-function',  " vif
+            \ { 'for':['c', 'cpp', 'vim', 'java'] }  
+        Plug 'sgur/vim-textobj-parameter'   " vi,
     " }}}
 
     Plug 'MarcWeber/vim-addon-mw-utils'
@@ -265,31 +267,31 @@
     noremap <f5> :GundoToggle<cr> " 将Gundo映射到<F5>
 
     " keymap vim-preview
-    autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
-    autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
-    autocmd FileType qf nnoremap <silent><buffer> d j:PreviewQuickfix<cr>
-    autocmd FileType qf nnoremap <silent><buffer> u k:PreviewQuickfix<cr>
-    autocmd FileType qf nnoremap <silent><buffer> c :PreviewClose<cr>:q<cr> 
-    autocmd FileType vim-plug nnoremap <silent><buffer> c :q<cr> 
+    autocmd FileType    qf    nnoremap <silent><buffer>  p  :PreviewQuickfix<cr>
+    autocmd FileType    qf    nnoremap <silent><buffer>  P  :PreviewClose<cr>
+    autocmd FileType    qf    nnoremap <silent><buffer> d j:PreviewQuickfix<cr>
+    autocmd FileType    qf    nnoremap <silent><buffer> u k:PreviewQuickfix<cr>
+    autocmd FileType    qf    nnoremap <silent><buffer>  q  :PreviewClose<cr>:q<cr>
+    autocmd FileType vim-plug nnoremap <silent><buffer>  q  :q<cr>
 
 " }}}
 
 " format doc {{{
-    set hlsearch   " highlight search
-    set number     " show line number
-    set ignorecase " set for case search
-    set smartcase  " set for case search
-    " set relativenumber
-    syntax on " 支持语法高亮显示
+    set hlsearch              " highlight search
+    set number                " show line number
+    set ignorecase            " set for case search
+    set smartcase             " set for case search
+                              " set relativenumber
+    syntax on                 " 支持语法高亮显示
     filetype plugin indent on " 启用根据文件类型自动缩进
     filetype plugin on
-    set autoindent " 开始新行时处理缩进
-    set expandtab " 将制表符Tab展开为空格， 这对于Python尤其有用
-    set tabstop=4 " 要计算的空格数
-    set shiftwidth=4 " 用于自动缩进的空格数
-    set backspace=2 " 在多数终端上修正退格键Backspace的行为
+    set autoindent            " 开始新行时处理缩进
+    set expandtab             " 将制表符Tab展开为空格， 这对于Python尤其有用
 
-    set fdm=indent 
+    set tabstop    =4             " 要计算的空格数
+    set shiftwidth =4          " 用于自动缩进的空格数
+    set backspace  =2           " 在多数终端上修正退格键Backspace的行为
+    set fdm        =indent
     autocmd BufRead *.vimrc set foldmethod=marker
 
 " }}}
@@ -316,19 +318,19 @@
 " }}}
 
 " ale {{{
-    let g:ale_linters_explicit = 1
-    let g:ale_completion_delay = 500
-    let g:ale_echo_delay = 20
-    let g:ale_lint_delay = 500
-    let g:ale_echo_msg_format = '[%linter%] %code: %%s'
-    let g:ale_lint_on_text_changed = 'normal'
-    let g:ale_lint_on_insert_leave = 1
+    let g:ale_linters_explicit           = 1
+    let g:ale_completion_delay           = 500
+    let g:ale_echo_delay                 = 20
+    let g:ale_lint_delay                 = 500
+    let g:ale_echo_msg_format            = '[%linter%] %code: %%s'
+    let g:ale_lint_on_text_changed       = 'normal'
+    let g:ale_lint_on_insert_leave       = 1
     let g:airline#extensions#ale#enabled = 1
 
-    let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
-    let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
-    let g:ale_c_cppcheck_options = ''
-    let g:ale_cpp_cppcheck_options = ''
+    let g:ale_c_gcc_options              = '-Wall -O2 -std=c99'
+    let g:ale_cpp_gcc_options            = '-Wall -O2 -std=c++14'
+    let g:ale_c_cppcheck_options         = ''
+    let g:ale_cpp_cppcheck_options       = ''
 
     let g:ale_linters = {
     \   'c++': ['clang'],
@@ -338,7 +340,9 @@
 " }}}
 
 " auto save and reload .vimrc - https://zhuanlan.zhihu.com/p/98966660 {{{
-    augroup Reload_Vimrc        " Group name.  Always use a unique name!  autocmd!                " Clear any preexisting autocommands from this group
+    " Group name.  Always use a unique name!  autocmd!                "
+    " Clear any preexisting autocommands from this group
+    augroup Reload_Vimrc     
         autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
         autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
     augroup END 
