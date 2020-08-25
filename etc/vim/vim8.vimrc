@@ -148,6 +148,17 @@
         noremap <m-m> :LeaderfTag<cr>
         let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
 
+        noremap <Leader>p  : LeaderfFile<cr>
+        noremap <Leader>ff : LeaderfFile<cr>
+        noremap <Leader>fm : LeaderfMru<cr>
+        noremap <Leader>fp : LeaderfFunction!<cr>
+        noremap <Leader>fb : LeaderfBuffer<cr>
+        noremap <Leader>ft : LeaderfTag<cr>
+        noremap q/         : Leaderf searchHistory<cr>
+        noremap q:         : Leaderf cmdHistory<cr>
+
+        let g:Lf_ReverseOrder = 1
+        let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
         let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
         let g:Lf_WorkingDirectoryMode = 'Ac'
         let g:Lf_WindowHeight = 0.30
