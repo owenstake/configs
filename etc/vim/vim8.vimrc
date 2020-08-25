@@ -16,9 +16,14 @@
 
     " Make sure you use single quotes
 
-    " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-    Plug 'junegunn/vim-easy-align'
+    " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
+        Plug 'junegunn/vim-easy-align'
+        " Start interactive EasyAlign in visual mode (e.g. vipga)
+        xmap ga <Plug>(EasyAlign)
 
+        " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+        nmap ga <Plug>(EasyAlign)
+    "}}}
     " Any valid git URL is allowed
     Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
