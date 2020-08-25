@@ -108,7 +108,10 @@
         " change focus to quickfix window after search (optional).
         let g:gutentags_plus_switch = 1
 
-        "  disable the default keymaps and define new keymap
+        " add eternal library
+        let $GTAGSLIBPATH = '/home/z/work/eth-78x/org_cpu_12_4_PL1/prj_ft_4.19/tmp/rootfs-build/linux-kernel-ft-4.19'
+
+        " key-binding - disable the default keymaps and define new keymap
         let g:gutentags_plus_nomap = 1
         noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
         noremap <silent> <leader>gg :GscopeFind g <C-R><C-W><cr>
