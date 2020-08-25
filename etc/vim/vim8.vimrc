@@ -69,29 +69,27 @@
 
     Plug 'easymotion/vim-easymotion' " for motion
 
-    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-commentary' " gcc
     autocmd FileType java,c,cpp set commentstring=//\ %s
 
     Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-speeddating'
+    Plug 'tpope/vim-speeddating' "     
     Plug 'tpope/vim-repeat'
 
     Plug 'glts/vim-magnum'
-    Plug 'glts/vim-radical'
+    Plug 'glts/vim-radical' " gA decimal:"crd" hex:"crx" octal:"cro" binary:"crb"
 
     Plug 'vim-airline/vim-airline'
 
     Plug 'mileszs/ack.vim'
 
-    Plug 'flazz/vim-colorschemes'
-    Plug 'vim-scripts/ScrollColors'
-
     Plug 'andymass/vim-matchup'
 
-    Plug 'tpope/vim-unimpaired'
+    Plug 'tpope/vim-unimpaired' " ]b ]c ]n ]l
 
-    Plug 'nelstrom/vim-visual-star-search'
+    Plug 'nelstrom/vim-visual-star-search' " "*"
 
     " gtags config {{{ 
         Plug 'ludovicchabant/vim-gutentags'
@@ -124,10 +122,14 @@
         noremap <silent> <leader>gz :GscopeFind z <C-R><C-W><cr>
     " }}}
 
-    Plug 'morhetz/gruvbox'
-    Plug 'crusoexia/vim-monokai'
-    Plug 'altercation/vim-colors-solarized'
-
+    " colorschemes{{{
+        Plug 'flazz/vim-colorschemes'
+        Plug 'vim-scripts/ScrollColors'
+        Plug 'morhetz/gruvbox'
+        Plug 'crusoexia/vim-monokai'
+        Plug 'altercation/vim-colors-solarized'
+    "}}}
+    
     Plug 'justinmk/vim-syntax-extra'
     Plug 'octol/vim-cpp-enhanced-highlight'
 
