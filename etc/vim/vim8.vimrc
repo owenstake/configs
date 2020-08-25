@@ -141,14 +141,14 @@
     " {{{ LeaderF
         Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 
-        noremap <Leader>p  : LeaderfFile<cr>
-        noremap <Leader>ff : LeaderfFile<cr>
-        noremap <Leader>fm : LeaderfMru<cr>
-        noremap <Leader>fp : LeaderfFunction!<cr>
-        noremap <Leader>fb : LeaderfBuffer<cr>
-        noremap <Leader>ft : LeaderfTag<cr>
-        noremap q/         : Leaderf searchHistory<cr>
-        noremap q:         : Leaderf cmdHistory<cr>
+        noremap <Leader>p   :LeaderfFile<cr>
+        noremap <Leader>ff  :LeaderfFile<cr>
+        noremap <Leader>fm  :LeaderfMru<cr>
+        noremap <Leader>fp  :LeaderfFunction!<cr>
+        noremap <Leader>fb  :LeaderfBuffer<cr>
+        noremap <Leader>ft  :LeaderfTag<cr>
+        noremap q/          :Leaderf searchHistory<cr>
+        noremap q:          :Leaderf cmdHistory<cr>
 
         let g:Lf_ReverseOrder = 1
         let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
