@@ -43,8 +43,8 @@
     " Plugin options
     Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
-    " Plugin outside ~/.vim/plugged with post-update hook
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } 
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
     " Unmanaged plugin (manually installed and updated)
     Plug '~/my-prototype-plugin'
 
@@ -153,6 +153,8 @@
         noremap <Leader>fp  :LeaderfFunction!<cr>
         noremap <Leader>fb  :LeaderfBuffer<cr>
         noremap <Leader>ft  :LeaderfTag<cr>
+        noremap <Leader>fc  ::Leaderf command<cr>
+
         noremap q/          :Leaderf searchHistory<cr>
         noremap q:          :Leaderf cmdHistory<cr>
 
@@ -224,6 +226,8 @@
 " key binding {{{
     " 用leader-w保存文件
     " noremap <leader>w :w<cr>
+
+    " nmap : :Leaderf command<cr>
     
     " vim-commentary key map
     vmap gcc gc
