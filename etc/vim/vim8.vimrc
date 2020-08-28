@@ -55,7 +55,7 @@
 
     " Plug 'ctrlpvim/ctrlp.vim'
     "{{{ YouCompleteMe
-+    if !has('nvim')
+    if !has('nvim')
         let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
         Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 
@@ -493,3 +493,12 @@ if has('nvim')
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 endif
+
+if has('nvim')
+    echo 'we are in nvim'
+endif
+
+unmap <c-d>
+
+" let GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
+
