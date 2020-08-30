@@ -74,6 +74,9 @@
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
+    Plug 'rhysd/accelerated-jk' " for motion
+    nmap j <Plug>(accelerated_jk_gj)
+    nmap k <Plug>(accelerated_jk_gk)
 
     Plug 'tpope/vim-commentary' " gcc
     autocmd FileType java,c,cpp set commentstring=//\ %s
