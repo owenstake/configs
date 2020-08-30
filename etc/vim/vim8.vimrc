@@ -16,6 +16,13 @@
 
     " Make sure you use single quotes
 
+    " markdown{{{
+        Plug 'godlygeek/tabular' "必要插件，安装在vim-markdown前面
+        Plug 'plasticboy/vim-markdown'
+        Plug 'mzlogin/vim-markdown-toc'
+        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+    "}}}
+
     " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
         Plug 'junegunn/vim-easy-align'
         " Start interactive EasyAlign in visual mode (e.g. vipga)
