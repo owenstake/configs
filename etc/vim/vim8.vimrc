@@ -509,3 +509,6 @@ unmap <c-d>
 
 " let GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
 
+" add gbk zh encoding support - https://www.cnblogs.com/lepeCoder/p/7718827.html
+set fileencodings=utf-8,gbk
+
