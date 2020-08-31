@@ -13,14 +13,23 @@
 
 " Plugins load {{{
     call plug#begin('~/.vim/plugged') 
-
-    " Make sure you use single quotes
-
+    "general settign {{{
+        Plug 'mhinz/vim-startify'
+    "}}}
+    
     " markdown{{{
         Plug 'godlygeek/tabular' "必要插件，安装在vim-markdown前面
         Plug 'plasticboy/vim-markdown'
         Plug 'mzlogin/vim-markdown-toc'
-        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+        Plug 'sirver/ultisnips', {'for':'markdown'}
+
+        Plug 'honza/vim-snippets'
+
+        if has('nvim')
+            Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+        else
+            Plug 'iamcco/markdown-preview.vim'
+        endif
     "}}}
 
     " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
@@ -241,6 +250,20 @@
 "}}}
 
 " key binding {{{
+
+    " config for ultisnippet
+    "设置tab键为触发键
+    " let g:UltiSnipsExpandTrigger = '<c-b>'
+    ""设置向后跳转键
+    "let g:UltiSnipsJumpForwardTrigger = '<tab>' 
+    ""设置向前跳转键
+    "let g:UltiSnipsJumpBackwardTrigger = '<S-tab>' 
+    
+    "设置文件目录
+    let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
+    "设置打开配置文件时为垂直打开
+    let g:UltiSnipsEditSplit="vertical"
+
     " j/k will move virtual lines (lines that wrap)
     noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
     noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -510,6 +533,8 @@
 
 if has('nvim')
     echo 'we are in nvim'
+else
+    echo 'we are in vim8'
 endif
 
 
