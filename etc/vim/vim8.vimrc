@@ -264,11 +264,19 @@
     "设置打开配置文件时为垂直打开
     let g:UltiSnipsEditSplit="vertical"
 
+    nnoremap * *N
+    nnoremap # #N
+
+    " for scoll
+    nnoremap ^E ^EM
+    nnoremap  M
+
     " j/k will move virtual lines (lines that wrap)
     noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
     noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
 
     " nmap : :Leaderf command<cr>
+    nnoremap <Leader><Leader>a ga
     
     " vim-commentary key map
     vmap gcc gc
