@@ -268,8 +268,8 @@
     nnoremap # #N
 
     " for scoll
-    nnoremap ^E ^EM
-    nnoremap  M
+    nnoremap <c-e> <c-e>j
+    nnoremap <c-y> <c-y>k
 
     " j/k will move virtual lines (lines that wrap)
     noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
