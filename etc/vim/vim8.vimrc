@@ -21,9 +21,9 @@
         Plug 'godlygeek/tabular' "必要插件，安装在vim-markdown前面
         Plug 'plasticboy/vim-markdown'
         Plug 'mzlogin/vim-markdown-toc'
-        Plug 'sirver/ultisnips', {'for':'markdown'}
-
-        Plug 'honza/vim-snippets'
+        " It is duplicated."
+        " Plug 'SirVer/ultisnips', {'for':'markdown'}
+        " Plug 'honza/vim-snippets'
 
         if has('nvim')
             Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
@@ -44,7 +44,9 @@
     Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
     " Multiple Plug commands can be written in a single line using | separators
-    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    if !has('nvim')
+        Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    endif
 
     " On-demand loading
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -229,18 +231,19 @@
             vmap <Leader>a: :Tabularize /:\zs<CR>
         endif
 
-        inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+        " inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 
-        function! s:align()
-            let p = '^\s*|\s.*\s|\s*$'
-            if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-                let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-                let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-                Tabularize/|/l1
-                normal! 0
-                call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-            endif
-        endfunction
+        " function! s:align()
+        "     let p = '^\s*|\s.*\s|\s*$'
+        "     if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        "         let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        "         let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        "         Tabularize/|/l1
+        "         normal! 0
+        "         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+        "     endif
+        " endfunction
+        
     "}}}
     " Initialize plugin system
     call plug#end()
@@ -250,6 +253,37 @@
 "}}}
 
 " key binding {{{
+
+    " Damian Conway's Die Blinkënmatchen: highlight matches
+    " https://qastack.jp/vi/2761/set-cursor-colour-different-when-on-a-highlighted-word
+    nnoremap <silent> n n:call HLNext(0.1)<cr>
+    nnoremap <silent> N N:call HLNext(0.1)<cr>
+
+    function! HLNext()
+        let l:higroup = matchend(getline('.'), '\c'.@/, col('.')-1) == col('.')
+                    \ ? 'SpellRare' : 'IncSearch'
+        let b:cur_match = matchadd(l:higroup, '\c\%#'.@/, 101)
+        redraw
+        augroup HLNext
+            autocmd CursorMoved <buffer>
+                        \   execute 'silent! call matchdelete('.b:cur_match.')'
+                        \ | redraw
+                        \ | autocmd! HLNext
+        augroup END
+    endfunction
+    nnoremap <silent> * *:call HLNext()<CR>
+    nnoremap <silent> # #:call HLNext()<CR>
+    nnoremap <silent> n n:call HLNext()<cr>
+    nnoremap <silent> N N:call HLNext()<cr>
+
+    " function! HLNext (blinktime)
+    "   let target_pat = '\c\%#'.@/
+    "   let ring = matchadd('ErrorMsg', target_pat, 101)
+    "   redraw
+    "   exec 'sleep ' . float2nr(a:blinktime * 1000) . 'm'
+    "   call matchdelete(ring)
+    "   redraw
+    " endfunction
 
     " config for ultisnippet
     "设置tab键为触发键
