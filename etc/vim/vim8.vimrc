@@ -23,6 +23,7 @@
         Plug 'mzlogin/vim-markdown-toc'
         " It is duplicated."
         " Plug 'SirVer/ultisnips', {'for':'markdown'}
+        "
         " Plug 'honza/vim-snippets'
 
         if has('nvim')
@@ -287,11 +288,11 @@
 
     " config for ultisnippet
     "设置tab键为触发键
-    " let g:UltiSnipsExpandTrigger = '<c-b>'
+    let g:UltiSnipsExpandTrigger = '<c-s>'
     ""设置向后跳转键
-    "let g:UltiSnipsJumpForwardTrigger = '<tab>' 
+    let g:UltiSnipsJumpForwardTrigger = '<c-j>' 
     ""设置向前跳转键
-    "let g:UltiSnipsJumpBackwardTrigger = '<S-tab>' 
+    let g:UltiSnipsJumpBackwardTrigger = '<c-k>' 
     
     "设置文件目录
     let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
