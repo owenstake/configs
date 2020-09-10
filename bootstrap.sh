@@ -2,6 +2,13 @@
 # cover local config
 cp -r etc ~/.local/
 
+# cp pac to win10
+if uname -r | grep -i "microsof" | wc -l 
+then
+    echo "we are in wsl~~~"
+    cp etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
+fi
+
 # -- zsh ----------------------------------------------------------
 # To activate the new .zshrc because this exists in father zsh
 unset _owen_zsh_sourced
