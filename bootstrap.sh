@@ -3,7 +3,8 @@
 cp -r etc ~/.local/
 
 # cp pac to win10. ubt do not need it, because we use proxychain to manual control.
-if uname -r | grep -i "microsof" | wc -l 
+result=$(uname -r | grep -i "microsof" | wc -l)
+if [ $result -eq 1 ] 
 then
     echo "we are in wsl~~~"
     cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
