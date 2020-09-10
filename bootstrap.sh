@@ -2,11 +2,11 @@
 # cover local config
 cp -r etc ~/.local/
 
-# cp pac to win10
+# cp pac to win10. ubt do not need it, because we use proxychain to manual control.
 if uname -r | grep -i "microsof" | wc -l 
 then
     echo "we are in wsl~~~"
-    cp etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
+    cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
 fi
 
 # -- zsh ----------------------------------------------------------
