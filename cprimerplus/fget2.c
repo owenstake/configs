@@ -1,4 +1,5 @@
 
+
 /* fgets2.c -- 使用 fgets() 和 fputs() */
 #include <stdio.h>
 #define STLEN 10
