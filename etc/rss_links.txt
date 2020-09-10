@@ -1,1 +1,6 @@
 https://lukesmith.xyz/rss.xml
+https://www.nba.com/lakers/rss.xml
+https://rsshub.app/zhibo8/more/nba
+https://rsshub.app/zhibo8/more/zuqiu
+http://www.bbc.co.uk/zhongwen/simp/index.xml#sa-link_location=story-body&intlink_from_url=https%3A%2F%2Fwww.bbc.com%2Fzhongwen%2Fsimp%2Fservices%2F2009%2F09%2F000000_rss&intlink_ts=1599713822472-saE
+https://rsshub.app/guokr/calendar
