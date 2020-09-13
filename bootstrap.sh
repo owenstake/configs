@@ -2,7 +2,7 @@
 # cover local config
 cp -r etc ~/.local/
 
-ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
+ln -s ~/.local/etc/newsboat/config ~/.newsboat/config
 
 # cp pac to win10. ubt do not need it, because we use proxychain to manual control.
 result=$(uname -r | grep -i "microsof" | wc -l)
