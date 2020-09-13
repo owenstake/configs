@@ -5,6 +5,7 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "||forum.lukesmith.xyz/",
     "||cn.linux.vbird.org",
     "||imdb.com",
     "||reddit.com",
@@ -15,7 +16,8 @@ var rules = [
     "||en.wikipedia.org",
     "||pgbovine.substack.com",
     "||linkedin.com",
-    "||raw.githubusercontent.com",
+    "*githubusercontent.com*",
+    "||raw.github.com",
     "||i.imgur.com",
     "||rsshub.app",
     "||inoreader.com",
