@@ -5,6 +5,7 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "||bbc.com",
     "||forum.lukesmith.xyz/",
     "||cn.linux.vbird.org",
     "||imdb.com",
