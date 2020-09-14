@@ -2,7 +2,7 @@
 # cover local config
 cp -r etc ~/.local/
 
-ln -sf ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
+ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
 
 # cp pac to win10. ubt do not need it, because we use proxychain to manual control.
 result=$(uname -r | grep -i "microsof" | wc -l)
@@ -16,24 +16,25 @@ fi
 # To activate the new .zshrc because this exists in father zsh
 unset _owen_zsh_sourced
 
-# enable config file and avoid echoed twice
-if [[ -z $_owen_zsh_echoed ]] {
-  echo "# -- owen zsh config -------------------------">>~/.zshrc
-	echo "unset _owen_zsh_sourced">>~/.zshrc    # To activate config bacause of the father config
+# enable config file and avoid configed twice
+if [[ -z $_owen_zsh_configed ]] {
+    echo "# -- owen zsh configing $(realpath ./etc/tmux.conf) -------------------------">>~/.zshrc
+    echo "unset _owen_zsh_sourced">>~/.zshrc    # To activate config bacause of the father config
 	echo "source ~/.local/etc/zsh.conf">>~/.zshrc
 } else {
-  echo "owen zsh echoed"
+    echo "owen zsh configed"
 }
 
 # -- tmux ---------------------------------------------------------
 # To activate the new .zshrc because this exists in father zsh
-unset _owen_tmux_sourced
+# unset _owen_tmux_sourced
 
-# enable config file and avoid echoed twice
-if [[ -z $_owen_tmux_echoed ]] {
-  echo "# -- owen tmux config -------------------------">>~/.tmux.conf
-	echo "unset _owen_tmux_sourced">>~/.tmux.conf     # To activate config bacause of the father config
+# enable config file and avoid configed twice
+# if [[ -z $_owen_zsh_configed ]] {
+if [[ -z $_owen_zsh_configed ]] {
+    echo "# -- owen tmux configing $(realpath ./etc/tmux.conf) -------------------------">>~/.tmux.conf
+	# echo "unset _owen_tmux_sourced">>~/.tmux.conf     # To activate config bacause of the father config
 	echo "source ~/.local/etc/tmux.conf">>~/.tmux.conf
 } else {
-  echo "owen tmux echoed"
+    echo "owen tmux configed"
 }
