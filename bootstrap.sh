@@ -11,6 +11,8 @@ then
     _owen_force_echo=1
     echo "Force echo to zsh tmux config file~~~"
     echo "You must take care of the duplicated term in zsh/tmux config file~~~"
+    echo "zsh  $(realpath ~/.zshrc)"
+    echo "tmux $(realpath ~/.tmux.conf)"
 fi
 
 # WSL config. cp pac to win10. ubt do not need it, because we use proxychain to manual control.
