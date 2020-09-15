@@ -10,11 +10,12 @@ if [[ $1 = "f" ]]
 then
     _owen_force_echo=1
     echo "Force echo to zsh tmux config file~~~"
+    echo "You must take care of the duplicated term in zsh/tmux config file~~~"
 fi
 
 # WSL config. cp pac to win10. ubt do not need it, because we use proxychain to manual control.
 result=$(uname -r | grep -i "microsof" | wc -l)
-if [ $result -eq 1 ] 
+if [ $result -eq 1 ]
 then
     echo "we are in wsl~~~"
     cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
