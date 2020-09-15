@@ -12,11 +12,11 @@
 
 
 " Plugins load {{{
-    call plug#begin('~/.vim/plugged') 
+    call plug#begin('~/.vim/plugged')
     "general settign {{{
         Plug 'mhinz/vim-startify'
     "}}}
-    
+
     " markdown{{{
         Plug 'godlygeek/tabular' "必要插件，安装在vim-markdown前面
         Plug 'plasticboy/vim-markdown'
@@ -66,7 +66,7 @@
     Plug 'junegunn/fzf.vim'
     " Unmanaged plugin (manually installed and updated)
     Plug '~/my-prototype-plugin'
-    
+
     " plug for neovim
     if has('nvim')
       Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -96,7 +96,7 @@
                    \ }
     endif
     "}}}
-    
+
     Plug 'sjl/gundo.vim' " undo tree
 
     Plug 'easymotion/vim-easymotion' " for motion
@@ -110,7 +110,7 @@
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-speeddating' "     
+    Plug 'tpope/vim-speeddating' "  
     Plug 'tpope/vim-repeat'
 
     Plug 'glts/vim-magnum'
@@ -126,7 +126,7 @@
 
     Plug 'nelstrom/vim-visual-star-search' " "*"
 
-    " gtags config {{{ 
+    " gtags config {{{
         Plug 'ludovicchabant/vim-gutentags'
         Plug 'skywind3000/gutentags_plus'
         Plug 'skywind3000/vim-preview'
@@ -167,7 +167,7 @@
         Plug 'crusoexia/vim-monokai'
         Plug 'altercation/vim-colors-solarized'
     "}}}
-    
+
     Plug 'justinmk/vim-syntax-extra'
     Plug 'octol/vim-cpp-enhanced-highlight'
 
@@ -212,9 +212,9 @@
     " {{{ vim-textobj-user
         Plug 'kana/vim-textobj-user'
         Plug 'kana/vim-textobj-indent'      " vii
-        Plug 'kana/vim-textobj-syntax'  
+        Plug 'kana/vim-textobj-syntax'
         Plug 'kana/vim-textobj-function',  " vif
-            \ { 'for':['c', 'cpp', 'vim', 'java'] }  
+            \ { 'for':['c', 'cpp', 'vim', 'java'] }
         Plug 'sgur/vim-textobj-parameter'   " vi,
     " }}}
 
@@ -244,13 +244,13 @@
         "         call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
         "     endif
         " endfunction
-        
+
     "}}}
     " Initialize plugin system
     call plug#end()
 " }}} end of plugin
 
-" basic setup {{{ 
+" basic setup {{{
 "}}}
 
 " key binding {{{
@@ -290,10 +290,10 @@
     "设置tab键为触发键
     let g:UltiSnipsExpandTrigger = '<c-s>'
     ""设置向后跳转键
-    let g:UltiSnipsJumpForwardTrigger = '<c-j>' 
+    let g:UltiSnipsJumpForwardTrigger = '<c-j>'
     ""设置向前跳转键
-    let g:UltiSnipsJumpBackwardTrigger = '<c-k>' 
-    
+    let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
+
     "设置文件目录
     let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
     "设置打开配置文件时为垂直打开
@@ -312,14 +312,14 @@
 
     " nmap : :Leaderf command<cr>
     nnoremap <Leader><Leader>a ga
-    
+
     " vim-commentary key map
     vmap gcc gc
 
     " history scoll
-    cnoremap <C-p> <Up> 
+    cnoremap <C-p> <Up>
     cnoremap <C-n> <Down>
-    
+
     " %% the dirname for eth current buf-file. It is so intuitive
     cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
 
@@ -343,7 +343,7 @@
 
     " vim command-line keymap
     cnoremap vic vsp $MYVIMRC
-    cnoremap vis write \|source $MYVIMRC \| PlugInstall 
+    cnoremap vis write \|source $MYVIMRC \| PlugInstall
     cnoremap gca Gcommit -a -v
     cnoremap gp Gpush
     cnoremap gl Gpull
@@ -393,7 +393,7 @@
     " set t_Co=256 " for 256colors
     " using a terminal which support truecolor like iterm2, enable the gui color
     " must be set for tmux vi color consistence
-    set termguicolors 
+    set termguicolors
 
     " colorscheme solarized
     " let g:solarized_termcolors=256
@@ -431,10 +431,10 @@
 " auto save and reload .vimrc - https://zhuanlan.zhihu.com/p/98966660 {{{
     " Group name.  Always use a unique name!  autocmd!                "
     " Clear any preexisting autocommands from this group
-    augroup Reload_Vimrc     
+    augroup Reload_Vimrc
         autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
         autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
-    augroup END 
+    augroup END
 " }}}
 
 
@@ -444,9 +444,9 @@
           \ 'coc-snippets',
           \ 'coc-pairs',
           \ 'coc-tsserver',
-          \ 'coc-eslint', 
-          \ 'coc-prettier', 
-          \ 'coc-json', 
+          \ 'coc-eslint',
+          \ 'coc-prettier',
+          \ 'coc-json',
           \ ]
         " from readme
         " if hidden is not set, TextEdit might fail.
@@ -598,4 +598,3 @@ endif
 
 " add gbk zh encoding support - https://www.cnblogs.com/lepeCoder/p/7718827.html
 set fileencodings=utf-8,gbk
-
