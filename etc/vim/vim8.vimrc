@@ -10,11 +10,13 @@
     let mapleader = "\<space>"
 " }}}
 
-
 " Plugins load {{{
     call plug#begin('~/.vim/plugged')
     "general settign {{{
         Plug 'mhinz/vim-startify'
+
+        " It seems ussless for me now, I prefer tmux prefix"
+        " Plug 'christoomey/vim-tmux-navigator'
     "}}}
 
     " markdown{{{
