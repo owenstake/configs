@@ -3,7 +3,8 @@
 cp -r etc ~/.local/
 
 # config newsboat. It only worked in thit fuck way.
-ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
+# ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
+ln -sf ~/.local/etc/newsboat/config ~/.newsboat/config
 
 ### Force echo to zsh tmux config file
 if [[ $1 = "f" ]]
