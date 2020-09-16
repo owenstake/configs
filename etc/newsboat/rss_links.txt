@@ -3,4 +3,4 @@ https://www.nba.com/lakers/rss.xml
 https://rsshub.app/zhibo8/more/nba
 https://rsshub.app/zhibo8/more/zuqiu
 https://rsshub.app/guokr/calendar
-https://rsshub.app/zhihu/people/answers/skywind3000
+https://rsshub.app/zhihu/people/answers/skywind3000 "zhihu"

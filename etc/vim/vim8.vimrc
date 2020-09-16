@@ -580,19 +580,27 @@ else
     echo 'we are in vim8'
 endif
 
-" From Luke Smith - https://github.com/LukeSmithxyz/voidrice/blob/master/.config/nvim/init.vim
-" Disables automatic commenting on newline:
-  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+" From Luke Smith - https://github.com/LukeSmithxyz/voidrice/blob/master/.config/nvim/init.vim{{{
+    " Disables automatic commenting on newline:
+      autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-" Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
-    set splitbelow splitright
+    " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
+        set splitbelow splitright
 
-" Save file as sudo on files that require root permission
-    cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+    " Save file as sudo on files that require root permission
+        cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
-" Automatically deletes all trailing whitespace and newlines at end of file on save.
-    autocmd BufWritePre * %s/\s\+$//e
-        autocmd BufWritepre * %s/\n\+\%$//e
+    " Automatically deletes all trailing whitespace and newlines at end of file on save.
+        autocmd BufWritePre * %s/\s\+$//e
+            autocmd BufWritepre * %s/\n\+\%$//e
+"}}}
+
+" EMACS way edit {{{
+    inoremap  <Right>
+    inoremap  <Left>
+    inoremap  <Home>
+    inoremap  <End>
+"}}}
 
 " let GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
 

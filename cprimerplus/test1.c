@@ -6,58 +6,63 @@
 #define ARSIZE 1000
 
 extern char **environ;
+extern void display(char cr, int lines, int width);
 
 int main()
 {
     double numbers[ARSIZE];
     double value;
-    const char * file = "numbers.dat";
-    int i;
-    long pos;
-    FILE *iofile;
-    int a;
+    const char * name = "numbers.dat";
 
-    // if ((iofile = fopen(file, "ab+")) == NULL) {
-    // if ((iofile = fopen(file, "wb+")) == NULL) {
-    // if ((iofile = fopen(file, "wb")) == NULL) {
-    if ((iofile = fopen(file, "rb+")) == NULL) {
-        fprintf(stderr, "Could not open %s for output.\n", file);
-        exit(EXIT_FAILURE);
-    } 
+    char * re = strchr(name, 'e');
 
-    a = 0x01;
-    fwrite(&a, sizeof(int), 1, iofile);
+    printf("%s\n", re);
 
-    // fseek(iofile, -1L, SEEK_CUR);
-
-    fseek(iofile, 0, SEEK_SET);
-    pos = ftell(iofile);
-    print_var(pos);
-
-    fseek(iofile, 0, SEEK_END);
-    pos = ftell(iofile);
-    print_var(pos);
-
-    char c = 60;
-    fwrite(&c, sizeof(char), 1, iofile);
-
-
-    // fread(&a, sizeof(int), 1, iofile);
-
-    // 以二进制格式把数组写入文件
-    // fwrite(numbers, sizeof(double), ARSIZE, iofile);
-    fclose(iofile);
-
-    puts("Bye!");
-
-    char retstr[100];
-    char *re = getenv("ZPLUG_CACHE_DIR");
     print_var(re);
 
-    print_var(environ);
+    int ch; /* 待打印字符 */
+    int rows, cols; /* 行数和列数 */
 
-    puts(re);
+    printf("Enter a character and two integers:\n");
+    // while ((ch = getchar()) != '\n'){
+    //     printf("%c", ch);
+    // }
+    // while ((ch = getchar()) != '\n')
+    // {
+    //     scanf("%d %d", &rows, &cols);
+    //     display(ch, rows, cols);
+    //     while (getchar() != '\n')
+    //         continue;
+    //     printf("Enter another character and two integers;\n");
+    //     printf("Enter a newline to quit.\n");
+    // }
+
+    int n;
+    int a=100;
+    char str[50];
+    char c;
+
+    float f;
+    double d;
+
+    scanf("%lf", &d);
+    printf("%lf\n", d);
+
+    while (scanf("%ld", &n) == 1 && n >= 0) {
+        printf("Integer = %d\n", n);
+    }
+
+    printf("Bye.\n");
 
     return 0;
 }
 
+void display(char cr, int lines, int width){
+    int row, col;
+    for (row = 1; row <= lines; row++)
+    {
+        for (col = 1; col <= width; col++)
+            putchar(cr);
+        putchar('\n');/* 结束一行并开始新的一行 */
+    }
+}
