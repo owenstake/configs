@@ -5,7 +5,7 @@ cd
 bulkrename
 search haha
 ?
-delete
 
 open_with 
 open_with vim
+delete
