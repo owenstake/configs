@@ -136,7 +136,7 @@
         " enable gtags module
         let g:gutentags_modules = ['ctags', 'gtags_cscope']
 
-        " config project root markers.
+        " config project root markers. If you don't want to generate tags, then touch file .notags in the project root.
         let g:gutentags_project_root = ['.root']
 
         " generate datebases in my cache directory, prevent gtags files polluting my project
