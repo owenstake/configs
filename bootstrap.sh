@@ -1,12 +1,14 @@
 #!/usr/bin/zsh
+## override config
 # cover local config
 cp -r etc ~/.local/
-# cp -r etc/ranger ~/.local/
+# ranger
+cp -r etc/ranger ~/.config/ranger
 
 # config newsboat. It only worked in thit fuck way.
 # ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
 ln -sf ~/.local/etc/newsboat/config ~/.newsboat/config
-ln -sf $(realpath ./etc/ranger) ~/.config/
+# ln -sf $(realpath ./etc/ranger) ~/.config/
 
 ### Force echo to zsh tmux config file
 if [[ $1 = "f" ]]
