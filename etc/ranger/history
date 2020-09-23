@@ -1,0 +1,11 @@
+search pdf
+set colorscheme snow
+search jpg
+cd 
+bulkrename
+search haha
+?
+
+open_with 
+open_with vim
+delete
