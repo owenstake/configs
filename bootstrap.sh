@@ -1,9 +1,12 @@
 #!/usr/bin/zsh
 ## override config
-# cover local config
-cp -r etc ~/.local/
-# ranger
-cp -r etc/ranger ~/.config/ranger
+# override local config    # Make sure the ~/.local exists, otherwise cp will cp dir to ~/.local instead of inside of ~/.local (result in ~/.local/etc)fig
+rsync -r etc ~/.local/
+# mkdir -p ~/.local/; cp -r etc ~/.local/
+# ranger    # Make sure the ~/.config exists, otherwise cp will cp dir to .config instead of inside of ~/.config
+rsync -r etc/ranger ~/.config/
+# mkdir -p ~/.config/; cp -r etc/ranger ~/.config/
+# cp -r etc/ranger ~/.config/
 
 # config newsboat. It only worked in thit fuck way.
 # ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
