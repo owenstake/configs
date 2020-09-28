@@ -45,7 +45,7 @@ zsh ./bootstrap.sh
 bash <(curl -L -s https://install.direct/go.sh)
 ```
 
-2. v2ray config - /etc/v2ray/config.json <- from gui config **[v2rayL](https://github.com/jiangxufeng/v2rayL)** 
+2. v2ray config - /etc/v2ray/config.json <- from gui config **[v2rayL](https://github.com/jiangxufeng/v2rayL)**
 
 ```zsh
 sudo cp v2rayL.json /etc/v2ray/config.json     # v2rayL.json if configured by me in the GUI v2rayL.
@@ -68,19 +68,19 @@ service v2ray status
    export https_proxy=$proxy
    export ftp_proxy=$proxy
    export no_proxy="localhost, 127.0.0.1, ::1"
-   # or 
+   # or
    # export all_proxy="socks5://127.0.0.1:1080"
    ```
 
 5. test for net
 
    ```zsh
-   netstat -apn | grep v2ray	# local port info 
+   netstat -apn | grep v2ray	# local port info
    curl www.google.com			# test for connectivity
    curl cip.cc					# look proxy info
    ```
 
-6. ProxyChains 
+6. ProxyChains
 
   ```zsh
   sudo apt-get install proxychains
@@ -88,4 +88,4 @@ service v2ray status
   proxychains curl www.google.com
   ```
 
-​      
+​

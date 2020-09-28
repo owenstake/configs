@@ -10,7 +10,8 @@ rsync -r etc/ranger ~/.config/
 
 # config newsboat. It only worked in thit fuck way.
 # ln -s ~/.local/etc/newsboat/config ~/.newsboat/config 2>/dev/null
-ln -sf ~/.local/etc/newsboat/config ~/.newsboat/config
+# ln -sf ~/.local/etc/newsboat/config ~/.newsboat/config
+rsync -r etc/newsboat ~/.config/
 # ln -sf $(realpath ./etc/ranger) ~/.config/
 
 ### Force echo to zsh tmux config file
