@@ -1,6 +1,9 @@
-https://lukesmith.xyz/rss.xml
+https://lukesmith.xyz/rss.xml                       "luke smith"
 https://www.nba.com/lakers/rss.xml
 https://rsshub.app/zhibo8/more/nba
 https://rsshub.app/zhibo8/more/zuqiu
 https://rsshub.app/guokr/calendar
 https://rsshub.app/zhihu/people/answers/skywind3000 "zhihu"
+https://rsshub.app/youtube/channel/UCghLs6s95LrBWOdlZUCH4qw "stone"
+https://rsshub.app/youtube/channel/UCrGSFNEBmCN0rqhATZels2Q "gongzi shen"
+https://rsshub.app/youtube/channel/UCaPc9GRK9FoSyqM_c7-fDgw "Vlog xinsheng"
