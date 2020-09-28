@@ -88,4 +88,16 @@ service v2ray status
   proxychains curl www.google.com
   ```
 
+## xclip use in vim
+  ```zsh
+  sudo apt install vim-gtk
+  ```
+
+
+
+
+
+
+
+
 ​
