@@ -1,0 +1,54 @@
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,04,00,00,00,\    // start code
+3A,00,5D,E0,\    // Caps Lock => Application
+01,00,38,E0,\    // ESC       => Right Alt
+1D,00,3A,00,\    // Left Ctrl => Caps Lock
+00,00,00,00      // End of code
+
+; ===============================================================================
+; Sharpkeys
+; is the best way to view the corresponding key code
+; ===============================================================================
+
+; = reference ====================================================================
+; windows中Esc与CapsLock、Alt与Ctrl调换位置
+; https://blog.csdn.net/ace_shiyuan/article/details/81283065
+
+; "Scancode Map"=hex:
+;  00,00,00,00,  //固定格式
+;  00,00,00,00,  //固定格式
+
+;  05,00,00,00,  //05表示后面还有5行（更改4个按键的4行 + 最后一行全0固定格式）
+;  3a,00,01,00,  //把键盘上的原本3a，00这个按键映射到01，00这个按键上
+;  3A,00,5D,E0,
+;  01,00,3A,00,  //把键盘上的原本01，00这个按键映射到3a，00这个按键上
+;  38,00,1D,00,  //同理
+;  1D,00,38,00,  //同理
+
+;  00,00,00,00   //固定格式
+
+; ================================================================================
+; 按键
+; 编码
+
+; ESC
+; 01,00
+
+; Right Alt
+; 38,E0
+
+; Caps Lock
+; 3A,00
+
+; Left Ctrl
+; 1D,00
+
+; Right Shift
+; 36,00
+
+; Application
+; 5D,E0
+
+; Right Ctrl
+; 1D,E0
