@@ -70,33 +70,34 @@
     Plug '~/my-prototype-plugin'
 
     " plug for neovim
-    if has('nvim')
       Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    endif
+    " if has('nvim')
+    "   Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " endif
 
     " Plug 'ctrlpvim/ctrlp.vim'
     "{{{ YouCompleteMe
-    if !has('nvim')
-        let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
-        Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+    " if !has('nvim')
+    "     let g:plug_timeout = 300 " 为YouCompleteMe增加vim-plug的超时时间
+    "     Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 
-        let g:ycm_add_preview_to_completeopt                    = 0
-        let g:ycm_show_diagnostics_ui                           = 0
-        let g:ycm_server_log_level                              = 'info'
-        let g:ycm_min_num_identifier_candidate_chars            = 2
-        let g:ycm_collect_identifiers_from_comments_and_strings = 1
-        let g:ycm_complete_in_strings                           = 1
+    "     let g:ycm_add_preview_to_completeopt                    = 0
+    "     let g:ycm_show_diagnostics_ui                           = 0
+    "     let g:ycm_server_log_level                              = 'info'
+    "     let g:ycm_min_num_identifier_candidate_chars            = 2
+    "     let g:ycm_collect_identifiers_from_comments_and_strings = 1
+    "     let g:ycm_complete_in_strings                           = 1
 
-        " let g:ycm_key_invoke_completion = '<c-z>'
-        set completeopt=menu,menuone
+    "     " let g:ycm_key_invoke_completion = '<c-z>'
+    "     set completeopt=menu,menuone
 
-        " noremap <c-z> <NOP>
+    "     " noremap <c-z> <NOP>
 
-        let g:ycm_semantic_triggers =  {
-                   \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-                   \ 'cs,lua,javascript': ['re!\w{2}'],
-                   \ }
-    endif
+    "     let g:ycm_semantic_triggers =  {
+    "                \ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+    "                \ 'cs,lua,javascript': ['re!\w{2}'],
+    "                \ }
+    " endif
     "}}}
 
     Plug 'sjl/gundo.vim' " undo tree
@@ -441,7 +442,7 @@
 
 
 " coc config{{{
-    if has('nvim')
+    " if has('nvim')
         let g:coc_global_extensions = [
           \ 'coc-snippets',
           \ 'coc-pairs',
@@ -573,7 +574,7 @@
 
         " unmap sth
         unmap <silent> <c-d>
-    endif
+    " endif
 "}}}
 
 if has('nvim')
@@ -604,7 +605,13 @@ endif
     inoremap  <End>
 "}}}
 
-" let GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
+let $GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
 
 " add gbk zh encoding support - https://www.cnblogs.com/lepeCoder/p/7718827.html
 set fileencodings=utf-8,gbk
+
+" set auto complete in dic -- pratical vim {{{
+autocmd BufNewFile,BufRead *.txt set filetype=txt
+autocmd FileType txt set dictionary=~/.vim/dict/mydict.dict
+set complete+=k"
+" }}}
