@@ -14,6 +14,7 @@
     call plug#begin('~/.vim/plugged')
     "general settign {{{
         Plug 'mhinz/vim-startify'
+        Plug 'vim-scripts/ReplaceWithRegister'
 
         " It seems ussless for me now, I prefer tmux prefix"
         " Plug 'christoomey/vim-tmux-navigator'
