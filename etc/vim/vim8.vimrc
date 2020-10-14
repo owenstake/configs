@@ -594,15 +594,15 @@ endif
         cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
     " Automatically deletes all trailing whitespace and newlines at end of file on save.
-        autocmd BufWritePre * %s/\s\+$//e
-            autocmd BufWritepre * %s/\n\+\%$//e
+        " autocmd BufWritePre * %s/\s\+$//e
+        "     autocmd BufWritepre * %s/\n\+\%$//e
 "}}}
 
 " EMACS way edit {{{
     inoremap  <Right>
     inoremap  <Left>
     inoremap  <Home>
-    inoremap  <End>
+    " inoremap  <End>
 "}}}
 
 let $GTAGSLIBPATH='/home/z/work/try/linux-2.6.39'
@@ -613,5 +613,6 @@ set fileencodings=utf-8,gbk
 " set auto complete in dic -- pratical vim {{{
 autocmd BufNewFile,BufRead *.txt set filetype=txt
 autocmd FileType txt set dictionary=~/.vim/dict/mydict.dict
+set dictionary=~/.vim/dict/mydict.dict
 set complete+=k"
 " }}}
