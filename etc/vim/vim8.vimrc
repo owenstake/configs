@@ -180,13 +180,20 @@
     " {{{ LeaderF
         Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 
-        noremap <Leader>p   :LeaderfFile<cr>
-        noremap <Leader>ff  :LeaderfFile<cr>
-        noremap <Leader>fm  :LeaderfMru<cr>
+        " noremap <Leader>p   :LeaderfFile<cr>
+        noremap <Leader>kk  :LeaderfFile<cr>
+        noremap <Leader>rr  :LeaderfMru<cr>
         noremap <Leader>fp  :LeaderfFunction!<cr>
-        noremap <Leader>fb  :LeaderfBuffer<cr>
+        noremap <Leader>bb  :LeaderfBuffer<cr>
         noremap <Leader>ft  :LeaderfTag<cr>
-        noremap <Leader>fc  ::Leaderf command<cr>
+        noremap <Leader>xm  :Leaderf command<cr>
+        noremap <Leader>qq  :Leaderf rg<cr>
+
+        noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+        noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+        noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+        noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+        noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
 
         noremap q/          :Leaderf searchHistory<cr>
         noremap q:          :Leaderf cmdHistory<cr>
@@ -201,6 +208,9 @@
         let g:Lf_HideHelp             = 1
         let g:Lf_StlColorscheme       = 'powerline'
         let g:Lf_PreviewResult        = {'Function':0, 'BufTag':0}
+        let g:Lf_GtagsAutoGenerate    = 1
+        let g:Lf_WindowPosition       = 'popup'
+        let g:Lf_PreviewInPopup = 1
     " }}}
 
 
@@ -447,11 +457,11 @@
         let g:coc_global_extensions = [
           \ 'coc-snippets',
           \ 'coc-pairs',
-          \ 'coc-tsserver',
           \ 'coc-eslint',
           \ 'coc-prettier',
           \ 'coc-json',
           \ ]
+          " \ 'coc-tsserver',
         " from readme
         " if hidden is not set, TextEdit might fail.
         set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default 4000.
@@ -586,7 +596,7 @@ endif
 
 " From Luke Smith - https://github.com/LukeSmithxyz/voidrice/blob/master/.config/nvim/init.vim{{{
     " Disables automatic commenting on newline:
-      autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+        autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
     " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
         set splitbelow splitright
@@ -596,7 +606,7 @@ endif
 
     " Automatically deletes all trailing whitespace and newlines at end of file on save.
         autocmd BufWritePre * %s/\s\+$//e
-            autocmd BufWritepre * %s/\n\+\%$//e
+        autocmd BufWritepre * %s/\n\+\%$//e
 "}}}
 
 " EMACS way edit {{{
