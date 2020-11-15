@@ -9,4 +9,5 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCrGSFNEBmCN0rqhATZels2Q "go
 https://www.youtube.com/feeds/videos.xml?channel_id=UCaPc9GRK9FoSyqM_c7-fDgw "Vlog xinsheng"
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2MgB-upjmPWAP_p7hdk_MQ "Renbumei"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCHkR3JnDhl5gLCsiAlGiZ6A "suxiaohe"
+https://linuxtoy.org/feeds/all.atom.xml
 http://www.skywind.me/blog/feed
