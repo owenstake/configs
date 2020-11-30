@@ -32,6 +32,8 @@ if [ $result -eq 1 ]
 then
     echo "we are in wsl~~~"
     cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
+    cp ~/.local/etc/win10/keyremap.ahk /mnt/d/keyremap.ahk
+    explorer.exe "D:\keyremap.ahk"
 fi
 
 # -- zsh ----------------------------------------------------------
