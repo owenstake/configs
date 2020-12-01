@@ -604,9 +604,9 @@ endif
     " Save file as sudo on files that require root permission
         cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
-    " Automatically deletes all trailing whitespace and newlines at end of file on save.
-        autocmd BufWritePre * %s/\s\+$//e
-        autocmd BufWritepre * %s/\n\+\%$//e
+    " format: Automatically deletes all trailing whitespace and newlines at end of file on save.
+        " autocmd BufWritePre * %s/\s\+$//e
+        " autocmd BufWritepre * %s/\n\+\%$//e
 "}}}
 
 " EMACS way edit {{{
