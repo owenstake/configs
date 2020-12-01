@@ -33,6 +33,9 @@ then
     echo "we are in wsl~~~"
     cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
     rsync -r ~/.local/etc/win10/* /mnt/d/.local/
+    "/mnt/c/Program Files/AutoHotkey/Compiler/Ahk2Exe.exe" /in d:\.local\keyremap.ahk /out d:\.local\keyremap.exe
+    cp /mnt/d/.local/keyremap.exe "/mnt/c/ProgramData/Microsoft/Windows/Start\ Menu/Programs/StartUp/keyremap.exe"
+
 fi
 
 # -- zsh ----------------------------------------------------------
