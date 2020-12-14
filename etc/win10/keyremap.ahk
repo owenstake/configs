@@ -15,7 +15,8 @@ Launch_Mail::CapsLock
 
 
 ; #IfWinNotactive
-!h::Right
-!j::Down
-!k::Up
-!l::Left
+; arrow key map
+LAlt & h::send {Left}
+LAlt & j::send {Down}
+LAlt & k::send {Up}
+LAlt & l::send {Right}
