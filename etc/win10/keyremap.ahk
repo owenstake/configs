@@ -1,10 +1,12 @@
 ; replaces the old instance automatically
 #SingleInstance force
 
-; keyremap
-CapsLock::RCtrl
-RAlt::Esc
-Launch_Mail::CapsLock
+;====== keyremap ===================================================
+    ; keyremap
+    CapsLock::RCtrl
+    RAlt::Esc
+    Launch_Mail::CapsLock
+;====== End keyremap ===================================================
 
 ;====== control win transparent===================================================
     #=:: ;窗口透明化增加或者减弱
@@ -28,7 +30,6 @@ Launch_Mail::CapsLock
         return
     }
     WinTransMinus(w){
-    
         WinGet, transparent, Transparent, ahk_id %w%
         if transparent
             transparent := transparent-10
@@ -104,53 +105,44 @@ Launch_Mail::CapsLock
 ; Notepad
     ; Activate an existing notepad.exe window, or open a new one
     !n::
-    if WinExist("ahk_exe notepad.exe")
-        WinActivate, ahk_exe notepad.exe
-    else
-        run Notepad
-    return
+        WinActiveToggle("notepad.exe", "Notepad") 
+        return
 ; wxwork
     !w::
-    if WinExist("ahk_exe WXWork.exe")
-        WinActivate, ahk_exe WXWork.exe
-    else
-        run C:\Program Files (x86)\WXWork\WXWork.exe
-    return
+        WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe") 
+        return
 ; foxit
     !f::
-    if WinExist("ahk_exe FoxitReader.exe")
-        WinActivate, ahk_exe FoxitReader.exe
-    else
-        run C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe 
-    return
+        WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ") 
+        return
 ; qq
     !q::
-    if WinExist("ahk_exe QQ.exe")
-        WinActivate, ahk_exe QQ.exe
-    else
-        run C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe
-    return
+        WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe") 
+        return
 ; vscode
     !v::
-    if WinExist("ahk_exe Code.exe")
-        WinActivate, ahk_exe Code.exe
-    else
-        run C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe
-    return
+        WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe") 
+        return
 ; MobaXterm
-    !m::
-    if WinExist("ahk_exe MobaXterm.exe")
-        WinActivate, ahk_exe MobaXterm.exe
-    else
-        run C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe
-    return
+        WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe") 
+        return
 ; chrome
     !c::
-    if WinExist("ahk_exe chrome.exe")
-        WinActivate, ahk_exe chrome.exe
+        ; var1 := "chrome.exe"
+        ; var2 := "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe "
+        ; WinActiveToggle(var1, var2) 
+        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe ") 
+        return
+WinActiveToggle(win_exe, run_exe) {
+    if WinExist("ahk_exe" win_exe)
+        if WinActive("ahk_exe" win_exe)
+            WinClose  ;   Uses the last found window.
+        else
+            WinActivate, "ahk_exe" win_exe
     else
-        run C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe 
+        run %run_exe%
     return
+}
 ;==== End Hotkey for app =====================================================
 
 
