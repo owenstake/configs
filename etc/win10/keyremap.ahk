@@ -1,11 +1,18 @@
 ; replaces the old instance automatically
 #SingleInstance force
 
-;====== keyremap ===================================================
+;====== Basic Keyremap ===================================================
     ; keyremap
-    CapsLock::RCtrl
-    RAlt::Esc
-    Launch_Mail::CapsLock
+        CapsLock::RCtrl
+        RAlt::Esc
+        Launch_Mail::CapsLock
+    ; arrow key map
+        LAlt & u::send {PgUp}
+        LAlt & d::send {PgDn}
+        LAlt & h::send {Left}
+        LAlt & j::send {Down}
+        LAlt & k::send {Up}
+        LAlt & l::send {Right}
 ;====== End keyremap ===================================================
 
 ;====== control win transparent===================================================
@@ -61,7 +68,7 @@
         WinGetTitle, oTitle, ahk_id %ow%
         WinGetClass, oClass, ahk_id %ow%
         WinGetText, oText, ahk_id %ow%
-        clipboard= %ow%      %oTitle%    %oClass%  %oText%   %pp%  %pn%
+        clipboard = %ow%  %oTitle%   %oClass%  %oText%  %pp%  %pn%
         tooltip %clipboard%
         WinTopToggle(ow)
         return
@@ -88,20 +95,7 @@
     return
 ;======= End top win ==================================================
 
-;== Arrow key map=======================================================
-    LAlt & u::send {PgUp}
-    LAlt & d::send {PgDn}
-    LAlt & h::send {Left}
-    LAlt & j::send {Down}
-    LAlt & k::send {Up}
-    LAlt & l::send {Right}
-
-    ; LAlt & m::send,{Shift}{Home}
-    ; LAlt & m::send,^m
-    ; LAlt & m::send {Ctrl}m
-;== End Arrow key map=======================================================
-
-;==== Hotkey for app =====================================================
+;======= Hotkey for app =====================================================
 ; Notepad - Activate an existing notepad.exe window, or open a new one
     !n::
         WinActiveToggle("notepad.exe", "Notepad") 
@@ -127,26 +121,27 @@
         return
 ; chrome
     !c::
-        ; var1 := "chrome.exe"
-        ; var2 := "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe "
-        ; WinActiveToggle(var1, var2) 
         WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe") 
         return
-WinActiveToggle(win_exe, run_exe) {
-    if WinExist("ahk_exe" win_exe) {
-        if WinActive("ahk_exe" win_exe) {
-            ; WinClose  ;   Uses the last found window.
-            WinHide, ahk_exe %win_exe%
-            msgbox closing
+; WinActiveToggle for modulization and common interface
+    WinActiveToggle(win_exe, run_exe) {
+        if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
+            if WinActive("ahk_exe" win_exe) {
+                ; WinClose  ;   Uses the last found window.
+                ; WinHide("ahk_exe" win_exe)
+                WinClose, ahk_exe %win_exe%
+                msgbox closing
+            } else {
+                WinActivate, ahk_exe %win_exe%  ; Command syntax
+                msgbox activing
+            }
         } else {
-            WinActivate, ahk_exe %win_exe%
-            msgbox activing
+            msgbox % "running" run_exe   ; ok   This will be expanded because it is a expression
+            ; msgbox % %run_exe%           ; fail This will be expanded because it is a expression
+            msgbox running %run_exe%     ; ok   This will be expanded because it is a expression
+            run %run_exe%
         }
-    } else {
-        msgbox running %run_exe%
-        run %run_exe%
-    }
-    return
+        return
 }
 ;==== End Hotkey for app =====================================================
 
@@ -193,11 +188,10 @@ WinActiveToggle(win_exe, run_exe) {
     var := 0
     InputBox, time, 小海御用计时器, 请输入一个时间（单位是分）
     time := time*60000
-    Sleep,%time%
-    loop,16
-    {
-    var += 180
-    SoundBeep, var, 500
+    Sleep, %time%
+    loop,16 {
+        var += 180
+        SoundBeep, var, 500
     }
     msgbox 时间到，啊啊啊！！！红红火火！！！恍恍惚惚！！！
     return
