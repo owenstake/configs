@@ -102,8 +102,7 @@
 ;== End Arrow key map=======================================================
 
 ;==== Hotkey for app =====================================================
-; Notepad
-    ; Activate an existing notepad.exe window, or open a new one
+; Notepad - Activate an existing notepad.exe window, or open a new one
     !n::
         WinActiveToggle("notepad.exe", "Notepad") 
         return
@@ -131,16 +130,22 @@
         ; var1 := "chrome.exe"
         ; var2 := "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe "
         ; WinActiveToggle(var1, var2) 
-        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe ") 
+        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe") 
         return
 WinActiveToggle(win_exe, run_exe) {
-    if WinExist("ahk_exe" win_exe)
-        if WinActive("ahk_exe" win_exe)
-            WinClose  ;   Uses the last found window.
-        else
-            WinActivate, "ahk_exe" win_exe
-    else
+    if WinExist("ahk_exe" win_exe) {
+        if WinActive("ahk_exe" win_exe) {
+            ; WinClose  ;   Uses the last found window.
+            WinHide, ahk_exe %win_exe%
+            msgbox closing
+        } else {
+            WinActivate, ahk_exe %win_exe%
+            msgbox activing
+        }
+    } else {
+        msgbox running %run_exe%
         run %run_exe%
+    }
     return
 }
 ;==== End Hotkey for app =====================================================
