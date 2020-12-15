@@ -128,6 +128,11 @@
     !c::
         WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe") 
         return
+; WindowSpy
+    !s::
+        run C:\Program Files\AutoHotkey\WindowSpy.ahk
+        return
+
 ; WinActiveToggle for modulization and common interface
     WinActiveToggle(win_exe, run_exe) {
         if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
