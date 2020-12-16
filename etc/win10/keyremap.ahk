@@ -130,6 +130,10 @@
     Alt & s::
         WinActiveToggle("SecureCRT_CHS.exe", "C:\Program Files\VanDyke Software\SecureCRT\SecureCRT_CHS.exe")
         return
+; Typora
+    Alt & t::
+        WinActiveToggle("Typora.exe", "C:\Program Files\Typora\Typora.exe")
+        return
 ; Vscode
     Alt & v::
         WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
@@ -153,7 +157,7 @@
                 ; WinClose  ;   Uses the last found window.
                 ; WinHide("ahk_exe" win_exe)
                 ; WinHide, ahk_exe %win_exe%
-                SendRaw {Alt}{Esc}
+                Send !{Esc}
                 ; msgbox closing
             } else {
                 WinActivate, ahk_exe %win_exe%  ; Command syntax
