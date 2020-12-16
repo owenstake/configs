@@ -2,17 +2,13 @@
 #SingleInstance force
 
 ;====== Basic Keyremap ===================================================
-    ; keyremap
-        CapsLock::RCtrl
-        RAlt::Esc
-        Launch_Mail::CapsLock
     ; arrow key map
-        LAlt & u::send {PgUp}
-        LAlt & d::send {PgDn}
-        LAlt & h::send {Left}
-        LAlt & j::send {Down}
-        LAlt & k::send {Up}
-        LAlt & l::send {Right}
+        !u::send {PgUp}
+        !d::send {PgDn}
+        !h::send {Left}
+        !j::send {Down}
+        !k::send {Up}
+        !l::send {Right}
 ;====== End keyremap ===================================================
 
 ;====== control win transparent===================================================
@@ -47,8 +43,8 @@
     }
 ;====== End control win transparent===================================================
 
-;======= DEBUG Active Window =====================================================
-    !enter::
+;======= DEBUG Active Window just like "window spy" =====================================================
+    $!enter::
         WinGet ow, id, A
         WinGet pp, processPath, A
         WinGet pn, processname, A
@@ -57,6 +53,7 @@
         WinGetText, oText, ahk_id %ow%
         clipboard= %ow%      %oTitle%    %oClass%  %oText%   %pp%  %pn%
         tooltip %clipboard%
+        SetTimer, RemoveToolTip, 5000
         return
 ;======= End debug active window =====================================================
 
@@ -95,44 +92,60 @@
     return
 ;======= End top win ==================================================
 
-;======= Hotkey for app =====================================================
-; Notepad - Activate an existing notepad.exe window, or open a new one
-    !n::
-        WinActiveToggle("notepad.exe", "Notepad") 
+;======= Hotkey for app in alpha order =====================================================
+; Activate an existing ***.exe window, or open a new one
+; Ahk help
+    Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
+        WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
         return
-; wxwork
-    !w::
-        WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe") 
+; Chrome
+    Alt & c::
+        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
         return
-; foxit
-    !f::
-        WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ") 
-        return
-; qq
-    !q::
-        WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe") 
-        return
-; vscode
-    !v::
-        WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe") 
+; Foxit
+    Alt & f::
+        WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ")
         return
 ; MobaXterm
-    !m::
-        WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe") 
+    Alt & m::
+        WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe")
         return
-; outlook
-    !o::
-        WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE") 
+; Notepad
+    Alt & n::
+        WinActiveToggle("notepad.exe", "Notepad")
         return
-; chrome
-    !c::
-        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe") 
+; Outlook
+    Alt & o::
+        WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
         return
-; WindowSpy
-    !s::
-        run C:\Program Files\AutoHotkey\WindowSpy.ahk
+; QQ
+    Alt & q::
+        WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe")
         return
-
+; RWexin
+    Alt & r::
+        WinActiveToggle("WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
+        return
+; SecureCRT
+    Alt & s::
+        WinActiveToggle("SecureCRT_CHS.exe", "C:\Program Files\VanDyke Software\SecureCRT\SecureCRT_CHS.exe")
+        return
+; Vscode
+    Alt & v::
+        WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
+        return
+; wxwork
+    Alt & w::
+        WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
+        return
+; ; WindowSpy
+;     Alt & s::
+;         run C:\Program Files\AutoHotkey\WindowSpy.ahk
+;         return
+; Zotero
+    Alt & z::
+        WinActiveToggle("zotero.exe", "C:\Program Files (x86)\Zotero\zotero.exe")
+        return
 ; WinActiveToggle for modulization and common interface
     WinActiveToggle(win_exe, run_exe) {
         if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
@@ -140,7 +153,7 @@
                 ; WinClose  ;   Uses the last found window.
                 ; WinHide("ahk_exe" win_exe)
                 ; WinHide, ahk_exe %win_exe%
-                send !{Esc}
+                SendRaw {Alt}{Esc}
                 ; msgbox closing
             } else {
                 WinActivate, ahk_exe %win_exe%  ; Command syntax
@@ -248,3 +261,8 @@
     id := WinExist("A")
     MsgBox % id
 ;======== End some example ==================================================
+
+    ; keyremap
+        CapsLock::RCtrl
+        RAlt::Esc
+        Launch_Mail::CapsLock
