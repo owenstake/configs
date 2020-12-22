@@ -58,7 +58,7 @@
 ;======= End debug active window =====================================================
 
 ;======= top win ==================================================
-    #enter:: ;最爱代码之窗口置顶
+    #Space:: ;最爱代码之窗口置顶
         WinGet ow, id, A
         WinGet pp, processPath, A
         WinGet pn, processname, A
@@ -93,86 +93,85 @@
 ;======= End top win ==================================================
 
 ;======= Hotkey for app in alpha order =====================================================
-; Activate an existing ***.exe window, or open a new one
-; Ahk help
-    Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
-        WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
-        return
-; Chrome
-    Alt & c::
-        WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
-        return
-; Foxit
-    Alt & f::
-        WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ")
-        return
-; MobaXterm
-    Alt & m::
-        WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe")
-        return
-; Notepad
-    Alt & n::
-        WinActiveToggle("notepad.exe", "Notepad")
-        return
-; Outlook
-    Alt & o::
-        WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
-        return
-; QQ
-    Alt & q::
-        WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe")
-        return
-; RWexin
-    Alt & r::
-        WinActiveToggle("WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
-        return
-; SecureCRT
-    Alt & s::
-        WinActiveToggle("SecureCRT_CHS.exe", "C:\Program Files\VanDyke Software\SecureCRT\SecureCRT_CHS.exe")
-        return
-; Typora
-    Alt & t::
-        WinActiveToggle("Typora.exe", "C:\Program Files\Typora\Typora.exe")
-        return
-; Vscode
-    Alt & v::
-        WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
-        return
-; wxwork
-    Alt & w::
-        WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
-        return
-; ; WindowSpy
-;     Alt & s::
-;         run C:\Program Files\AutoHotkey\WindowSpy.ahk
-;         return
-; Zotero
-    Alt & z::
-        WinActiveToggle("zotero.exe", "C:\Program Files (x86)\Zotero\zotero.exe")
-        return
-; WinActiveToggle for modulization and common interface
-    WinActiveToggle(win_exe, run_exe) {
-        if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
-            if WinActive("ahk_exe" win_exe) {
-                ; WinClose  ;   Uses the last found window.
-                ; WinHide("ahk_exe" win_exe)
-                ; WinHide, ahk_exe %win_exe%
-                Send !{Esc}
-                ; msgbox closing
+    ; Activate an existing ***.exe window, or open a new one
+    ; Ahk help
+        Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
+            WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
+            return
+    ; Chrome
+        Alt & c::
+            WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
+            return
+    ; Foxit
+        Alt & f::
+            WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ")
+            return
+    ; MobaXterm
+        Alt & m::
+            WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe")
+            return
+    ; Notepad
+        Alt & n::
+            WinActiveToggle("notepad.exe", "Notepad")
+            return
+    ; Outlook
+        Alt & o::
+            WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
+            return
+    ; QQ
+        Alt & q::
+            WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe")
+            return
+    ; RWexin
+        Alt & r::
+            WinActiveToggle("WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
+            return
+    ; SecureCRT
+        Alt & s::
+            WinActiveToggle("SecureCRT_CHS.exe", "C:\Program Files\VanDyke Software\SecureCRT\SecureCRT_CHS.exe")
+            return
+    ; Typora
+        Alt & t::
+            WinActiveToggle("Typora.exe", "C:\Program Files\Typora\Typora.exe")
+            return
+    ; Vscode
+        Alt & v::
+            WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
+            return
+    ; wxwork
+        Alt & w::
+            WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
+            return
+    ; ; WindowSpy
+    ;     Alt & s::
+    ;         run C:\Program Files\AutoHotkey\WindowSpy.ahk
+    ;         return
+    ; Zotero
+        Alt & z::
+            WinActiveToggle("zotero.exe", "C:\Program Files (x86)\Zotero\zotero.exe")
+            return
+    ; WinActiveToggle for modulization and common interface
+        WinActiveToggle(win_exe, run_exe) {
+            if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
+                if WinActive("ahk_exe" win_exe) {
+                    ; WinClose  ;   Uses the last found window.
+                    ; WinHide("ahk_exe" win_exe)
+                    ; WinHide, ahk_exe %win_exe%
+                    Send !{Esc}
+                    ; msgbox closing
+                } else {
+                    WinActivate, ahk_exe %win_exe%  ; Command syntax
+                    ; msgbox activing
+                }
             } else {
-                WinActivate, ahk_exe %win_exe%  ; Command syntax
-                ; msgbox activing
+                ; msgbox % "running" run_exe     ; ok   This will be expanded because it is a expression
+                ; msgbox % %run_exe%           ; fail legacy syntax. This will be expanded because it is a expression
+                ; msgbox running %run_exe%     ; ok   expression. This will be expanded because it is a expression
+                run %run_exe%
             }
-        } else {
-            ; msgbox % "running" run_exe     ; ok   This will be expanded because it is a expression
-            ; msgbox % %run_exe%           ; fail legacy syntax. This will be expanded because it is a expression
-            ; msgbox running %run_exe%     ; ok   expression. This will be expanded because it is a expression
-            run %run_exe%
-        }
-        return
-}
+            return
+    }
 ;==== End Hotkey for app =====================================================
-
 
 ;最钟爱代码之音量随心所欲
 ;======= 音量随心所欲 ==================================================
