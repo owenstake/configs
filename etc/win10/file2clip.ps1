@@ -3,7 +3,7 @@ $col = new-object Collections.Specialized.StringCollection
 # $targetpath = "$pwd" + "\" + $args[0]
 $targetpath = (Get-Item -Path $args[0]).FullName
 # $targetpath = $targetpath.TrimStart('Microsoft.PowerShell.Core\FileSystem::')
-$targetpath
+"copy to clipboard ~~ " + $targetpath
 # $targetpath = $targetpath = "'" + $targetpath + "'"
 # $targetpath
 $col.Add($targetpath)
