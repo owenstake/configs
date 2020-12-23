@@ -1,6 +1,9 @@
 ; replaces the old instance automatically
 #SingleInstance force
 
+; some basic knowledge
+; #win, !alt, ^ctl, +shift, ~do not overwrite
+
 ;====== Basic Keyremap ===================================================
     ; arrow key map
         !u::send {PgUp}
@@ -9,9 +12,62 @@
         !j::send {Down}
         !k::send {Up}
         !l::send {Right}
+    ; keyremap
+        CapsLock::RCtrl
+        Alt::Esc
+        Launch_Mail::CapsLock
 ;====== End keyremap ===================================================
 
-;====== control win transparent===================================================
+;====== APP specified config i.e. chrome foxit ===================================================
+    ;====== chrome config ===================================================
+        ^l::
+        if WinActive("ahk_exe chrome.exe") {
+            ; For chrome, nothing control can be focused or detected
+            Chrome_CtrlL_Cnt++
+            if (Mod(Chrome_CtrlL_Cnt, 2)) {
+                Controlclick, Chrome_RenderWidgetHostHWND1, ahk_exe chrome.exe
+            } else {
+                send ^l
+            }
+            return
+        }
+        return
+    ;====== foxit config ===================================================
+        ~j::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send {Down}
+            }
+            return
+        }
+        return
+        ~k::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send {Up}
+            }
+            return
+        }
+        return
+        !=::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            send ^{=}
+            return
+        }
+        return
+        !-::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            send ^-
+            return
+        }
+        return
+;====== End specified app config ===================================================
+
+;====== Transparent Control win+= win+- ===================================================
     #=:: ;窗口透明化增加或者减弱
         WinGet, ow, id, A
         WinTransplus(ow)
@@ -43,8 +99,8 @@
     }
 ;====== End control win transparent===================================================
 
-;======= DEBUG Active Window just like "window spy" =====================================================
-    $!enter::
+;======= DEBUG alt+enter Active Window just like "window spy" =====================================================
+    !enter::
         WinGet ow, id, A
         WinGet pp, processPath, A
         WinGet pn, processname, A
@@ -57,7 +113,7 @@
         return
 ;======= End debug active window =====================================================
 
-;======= top win ==================================================
+;======= top win win+space ==================================================
     #Space:: ;最爱代码之窗口置顶
         WinGet ow, id, A
         WinGet pp, processPath, A
@@ -92,7 +148,7 @@
     return
 ;======= End top win ==================================================
 
-;======= Hotkey for app in alpha order =====================================================
+;======= Hotkey for app in alpha order alt+app =====================================================
     ; Activate an existing ***.exe window, or open a new one
     ; Ahk help
         Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
@@ -174,7 +230,7 @@
 ;==== End Hotkey for app =====================================================
 
 ;最钟爱代码之音量随心所欲
-;======= 音量随心所欲 ==================================================
+;======= 音量随心所欲 scoll in taskbar ==================================================
     ~lbutton & enter:: ;鼠标放在任务栏，滚动滚轮实现音量的加减
         exitapp  
     ~WheelUp::  
@@ -199,7 +255,7 @@
     }
 ;======= End 音量随心所欲 ==================================================
 
-;======== Copy file path =================================================
+;======== Copy file path  win+shift+c =================================================
     #+c:: ;用快捷键得到当前选中文件的路径
     send ^c
     sleep,200
@@ -210,7 +266,7 @@
     return
 ;======== End copy file path =================================================
 
-;======== timer =================================================
+;======== timer win+shift+t =================================================
     #+t:: ;小海原创-无敌工作神器之终极计时器
     var := 0
     InputBox, time, 小海御用计时器, 请输入一个时间（单位是分）
@@ -236,7 +292,7 @@
     return
 ;======== End Hot strings =================================================
 
-;======== google search ================================================
+;======== google search  win+9 ================================================
     #9:: ;用google搜索剪切板的内容
     run https://www.google.com/search?q=%clipboard%
     tooltip, 那晚，风也美，人也美。。。
@@ -264,8 +320,3 @@
     id := WinExist("A")
     MsgBox % id
 ;======== End some example ==================================================
-
-    ; keyremap
-        CapsLock::RCtrl
-        RAlt::Esc
-        Launch_Mail::CapsLock
