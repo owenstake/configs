@@ -7,4 +7,10 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
     [System.Collections.Generic.List[string]]$fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
 }
 
-$fileDropList
+foreach ($item in $fileDropList) {
+ [console]::writeline($item)
+ [console]::writeline("\n")
+}
+[console]::writeline("hello world")
+
+# ($fileDropList).ForEach([console]::writeline)
