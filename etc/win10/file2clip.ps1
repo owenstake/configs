@@ -4,10 +4,11 @@
 Add-Type -AssemblyName System.Windows.Forms
 $files = new-object System.Collections.Specialized.StringCollection
 
-$args[0]
-$args[1]
-
-# FullName is need. Get-Item usage can refer to 
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-7.1
-$files.Add((Get-Item -Path $filePath).FullName)
-# [System.Windows.Forms.Clipboard]::SetFileDropList($files)
+foreach ($var in $args)
+{
+    # FullName is need. Get-Item usage can refer to 
+    # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-7.1
+    $files.Add((Get-Item -Path $var).FullName)
+}
+$files 
+[System.Windows.Forms.Clipboard]::SetFileDropList($files)
