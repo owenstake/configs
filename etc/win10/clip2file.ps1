@@ -11,7 +11,8 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
 }
 
 "# psh copy clipboard files to DesDir ......."
+(Get-Item -Path $DesDirPath).FullName
 foreach ($file in $fileDropList) {
-    (Get-Item -Path $DesDirPath).FullName
+    $file
     Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
 }
