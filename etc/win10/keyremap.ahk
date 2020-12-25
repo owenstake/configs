@@ -29,7 +29,8 @@
             } else {
                 send ^l
             }
-            return
+        } else {
+            send ^l
         }
         return
     ;====== foxit config ===================================================
@@ -40,7 +41,6 @@
             } else {
                 send {Down}
             }
-            return
         }
         return
         ~k::
@@ -56,13 +56,11 @@
         !=::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             send ^{=}
-            return
         }
         return
         !-::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             send ^-
-            return
         }
         return
 ;====== End specified app config ===================================================
