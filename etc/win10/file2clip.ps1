@@ -10,5 +10,8 @@ foreach ($var in $args)
     # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-7.1
     $files.Add((Get-Item -Path $var).FullName)
 }
+"# psh copy files to clipboard......."
 $files 
-[System.Windows.Forms.Clipboard]::SetFileDropList($files)
+if (-not [System.Windows.Forms.Clipboard]::SetFileDropList($files)) {
+    Write-Verbose "psh: Fail SetFileDropList"
+}

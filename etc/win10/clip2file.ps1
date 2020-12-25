@@ -10,14 +10,8 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
     $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
 }
 
+"# psh copy clipboard files to DesDir ......."
 foreach ($file in $fileDropList) {
+    (Get-Item -Path $DesDirPath).FullName
     Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
 }
-
-# foreach ($bird in $birds)
-# {
-#   $count += 1
-#   "$bird = " + $bird.length
-# Write-Host
-# }
-# "Total number of birds is $count."
