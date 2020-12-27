@@ -115,7 +115,9 @@
     Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-speeddating' "  
-    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-repeat'  " .
+    Plug 'tpope/vim-abolish'  " :%S/{man,dog}/{dog,man}/g
+    Plug 'substitution/qargs.vim'  " :Qargs - pratical vim p222
 
     Plug 'glts/vim-magnum'
     Plug 'glts/vim-radical' " gA decimal:"crd" hex:"crx" octal:"cro" binary:"crb"
