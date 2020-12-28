@@ -20,19 +20,27 @@
 
 ;====== APP specified config i.e. chrome foxit ===================================================
     ;====== chrome config ===================================================
-        ^l::
+        ^m::
         if WinActive("ahk_exe chrome.exe") {
             ; For chrome, nothing control can be focused or detected
-            Chrome_CtrlL_Cnt++
-            if (Mod(Chrome_CtrlL_Cnt, 2)) {
-                Controlclick, Chrome_RenderWidgetHostHWND1, ahk_exe chrome.exe
-            } else {
-                send ^l
-            }
+            Controlclick, Chrome_RenderWidgetHostHWND1, ahk_exe chrome.exe
         } else {
-            send ^l
+            send ^m
         }
         return
+        ; ^l::
+        ; if WinActive("ahk_exe chrome.exe") {
+        ;     ; For chrome, nothing control can be focused or detected
+        ;     Chrome_CtrlL_Cnt++
+        ;     if (Mod(Chrome_CtrlL_Cnt, 2)) {
+        ;         Controlclick, Chrome_RenderWidgetHostHWND1, ahk_exe chrome.exe
+        ;     } else {
+        ;         send ^l
+        ;     }
+        ; } else {
+        ;     send ^l
+        ; }
+        ; return
     ;====== foxit config ===================================================
         ~j::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
@@ -303,8 +311,8 @@
     #1:: ;Ñ­»·µã»÷Ê¾Àý, 0.2s
     loop, 10
     {
-    click
-    sleep 200
+        click
+        sleep 200
     }
     return
 

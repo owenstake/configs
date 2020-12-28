@@ -1,4 +1,6 @@
+###########################################################
 # copy file from clipboard to DesDir for win10 explorer
+###########################################################
 
 Param([Parameter(Mandatory = $True, Position = 1)][string] $DesDirPath)
 Add-Type -AssemblyName System.Windows.Forms
@@ -10,14 +12,13 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
 } else {
     $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
 }
+
 "Psh: Psh copy clipboard $($fileDropList.count) Items to DesDir " 
 "Psh: Destination Directory: "
 "    " + (Get-Item -Path $DesDirPath).FullName
 "Psh: Items: " 
+
 foreach ($file in $fileDropList) {
-    # $file
-    # (Get-Item -Path $file).Name
-    # (Get-Item -Path $DesDirPath).Name + '\' + (Get-Item -Path $file).Name
     "Psh:     " + $DesDirPath + '\' + (Get-Item -Path $file).Name
-    # Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
+    Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
 }

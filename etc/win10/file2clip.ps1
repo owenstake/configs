@@ -1,4 +1,6 @@
+#################################################
 # copy file to clipboard for win10 explorer
+#################################################
 
 # Param([Parameter(Mandatory = $True, Position = 1)][string] $filePath)
 Add-Type -AssemblyName System.Windows.Forms
@@ -19,5 +21,4 @@ if (-not [System.Windows.Forms.Clipboard]::SetFileDropList($files)) {
     }
 } else {
     "PSH: Fail SetFileDropList"
-    # "PSH: " + $files 
 }
