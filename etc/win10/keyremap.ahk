@@ -14,7 +14,7 @@
         !l::send {Right}
     ; keyremap
         CapsLock::RCtrl
-        Alt::Esc
+        RAlt::Esc
         Launch_Mail::CapsLock
 ;====== End keyremap ===================================================
 
