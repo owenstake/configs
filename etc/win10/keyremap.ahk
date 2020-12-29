@@ -61,11 +61,33 @@
             return
         }
         return
+        ~u::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send {PgUp}
+            }
+            return
+        }
+        return
+        ~d::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send {PgDn}
+            }
+            return
+        }
+        return
+        ; zoom in
         !=::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             send ^{=}
         }
         return
+        ; zoom out
         !-::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             send ^-
