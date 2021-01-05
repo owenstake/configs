@@ -58,9 +58,9 @@
             } else {
                 send {Up}
             }
-            return
         }
         return
+        ; page up
         ~u::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
@@ -68,9 +68,9 @@
             } else {
                 send {PgUp}
             }
-            return
         }
         return
+        ; page down
         ~d::
         if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
             ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
@@ -78,7 +78,24 @@
             } else {
                 send {PgDn}
             }
-            return
+        }
+        return
+        ~+J::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send Send ^+{Tab}
+            }
+        }
+        return
+        ~+K::
+        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+            If InStr(OutputVar, "Edit") {
+            } else {
+                send Send ^{Tab}
+            }
         }
         return
         ; zoom in
@@ -176,7 +193,7 @@
     return
 ;======= End top win ==================================================
 
-;======= Hotkey for app in alpha order alt+app =====================================================
+;======= Hotkey for APP in alpha order alt+app =====================================================
     ; Activate an existing ***.exe window, or open a new one
     ; Ahk help
         Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
@@ -185,6 +202,10 @@
     ; Chrome
         Alt & c::
             WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
+            return
+    ; Explorer
+        Alt & e::
+            WinActiveToggle("explorer.exe", "C:\Windows\explorer.exe")
             return
     ; Foxit
         Alt & f::
