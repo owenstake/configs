@@ -12,6 +12,8 @@
         !j::send {Down}
         !k::send {Up}
         !l::send {Right}
+        !+j::send ^+{Tab}
+        !+k::send ^{Tab}
     ; keyremap
         CapsLock::RCtrl
         RAlt::Esc
@@ -85,7 +87,7 @@
             ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
-                send Send ^+{Tab}
+                send ^+{Tab}
             }
         }
         return
@@ -94,7 +96,7 @@
             ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
-                send Send ^{Tab}
+                send ^{Tab}
             }
         }
         return
