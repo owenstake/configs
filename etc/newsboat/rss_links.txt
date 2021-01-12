@@ -4,6 +4,8 @@ https://rsshub.app/zhibo8/more/nba
 https://rsshub.app/zhibo8/more/zuqiu
 https://rsshub.app/guokr/calendar
 https://rsshub.app/zhihu/people/answers/skywind3000 "zhihu"
+https://rsshub.app/zhihu/people/posts/feiyangqingyun
+ https://rsshub.app/zhihu/zhuanlan/feiyangqingyun
 https://www.youtube.com/feeds/videos.xml?channel_id=UCghLs6s95LrBWOdlZUCH4qw "stone"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCrGSFNEBmCN0rqhATZels2Q "gongzi shen"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCaPc9GRK9FoSyqM_c7-fDgw "Vlog xinsheng"

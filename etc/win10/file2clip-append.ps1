@@ -6,6 +6,15 @@
 Add-Type -AssemblyName System.Windows.Forms
 $files = new-object System.Collections.Specialized.StringCollection
 
+# get files from clipboard
+if ([System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
+    $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
+
+    foreach ($file in $fileDropList) {
+        $count = $files.Add((Get-Item -Path $file).FullName)
+    }
+}
+
 # get files from args
 foreach ($var in $args)
 {
@@ -13,6 +22,7 @@ foreach ($var in $args)
     # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-7.1
     $count = $files.Add((Get-Item -Path $var).FullName)
 }
+
 $count++
 
 # add files to clipboard

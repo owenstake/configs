@@ -7,8 +7,8 @@ Add-Type -AssemblyName System.Windows.Forms
 $fileDropList = new-object System.Collections.Specialized.StringCollection;
 
 if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
-    "Psh: No appendable content was found."
-    return
+     "Psh: No appendable content was found."
+     return
 } else {
     $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
 }
@@ -19,6 +19,7 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
 "Psh: Items: " 
 
 foreach ($file in $fileDropList) {
-    "Psh:     " + $file + "`t=>`t" + $DesDirPath + '\' + (Get-Item -Path $file).Name
-    Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
+    "Psh:     " + $DesDirPath + '\' + (Get-Item -Path $file).Name
+    Move-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName
+    # Get-ChildItem -Path $file -Recurse | Move-Item -Destination (Get-Item -Path $DesDirPath).FullName
 }
