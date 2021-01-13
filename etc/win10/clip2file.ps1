@@ -15,7 +15,7 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
 
 "Psh: Psh copy clipboard $($fileDropList.count) Items to DesDir " 
 "Psh: Destination Directory: "
-"    " + (Get-Item -Path $DesDirPath).FullName
+"Psh:     " + (Get-Item -Path $DesDirPath).FullName
 "Psh: Items: " 
 
 foreach ($file in $fileDropList) {
