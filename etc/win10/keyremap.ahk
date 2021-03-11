@@ -18,6 +18,7 @@
         CapsLock::RCtrl
         RAlt::Esc
         Launch_Mail::CapsLock
+        #Up::WinMaximize, A
 ;====== End keyremap ===================================================
 
 ;====== APP specified config i.e. chrome foxit ===================================================
