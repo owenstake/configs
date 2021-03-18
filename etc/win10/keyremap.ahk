@@ -219,8 +219,12 @@
             WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe")
             return
     ; Notepad
+    ;   Alt & n::
+    ;       WinActiveToggle("notepad.exe", "Notepad")
+    ;       return
+    ; V2ray
         Alt & n::
-            WinActiveToggle("notepad.exe", "Notepad")
+            WinActiveToggle("v2rayN.exe", "C:\MY_SOFTWARE\v2rayN-windows-64\v2rayN-Core-64bit\v2rayN.exe")
             return
     ; Outlook
         Alt & o::
