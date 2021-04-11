@@ -21,3 +21,6 @@ netsh interface portproxy add v4tov4 listenport=2222 listenaddress=0.0.0.0 conne
 # modify hosts
 wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts
 wsl --% echo "192.168.50.1 wslhost" >> /mnt/c/Windows/System32/drivers/etc/hosts
+
+# sshd start
+wsl -u root /etc/init.d/ssh start
