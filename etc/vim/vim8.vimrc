@@ -15,6 +15,7 @@ let mapleader = "\<space>"
     " general setting {{{
         Plug 'mhinz/vim-startify'   " The fancy start screen for Vim
         Plug 'vim-scripts/ReplaceWithRegister'
+        Plug 'svermeulen/vim-easyclip'
     "}}}
 
     " markdown{{{
@@ -144,7 +145,7 @@ let mapleader = "\<space>"
     call plug#end()
 " }}} end of plugin
 
-" basic key binding {{{
+" Basic Key Map {{{
     " EMACS way editing line
     inoremap  <Right>
     inoremap  <Left>
@@ -175,9 +176,11 @@ let mapleader = "\<space>"
     inoremap kj <esc>
 " }}}
 
-" special key binding {{{
-    nnoremap gp <Plug>ReplaceWithRegisterOperator
-    nnoremap gpp <Plug>ReplaceWithRegisterLine
+" Special Key Map {{{
+    " nnoremap gp <Plug>ReplaceWithRegisterOperator
+    " nnoremap gpp <Plug>ReplaceWithRegisterLine
+    nmap gss <plug>SubstituteLine
+    nmap gs <plug>SubstituteOverMotionMap
 
     " nmap : :Leaderf command<cr>
     nnoremap <Leader><Leader>a ga
@@ -216,72 +219,9 @@ let mapleader = "\<space>"
     let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
     let g:UltiSnipsEditSplit="vertical"
 
-    " LeaderF {{{
-        " noremap <Leader>p   :LeaderfFile<cr>
-        noremap <Leader>kk  :LeaderfFile<cr>
-        noremap <Leader>rr  :LeaderfMru<cr>
-        noremap <Leader>fp  :LeaderfFunction!<cr>
-        noremap <Leader>bb  :LeaderfBuffer<cr>
-        noremap <Leader>ft  :LeaderfTag<cr>
-        noremap <Leader>xm  :Leaderf command<cr>
-        noremap <Leader>qq  :Leaderf rg<cr>
-
-        noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
-        noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
-        noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
-        noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
-        noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
-
-        noremap q/          :Leaderf searchHistory<cr>
-        noremap q:          :Leaderf cmdHistory<cr>
-
-        let g:Lf_ReverseOrder         = 1
-        let g:Lf_StlSeparator         = { 'left': '', 'right': '', 'font': '' }
-        let g:Lf_RootMarkers          = ['.project', '.root', '.svn', '.git']
-        let g:Lf_WorkingDirectoryMode = 'Ac'
-        let g:Lf_WindowHeight         = 0.30
-        let g:Lf_CacheDirectory       = expand('~/.vim/cache')
-        let g:Lf_ShowRelativePath     = 0
-        let g:Lf_HideHelp             = 1
-        let g:Lf_StlColorscheme       = 'powerline'
-        let g:Lf_PreviewResult        = {'Function':0, 'BufTag':0}
-        let g:Lf_GtagsAutoGenerate    = 1
-        let g:Lf_WindowPosition       = 'popup'
-        let g:Lf_PreviewInPopup = 1
-    " }}}
-
-    " GTAGS {{{
-        " enable gtags module
-        let g:gutentags_modules = ['ctags', 'gtags_cscope']
-
-        " config project root markers. If you don't want to generate tags, then touch file .notags in the project root.
-        let g:gutentags_project_root = ['.root']
-
-        " generate datebases in my cache directory, prevent gtags files polluting my project
-        let g:gutentags_cache_dir = expand('~/.cache/tags')
-
-        " change focus to quickfix window after search (optional).
-        let g:gutentags_plus_switch = 1
-
-        " add eternal library
-        let $GTAGSLIBPATH = '/home/z/work/eth-78x/org_cpu_12_4_PL1/prj_ft_4.19/tmp/rootfs-build/linux-kernel-ft-4.19'
-
-        " key-binding - disable the default keymaps and define new keymap
-        let g:gutentags_plus_nomap = 1
-        noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
-        noremap <silent> <leader>gg :GscopeFind g <C-R><C-W><cr>
-        noremap <silent> <leader>gc :GscopeFind c <C-R><C-W><cr>
-        noremap <silent> <leader>gt :GscopeFind t <C-R><C-W><cr>
-        noremap <silent> <leader>ge :GscopeFind e <C-R><C-W><cr>
-        noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
-        noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
-        noremap <silent> <leader>gd :GscopeFind d <C-R><C-W><cr>
-        noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
-        noremap <silent> <leader>gz :GscopeFind z <C-R><C-W><cr>
-    " }}}
 " }}}
 
-" basic format doc {{{
+" Basic Format Doc {{{
     set hlsearch              " highlight search
     set number                " show line number
     set smartcase ignorecase  " set for case search
@@ -303,9 +243,13 @@ let mapleader = "\<space>"
 
     " set foldmethod =indent
     autocmd BufRead *.vimrc set foldmethod=marker
+
+    " format: Automatically deletes all trailing whitespace and newlines at end of file on save.
+        " autocmd BufWritePre * %s/\s\+$//e
+        " autocmd BufWritepre * %s/\n\+\%$//e
 " }}}
 
-" vim ui {{{
+" Vim UI {{{
     set cursorcolumn cursorline  " highlight cursor position
 
     " set t_Co=256 " for 256colors
@@ -326,7 +270,7 @@ let mapleader = "\<space>"
     augroup END
 " }}}
 
-" coc config{{{
+" COC config {{{
     " if has('nvim')
         let g:coc_global_extensions = [
           \ 'coc-snippets',
@@ -461,6 +405,70 @@ let mapleader = "\<space>"
         unmap <silent> <c-d>
     " endif
 "}}}
+"
+" LeaderF config {{{
+    " noremap <Leader>p   :LeaderfFile<cr>
+    noremap <Leader>kk  :LeaderfFile<cr>
+    noremap <Leader>rr  :LeaderfMru<cr>
+    noremap <Leader>fp  :LeaderfFunction!<cr>
+    noremap <Leader>bb  :LeaderfBuffer<cr>
+    noremap <Leader>ft  :LeaderfTag<cr>
+    noremap <Leader>xm  :Leaderf command<cr>
+    noremap <Leader>qq  :Leaderf rg<cr>
+
+    noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+    noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+    noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+    noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+    noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+    noremap q/          :Leaderf searchHistory<cr>
+    noremap q:          :Leaderf cmdHistory<cr>
+
+    let g:Lf_ReverseOrder         = 1
+    let g:Lf_StlSeparator         = { 'left': '', 'right': '', 'font': '' }
+    let g:Lf_RootMarkers          = ['.project', '.root', '.svn', '.git']
+    let g:Lf_WorkingDirectoryMode = 'Ac'
+    let g:Lf_WindowHeight         = 0.30
+    let g:Lf_CacheDirectory       = expand('~/.vim/cache')
+    let g:Lf_ShowRelativePath     = 0
+    let g:Lf_HideHelp             = 1
+    let g:Lf_StlColorscheme       = 'powerline'
+    let g:Lf_PreviewResult        = {'Function':0, 'BufTag':0}
+    let g:Lf_GtagsAutoGenerate    = 1
+    let g:Lf_WindowPosition       = 'popup'
+    let g:Lf_PreviewInPopup = 1
+" }}}
+
+" GTAGS config {{{
+    " enable gtags module
+    let g:gutentags_modules = ['ctags', 'gtags_cscope']
+
+    " config project root markers. If you don't want to generate tags, then touch file .notags in the project root.
+    let g:gutentags_project_root = ['.root']
+
+    " generate datebases in my cache directory, prevent gtags files polluting my project
+    let g:gutentags_cache_dir = expand('~/.cache/tags')
+
+    " change focus to quickfix window after search (optional).
+    let g:gutentags_plus_switch = 1
+
+    " add eternal library
+    let $GTAGSLIBPATH = '/home/z/work/eth-78x/org_cpu_12_4_PL1/prj_ft_4.19/tmp/rootfs-build/linux-kernel-ft-4.19'
+
+    " key-binding - disable the default keymaps and define new keymap
+    let g:gutentags_plus_nomap = 1
+    noremap <silent> <leader>gs :GscopeFind s <C-R><C-W><cr>
+    noremap <silent> <leader>gg :GscopeFind g <C-R><C-W><cr>
+    noremap <silent> <leader>gc :GscopeFind c <C-R><C-W><cr>
+    noremap <silent> <leader>gt :GscopeFind t <C-R><C-W><cr>
+    noremap <silent> <leader>ge :GscopeFind e <C-R><C-W><cr>
+    noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
+    noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
+    noremap <silent> <leader>gd :GscopeFind d <C-R><C-W><cr>
+    noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
+    noremap <silent> <leader>gz :GscopeFind z <C-R><C-W><cr>
+" }}}
 
 if has('nvim')
     echo 'we are in nvim'
@@ -474,10 +482,6 @@ endif
 
     " Save file as sudo on files that require root permission
         cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
-
-    " format: Automatically deletes all trailing whitespace and newlines at end of file on save.
-        " autocmd BufWritePre * %s/\s\+$//e
-        " autocmd BufWritepre * %s/\n\+\%$//e
 "}}}
 
 " Dic - set auto complete in dic -- pratical vim {{{
