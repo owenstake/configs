@@ -176,6 +176,8 @@ let mapleader = "\<space>"
         " vic vac select hunk
         nmap ]c <Plug>(GitGutterNextHunk) " next change
         nmap [c <Plug>(GitGutterPrevHunk)
+        nmap ]h <Plug>(GitGutterNextHunk) " next change
+        nmap [h <Plug>(GitGutterPrevHunk)
         let g:gitgutter_preview_win_floating = 1
     " }}}
 
@@ -263,16 +265,19 @@ let mapleader = "\<space>"
     colorscheme monokai
 " }}}
 
-" auto save and reload .vimrc - https://zhuanlan.zhihu.com/p/98966660 {{{
-    " Group name.  Always use a unique name!  autocmd!                "
-    " Clear any preexisting autocommands from this group
-    augroup Reload_Vimrc
-        autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
-        autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
-    augroup END
+" Vim Hooks {{{
+     " vimrc - auto save and reload .vimrc - https://zhuanlan.zhihu.com/p/98966660 {{{
+        " Group name.  Always use a unique name!  autocmd!                "
+        " Clear any preexisting autocommands from this group
+        augroup Reload_Vimrc
+            autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
+            autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw
+        augroup END
+    " }}}
 " }}}
 
-" COC config {{{
+" Code auto-completion {{{
+    " COC config {{{
     " if has('nvim')
         let g:coc_global_extensions = [
           \ 'coc-snippets',
@@ -406,6 +411,7 @@ let mapleader = "\<space>"
         " unmap sth
         unmap <silent> <c-d>
     " endif
+    " }}}
 "}}}
 "
 " LeaderF config {{{

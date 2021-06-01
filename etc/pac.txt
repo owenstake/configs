@@ -6,6 +6,7 @@ var proxy = "__PROXY__";
 
 var rules = [
     "*github.io",
+    "||github.com",
     "*fandom.com",
     "||tmuxcheatsheet.com",
     "||amazonaws.com",
