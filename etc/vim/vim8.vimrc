@@ -177,10 +177,10 @@ let mapleader = "\<space>"
 " }}}
 
 " Special Key Map {{{
-    " nnoremap gp <Plug>ReplaceWithRegisterOperator
-    " nnoremap gpp <Plug>ReplaceWithRegisterLine
-    nmap gss <plug>SubstituteLine
-    nmap gs <plug>SubstituteOverMotionMap
+    nmap gp <Plug>ReplaceWithRegisterOperator
+    nmap gpp <Plug>ReplaceWithRegisterLine
+    " nmap gss <plug>SubstituteLine
+    " nmap gs <plug>SubstituteOverMotionMap
 
     " nmap : :Leaderf command<cr>
     nnoremap <Leader><Leader>a ga
