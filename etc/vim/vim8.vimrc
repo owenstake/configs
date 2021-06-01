@@ -246,7 +246,7 @@ let mapleader = "\<space>"
     set fileencodings=utf-8,gbk
 
     " set foldmethod =indent
-    autocmd BufRead *.vimrc set foldmethod=marker
+    autocmd BufRead,BufNewFile *.vimrc,*.conf,*.zshrc set foldmethod=marker
 
     " format: Automatically deletes all trailing whitespace and newlines at end of file on save.
         " autocmd BufWritePre * %s/\s\+$//e
