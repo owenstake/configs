@@ -18,7 +18,7 @@ netsh interface ip add address "vEthernet (WSL)" 192.168.50.10 255.255.255.0
 # Add forward rule table for ssh port 2222. ssh config port 2222 - see /etc/ssh/sshd_config
 netsh interface portproxy add v4tov4 listenport=2222 listenaddress=0.0.0.0 connectport=2222 connectaddress=wslhost
 
-# modify hosts
+# Modify hosts
 wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts
 wsl --% echo "192.168.50.1 wslhost" >> /mnt/c/Windows/System32/drivers/etc/hosts
 
