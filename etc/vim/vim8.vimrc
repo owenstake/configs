@@ -66,9 +66,10 @@ let mapleader = "\<space>"
         Plug 'tpope/vim-repeat'  " dot for repeat more common
         Plug 'tpope/vim-surround' " ysw
         Plug 'andymass/vim-matchup'  " %
-        Plug 'tpope/vim-fugitive' " Gblame
         Plug 'tpope/vim-abolish'  " :%S/{man,dog}/{dog,man}/g
         Plug 'substitution/qargs.vim'  " :Qargs - pratical vim p222
+        Plug 'tpope/vim-fugitive' " Gblame
+        Plug 'airblade/vim-gitgutter' " Git Diff Show Sign +~-
 
         " vim-textobj-user
         Plug 'kana/vim-textobj-user'
@@ -90,17 +91,6 @@ let mapleader = "\<space>"
     " Commnentary
     Plug 'tpope/vim-commentary' " gcc
     autocmd FileType java,c,cpp set commentstring=//\ %s " comment style //
-
-    " {{{ Git diff show
-        Plug 'airblade/vim-gitgutter' " show git diff sign in line
-        " if has('nvim') || has('patch-8.0.902')
-        "   Plug 'mhinz/vim-signify'
-        " else
-        "   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-        " endif
-        " " default updatetime 4000ms is not good for async update
-        " set updatetime=100
-    " }}}
 
     " colorschemes {{{
         Plug 'flazz/vim-colorschemes'
@@ -176,7 +166,19 @@ let mapleader = "\<space>"
     inoremap kj <esc>
 " }}}
 
-" Special Key Map {{{
+" Special Key Map and config {{{
+"
+    " GitGutter Hunk config {{{
+        " some default 
+        " <Leader>hs stage hunk
+        " <Leader>hu unstage hunk
+        " <Leader>hp preview diff hunk
+        " vic vac select hunk
+        nmap ]c <Plug>(GitGutterNextHunk) " next change
+        nmap [c <Plug>(GitGutterPrevHunk)
+        let g:gitgutter_preview_win_floating = 1
+    " }}}
+
     nmap gp <Plug>ReplaceWithRegisterOperator
     nmap gpp <Plug>ReplaceWithRegisterLine
     " nmap gss <plug>SubstituteLine
