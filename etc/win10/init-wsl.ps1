@@ -35,4 +35,5 @@ wsl --% echo "$WSLIP wslhost" >> /mnt/c/Windows/System32/drivers/etc/hosts
 
 # sshd start
 wsl -u root /etc/init.d/ssh start
-sleep 3
+
+sleep 2
