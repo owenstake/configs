@@ -15,7 +15,6 @@ let mapleader = "\<space>"
     " general setting {{{
         Plug 'mhinz/vim-startify'   " The fancy start screen for Vim
         Plug 'vim-scripts/ReplaceWithRegister'
-        Plug 'svermeulen/vim-easyclip'
     "}}}
 
     " markdown{{{
