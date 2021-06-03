@@ -1,8 +1,9 @@
 ###########################################################
-# copy file from clipboard to DesDir for win10 explorer
+# Copy file from clipboard to $DesDir for win10 explorer
 ###########################################################
 
 Param([Parameter(Mandatory = $True, Position = 1)][string] $DesDirPath)
+
 Add-Type -AssemblyName System.Windows.Forms
 $fileDropList = new-object System.Collections.Specialized.StringCollection;
 

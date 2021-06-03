@@ -3,15 +3,20 @@
 # we must config this script as a start script in win10 as D:/.local/win10/init-wsl.ps1
 ###########################################################
 
-# param([string]$WSLIP, [string]$WINIP)
+# Param( [Parameter(Mandatory = $True)][string] $WSLIP, [Parameter(Mandatory = $True)][string] $WINIP )
 
-# Run ps1 as ADMIN
+##################################################################
+# Run this .ps1 as ADMIN with $args
+# Must pass $arges into the command.
 # https://stackoverflow.com/questions/7690994/running-a-command-as-administrator-using-powershell
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process PowerShell `
-        "  -NoProfile -ExecutionPolicy Bypass -Command `" cd '$pwd'; & '$PSCommandPath' $args `"  "  -Verb RunAs;
+    Start-Process PowerShell -Verb RunAs    `
+        "   `
+            -NoProfile -ExecutionPolicy Bypass -Command `" cd '$pwd'; & '$PSCommandPath' $args `"      `
+        " ;
     exit;
 }
+##################################################################
 
 $WSLIP=$args[0] 
 $WINIP=$args[1] 
@@ -30,10 +35,10 @@ netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 netsh interface portproxy add v4tov4 listenport=2222 listenaddress=0.0.0.0 connectport=2222 connectaddress=wslhost
 
 # Modify hosts - this require admin privillege
-wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts
-wsl --% echo "$WSLIP wslhost" >> /mnt/c/Windows/System32/drivers/etc/hosts
-
+# --%  https://stackoverflow.com/questions/18923315/using-in-powershell
+wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
+wsl "--%" "echo $WSLIP wslhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
 # sshd start
 wsl -u root /etc/init.d/ssh start
 
-sleep 2
+sleep 5
