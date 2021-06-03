@@ -240,6 +240,7 @@ let mapleader = "\<space>"
 " }}}
 
 " Basic Format Doc {{{
+    set clipboard=unnamedplus " clip interact with system
     set hlsearch              " highlight search
     set number                " show line number
     set smartcase ignorecase  " set for case search
