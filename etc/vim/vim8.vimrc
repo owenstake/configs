@@ -166,7 +166,8 @@ let mapleader = "\<space>"
 
     " Allow saving of files as sudo when I forgot to start vim using sudo.
     " https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-trick-work
-    cmap w!! w !sudo tee > /dev/null %
+    " cmap w!! w !sudo tee > /dev/null %
+    cmap w!! w !sudo tee % > /dev/null
 " }}}
 
 " Special Key Map and config {{{
@@ -492,11 +493,11 @@ let mapleader = "\<space>"
     noremap <silent> <leader>gz :GscopeFind z <C-R><C-W><cr>
 " }}}
 
-if has('nvim')
-    echo 'we are in nvim'
-else
-    echo 'we are in vim8'
-endif
+" if has('nvim')
+"     echo 'we are in nvim'
+" else
+"     echo 'we are in vim8'
+" endif
 
 " From Luke Smith - https://github.com/LukeSmithxyz/voidrice/blob/master/.config/nvim/init.vim {{{
     " Disables automatic commenting on newline:
