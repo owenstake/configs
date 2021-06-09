@@ -5,7 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
-    "||stackoverflow.com/",
+    "||stackoverflow.com",
+    "||libgen.rs",
     "*github.io",
     "||github.com",
     "*fandom.com",
