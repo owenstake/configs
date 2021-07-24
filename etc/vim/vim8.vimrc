@@ -249,9 +249,9 @@ let mapleader = "\<space>"
     filetype plugin on
     set expandtab smarttab autoindent noswapfile nowrap nobackup  " expandtab to space, especially for python
 
-    set tabstop    = 4          " use for tab expand
-    set shiftwidth = 4          " use for >>
-    set backspace  = 2
+    set tabstop    =4          " use for tab expand
+    set shiftwidth =4          " use for >>
+    set backspace  =2
 
     " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
     set splitbelow splitright
