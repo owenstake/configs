@@ -36,10 +36,10 @@ let mapleader = "\<space>"
     " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
         Plug 'junegunn/vim-easy-align'
         " Start interactive EasyAlign in visual mode (e.g. vipga)
-        xmap ga <Plug>(EasyAlign)
+        " xmap ga <Plug>(EasyAlign)     " we should directly use cli
 
         " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-        nmap ga <Plug>(EasyAlign)
+        " nmap ga <Plug>(EasyAlign)
     "}}}
 
     " Multiple Plug commands can be written in a single line using | separators
@@ -100,12 +100,11 @@ let mapleader = "\<space>"
     " }}}
 
     "{{{ Tabular Align
-        Plug 'godlygeek/tabular'
-        if exists(":Tabularize")
-            nmap <Leader>a= :Tabularize /=<CR>
-            vmap <Leader>a= :Tabularize /=<CR>
-            nmap <Leader>a: :Tabularize /:\zs<CR>
-            vmap <Leader>a: :Tabularize /:\zs<CR>
+        Plug 'godlygeek/tabular'  " easy-align is better
+        if exists(":Tabularize")   " directly use :Tabularize /=
+            " map for nmap and vmap
+            map <Leader>a= :Tabularize /=<CR>
+            map <Leader>a: :Tabularize /:\zs<CR>
         endif
     "}}}
 
@@ -126,7 +125,7 @@ let mapleader = "\<space>"
     " snippets {{{
         Plug 'MarcWeber/vim-addon-mw-utils'
         Plug 'tomtom/tlib_vim'
-        Plug 'garbas/vim-snipmate'
+        " Plug 'garbas/vim-snipmate'   " out of time
         Plug 'honza/vim-snippets' "massive common snippets
     " }}}
 
@@ -250,9 +249,9 @@ let mapleader = "\<space>"
     filetype plugin on
     set expandtab smarttab autoindent noswapfile nowrap nobackup  " expandtab to space, especially for python
 
-    set tabstop    =4          " use for tab expand
-    set shiftwidth =4          " use for >>
-    set backspace  =2
+    set tabstop    = 4          " use for tab expand
+    set shiftwidth = 4          " use for >>
+    set backspace  = 2
 
     " Splits open at the bottom and right, which is non-retarded, unlike vim defaults.
     set splitbelow splitright
