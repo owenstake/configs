@@ -7,7 +7,8 @@ var proxy = "__PROXY__";
 var rules = [
     "store.cloudss.org",
     "libgen.rs",
-    "||stackoverflow.com/",
+    "||stackoverflow.com",
+    "||libgen.rs",
     "*github.io",
     "github.com",
     "*fandom.com",
