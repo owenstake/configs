@@ -13,10 +13,8 @@ $fileDropList = new-object System.Collections.Specialized.StringCollection;
 if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
     $clipboard = [System.Windows.Forms.Clipboard]::GetDataObject()
     if ($clipboard.ContainsImage()) {
-        # $filename='d:\test3.png'
-        # [System.Drawing.Bitmap]$clipboard.getimage().Save($filename, [System.Drawing.Imaging.ImageFormat]::Png)
         $img = get-clipboard -format image
-        $img.save("d:\" + $IMGNAME)
+        $img.save($IMGNAME)
         "clipboard content saved as $IMGNAME"
         return
     } else {

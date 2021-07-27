@@ -31,6 +31,7 @@ let mapleader = "\<space>"
         " else
         "     Plug 'iamcco/markdown-preview.vim'
         " endif
+        " HOST CHOME is best for markdown preview in WSL
         Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
     "}}}
 
@@ -131,7 +132,7 @@ let mapleader = "\<space>"
     " }}}
 
     Plug 'dhruvasagar/vim-table-mode'
-    Plug 'ferrine/md-img-paste.vim'
+    Plug 'owenstake/md-img-paste.vim'
     Plug 'junegunn/goyo.vim'
 
     " Initialize plugin system
@@ -518,13 +519,15 @@ let mapleader = "\<space>"
     set complete+=k"
 " }}}
 
-function Mdimgcopy()
-        let tmpdir=expand('%:p:h') . "/" . expand('%:r:t') . ".assets"
-        call mkdir(tmpdir)
-        execute '!/mnt/d/.local/win10/clip2file.sh ' . tmpdir
+function SetEnvforMarkdown()
+    let g:mdip_imgdir = expand('%:r') . ".assets"
 endfunction
 
-autocmd FileType markdown nmap <buffer><silent> <leader>p :call Mdimgcopy()<CR>
+autocmd BufEnter *.md call SetEnvforMarkdown()
+autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
+" there are some defaults for image directory and image name, you can change them
+" let g:mdip_imgdir = 'img'
+" let g:mdip_imgname = 'image'
 " there are some defaults for image directory and image name, you can change them
 " let g:mdip_imgdir = 'img'
 " let g:mdip_imgname = 'image'
