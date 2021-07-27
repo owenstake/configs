@@ -5,10 +5,12 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "store.cloudss.org",
+    "libgen.rs",
     "||stackoverflow.com",
     "||libgen.rs",
     "*github.io",
-    "||github.com",
+    "github.com",
     "*fandom.com",
     "||tmuxcheatsheet.com",
     "||amazonaws.com",
