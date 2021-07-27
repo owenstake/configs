@@ -2,12 +2,27 @@
 # Copy file from clipboard to $DesDir for win10 explorer
 ###########################################################
 
-Param([Parameter(Mandatory = $True, Position = 1)][string] $DesDirPath)
+Param(
+    [Parameter(Mandatory = $True, Position = 1)][string] $DesDirPath, 
+    [Parameter(Position = 2)][string] $IMGNAME
+)
 
 Add-Type -AssemblyName System.Windows.Forms
 $fileDropList = new-object System.Collections.Specialized.StringCollection;
 
 if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
+    $clipboard = [System.Windows.Forms.Clipboard]::GetDataObject()
+    if ($clipboard.ContainsImage()) {
+        # $filename='d:\test3.png'
+        # [System.Drawing.Bitmap]$clipboard.getimage().Save($filename, [System.Drawing.Imaging.ImageFormat]::Png)
+        $img = get-clipboard -format image
+        $img.save("d:\" + $IMGNAME)
+        "clipboard content saved as $IMGNAME"
+        return
+    } else {
+        "clipboard does not contains image data"
+    }
+
     "Psh: No appendable content was found."
     return
 } else {

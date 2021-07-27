@@ -26,11 +26,12 @@ let mapleader = "\<space>"
         "
         " Plug 'honza/vim-snippets'
 
-        if has('nvim')
-            Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-        else
-            Plug 'iamcco/markdown-preview.vim'
-        endif
+        " if has('nvim')
+        "     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+        " else
+        "     Plug 'iamcco/markdown-preview.vim'
+        " endif
+        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
     "}}}
 
     " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
@@ -43,9 +44,9 @@ let mapleader = "\<space>"
     "}}}
 
     " Multiple Plug commands can be written in a single line using | separators
-    if !has('nvim')
-        Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-    endif
+    " if !has('nvim')
+        " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    " endif
 
     " On-demand loading
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -128,6 +129,10 @@ let mapleader = "\<space>"
         " Plug 'garbas/vim-snipmate'   " out of time
         Plug 'honza/vim-snippets' "massive common snippets
     " }}}
+
+    Plug 'dhruvasagar/vim-table-mode'
+    Plug 'ferrine/md-img-paste.vim'
+    Plug 'junegunn/goyo.vim'
 
     " Initialize plugin system
     call plug#end()
@@ -216,15 +221,15 @@ let mapleader = "\<space>"
     autocmd FileType vim-plug nnoremap <silent><buffer>  q  :q<cr>
 
     " config for ultisnippet
-    let g:UltiSnipsExpandTrigger = '<c-s>'
-    ""设置向后跳转
-    let g:UltiSnipsJumpForwardTrigger = '<c-j>'
-    ""设置向前跳转
-    let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
+    "let g:UltiSnipsExpandTrigger = '<c-s>'
+    """设置向后跳转
+    "let g:UltiSnipsJumpForwardTrigger = '<c-j>'
+    """设置向前跳转
+    "let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
 
-    "设置文件
-    let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
-    let g:UltiSnipsEditSplit="vertical"
+    ""设置文件
+    "let g:UltiSnipsSnippetDirectories=["/home/z/.vim/plugged/ultisnips"]
+    "let g:UltiSnipsEditSplit="vertical"
 
     " fzf-vim -- https://github.com/junegunn/fzf.vim#example-advanced-rg-command
     " Mapping selecting mappings
@@ -512,3 +517,19 @@ let mapleader = "\<space>"
     set dictionary=~/.vim/dict/mydict.dict
     set complete+=k"
 " }}}
+
+function Mdimgcopy()
+        let tmpdir=expand('%:p:h') . "/" . expand('%:r:t') . ".assets"
+        call mkdir(tmpdir)
+        execute '!/mnt/d/.local/win10/clip2file.sh ' . tmpdir
+endfunction
+
+autocmd FileType markdown nmap <buffer><silent> <leader>p :call Mdimgcopy()<CR>
+" there are some defaults for image directory and image name, you can change them
+" let g:mdip_imgdir = 'img'
+" let g:mdip_imgname = 'image'
+
+
+
+
+
