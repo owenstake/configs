@@ -21,33 +21,14 @@ let mapleader = "\<space>"
         Plug 'godlygeek/tabular' " must before vim-markdown
         Plug 'plasticboy/vim-markdown'
         Plug 'mzlogin/vim-markdown-toc'
-        " It is duplicated."
-        " Plug 'SirVer/ultisnips', {'for':'markdown'}
-        "
-        " Plug 'honza/vim-snippets'
 
-        " if has('nvim')
-        "     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-        " else
-        "     Plug 'iamcco/markdown-preview.vim'
-        " endif
         " HOST CHOME is best for markdown preview in WSL
         Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
     "}}}
 
     " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
         Plug 'junegunn/vim-easy-align'
-        " Start interactive EasyAlign in visual mode (e.g. vipga)
-        " xmap ga <Plug>(EasyAlign)     " we should directly use cli
-
-        " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-        " nmap ga <Plug>(EasyAlign)
     "}}}
-
-    " Multiple Plug commands can be written in a single line using | separators
-    " if !has('nvim')
-        " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-    " endif
 
     " On-demand loading
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -68,7 +49,6 @@ let mapleader = "\<space>"
         Plug 'tpope/vim-surround' " ysw
         Plug 'andymass/vim-matchup'  " %
         Plug 'tpope/vim-abolish'  " :%S/{man,dog}/{dog,man}/g
-        Plug 'substitution/qargs.vim'  " :Qargs - pratical vim p222
         Plug 'tpope/vim-fugitive' " Gblame
         Plug 'airblade/vim-gitgutter' " Git Diff Show Sign +~-
 
@@ -125,22 +105,25 @@ let mapleader = "\<space>"
     " }}}
 
     " snippets {{{
-        Plug 'MarcWeber/vim-addon-mw-utils'
-        Plug 'tomtom/tlib_vim'
-        " Plug 'garbas/vim-snipmate'   " out of time
-        Plug 'honza/vim-snippets' "massive common snippets
+        Plug 'honza/vim-snippets' " massive common snippets
     " }}}
 
     Plug 'dhruvasagar/vim-table-mode'
     Plug 'owenstake/md-img-paste.vim'
     Plug 'junegunn/goyo.vim'
     Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
+    Plug 'kshenoy/vim-signature' " bookmarker
 
     " Initialize plugin system
     call plug#end()
 " }}} end of plugin
 
 " Basic Key Map {{{
+    " nnoremap <C-j> :m .+0<CR>
+    noremap <C-j> a<esc>
+    inoremap <C-j> <esc>a
+    noremap <C-k> a<esc>
+    inoremap <C-k> <esc>a
     " EMACS way editing line
     inoremap  <Right>
     inoremap  <Left>
@@ -213,6 +196,7 @@ let mapleader = "\<space>"
     cnoremap gca Gcommit -a -v
     cnoremap gp Gpush
     cnoremap gl Gpull
+    cnoremap cmd CocCommand 
 
     " keymap vim-preview
     autocmd FileType    qf    nnoremap <silent><buffer>  p  :PreviewQuickfix<cr>
@@ -284,6 +268,9 @@ let mapleader = "\<space>"
 
     set background=dark
     colorscheme monokai
+
+    map <leader>x1 :only<cr>
+    map <leader>x2 :vsplit<cr>
 " }}}
 
 " Vim Hooks {{{
@@ -306,6 +293,7 @@ let mapleader = "\<space>"
           \ 'coc-eslint',
           \ 'coc-prettier',
           \ 'coc-json',
+          \ 'coc-translator',
           \ ]
           " \ 'coc-tsserver',
         " from readme
@@ -520,37 +508,78 @@ let mapleader = "\<space>"
     set complete+=k"
 " }}}
 
-function SetEnvforMarkdown()
-    let g:mdip_imgdir = expand('%:r') . ".assets"
-endfunction
+" {{{ markdown config
+    " paste img
+    function SetEnvforMarkdown()
+        let g:mdip_imgdir = expand('%:r') . ".assets"
+    endfunction
+    autocmd BufEnter *.md call SetEnvforMarkdown()
+    autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
 
-autocmd BufEnter *.md call SetEnvforMarkdown()
-autocmd FileType markdown nmap <buffer><silent> <leader>p :call mdip#MarkdownClipboardImage()<CR>
-" there are some defaults for image directory and image name, you can change them
-" let g:mdip_imgdir = 'img'
-" let g:mdip_imgname = 'image'
-" there are some defaults for image directory and image name, you can change them
-" let g:mdip_imgdir = 'img'
-" let g:mdip_imgname = 'image'
+    " shortcut in insert mode for md marker
+    "autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
+    autocmd Filetype markdown inoremap <buffer> <silent> ;, <++>
+    autocmd Filetype markdown inoremap <buffer> ;f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
+    autocmd Filetype markdown inoremap <buffer> ;w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
+    autocmd Filetype markdown inoremap <buffer> ;l ---<Enter><Enter>
+    autocmd Filetype markdown inoremap <buffer> ;b **** <++><Esc>F*hi
+    autocmd Filetype markdown inoremap <buffer> ;s ~~~~ <++><Esc>F~hi
+    autocmd Filetype markdown inoremap <buffer> ;i ** <++><Esc>F*i
+    autocmd Filetype markdown inoremap <buffer> ;x - [ ] 
+    autocmd Filetype markdown inoremap <buffer> ;c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+    autocmd Filetype markdown inoremap <buffer> ;q `` <++><Esc>F`i
+    autocmd Filetype markdown inoremap <buffer> ;1 #<Space><Enter><++><Esc>kA
+    autocmd Filetype markdown inoremap <buffer> ;2 ##<Space><Enter><++><Esc>kA
+    autocmd Filetype markdown inoremap <buffer> ;3 ###<Space><Enter><++><Esc>kA
+    autocmd Filetype markdown inoremap <buffer> ;4 ####<Space><Enter><++><Esc>kA
+    autocmd Filetype markdown inoremap <buffer> <silent> ;t <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
+    autocmd Filetype markdown inoremap <buffer> ;p ![](<++>) <++><Esc>F[a
+    autocmd Filetype markdown inoremap <buffer> ;a [](<++>) <++><Esc>F[a
+    " autocmd Filetype markdown inoremap <buffer> ;x - [X]
+    " autocmd Filetype markdown inoremap <buffer> ;m - [ ] 
 
-"autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
-autocmd Filetype markdown inoremap <buffer> <silent> ;, <++>
-autocmd Filetype markdown inoremap <buffer> ;f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
-autocmd Filetype markdown inoremap <buffer> ;w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
-autocmd Filetype markdown inoremap <buffer> ;l ---<Enter><Enter>
-autocmd Filetype markdown inoremap <buffer> ;b **** <++><Esc>F*hi
-autocmd Filetype markdown inoremap <buffer> ;s ~~~~ <++><Esc>F~hi
-autocmd Filetype markdown inoremap <buffer> ;i ** <++><Esc>F*i
-autocmd Filetype markdown inoremap <buffer> ;x - [ ] 
-autocmd Filetype markdown inoremap <buffer> ;c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
-autocmd Filetype markdown inoremap <buffer> ;q `` <++><Esc>F`i
-autocmd Filetype markdown inoremap <buffer> ;1 #<Space><Enter><++><Esc>kA
-autocmd Filetype markdown inoremap <buffer> ;2 ##<Space><Enter><++><Esc>kA
-autocmd Filetype markdown inoremap <buffer> ;3 ###<Space><Enter><++><Esc>kA
-autocmd Filetype markdown inoremap <buffer> ;4 ####<Space><Enter><++><Esc>kA
-autocmd Filetype markdown inoremap <buffer> <silent> ;t <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
-autocmd Filetype markdown inoremap <buffer> ;p ![](<++>) <++><Esc>F[a
-autocmd Filetype markdown inoremap <buffer> ;a [](<++>) <++><Esc>F[a
-" autocmd Filetype markdown inoremap <buffer> ;x - [X]
-" autocmd Filetype markdown inoremap <buffer> ;m - [ ] 
+    function! s:isAtStartOfLine(mapping)
+      let text_before_cursor = getline('.')[0 : col('.')-1]
+      let mapping_pattern = '\V' . escape(a:mapping, '\')
+      let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+      return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+    endfunction
 
+    inoreabbrev <expr> <bar><bar>
+              \ <SID>isAtStartOfLine('\|\|') ?
+              \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+    inoreabbrev <expr> __
+              \ <SID>isAtStartOfLine('__') ?
+              \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+" }}}
+
+"{{{
+    imap <C-l> <Plug>(coc-snippets-expand)
+
+    " tab trigger snippets auto-completion
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? coc#_select_confirm() :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " let g:coc_snippet_next = '<c-j>'  " default c-j c-k is better,
+    " let snippets.userSnippetsDirectory
+"}}}
+" ===
+" === 
+
+" ===
+" === da === asdfasf
+" ===
+
+" ===
+" === 
+" ===
+" === 
+" ===
