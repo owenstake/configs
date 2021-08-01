@@ -33,6 +33,10 @@ netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
 # Add forward rule table for ssh port 2222. ssh config port 2222 - see /etc/ssh/sshd_config
 netsh interface portproxy add v4tov4 listenport=2222 listenaddress=0.0.0.0 connectport=2222 connectaddress=wslhost
+# netsh interface portproxy add v4tov4 listenport=6010 listenaddress=0.0.0.0 connectport=6010 connectaddress=wslhost
+
+# Add firewall for win10 port 2222
+netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=2222
 
 # Modify hosts - this require admin privillege
 # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
