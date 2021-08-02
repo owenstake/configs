@@ -1,3 +1,5 @@
+" DEBUG for vim :messages
+
 let mapleader = "\<space>"
 
 " Before plugin load {{{
