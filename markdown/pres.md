@@ -7,10 +7,6 @@ colortheme: albatross
 
 ---
 
-> [TOC]
-
----
-
 
 # Section heading
 
@@ -33,7 +29,5 @@ TEXT in that
 
 *bold text*
 **bold text**
-
-![me](pres.assets/me.png)
 
 
