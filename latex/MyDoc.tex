@@ -3,8 +3,8 @@
 \usepackage{graphicx}
 \usepackage{blindtext}
 \usepackage{wrapfig}
-\usepackage[backend=biber]{biblatex}
-% \usepackage{biblatex}
+% \usepackage[backend=biber]{biblatex}
+\usepackage{biblatex}
 
 \addbibresource{MyDoc.bib}
 
@@ -21,7 +21,7 @@ here is a new document.
 
 So in \ref{list}, we will see list.
 
-So emasc is in number \ref{remacs}.
+So emasc is in number \ref{emacs}.
 
 \section{Text format}
 This is normal text. 
@@ -42,7 +42,7 @@ This is normal text.
 \subsection{ordered list}
 \begin{enumerate}
     \item vim
-    \item emacs \label{remacs}
+    \item emacs \label{emacs}
     \item vscode
 \end{enumerate}
 
@@ -71,7 +71,7 @@ This is normal text.
 \blindtext
 This figure show us.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth,angle=90]{book.png}
     \caption{book for us}
@@ -85,16 +85,18 @@ This figure show us.
 
 \subsection{wrap figure}
 
+\blindtext
 \begin{wrapfigure}{r}{3in}
     \centering
     \includegraphics[width=2.5in]{bolt.png}
     \caption{bolt 100}
 \end{wrapfigure}
+\blindtext
 
 
 \section{Bibliography management}
 
-As \cite{arbelaez2011contour} says, it is shit.  
+As \autocite{arbelaez2011contour} says, it is shit.  
 
 % \bibliography{MyDoc.bib}
 \printbibliography

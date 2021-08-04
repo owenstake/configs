@@ -1,0 +1,64 @@
+\documentclass{article}
+
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage[margin=1.25in]{geometry}
+
+\titleformat{\section}[frame]  % package titlesec
+{\huge} % format
+{}  % {\thesection}  % number
+{.25em}       % pre-leading space
+{\filcenter\bfseries\uppercase}    % prefix for title
+% [\titlerule]  % hori line
+
+
+\titleformat{\subsection}
+{\bfseries\large}
+{\hspace{-.25in}$\bullet$}
+{1em}
+{}
+
+\titleformat{\subsubsection}[runin]
+{\bfseries}
+{}
+{1em}
+{}[--]
+
+\titlespacing{\subsubsection}
+{0em}{0.25em}{1em} % left margin, line inter margin, after margin
+
+\renewcommand{\maketitle}{
+\begin{center}
+{\huge\bfseries
+    \theauthor}   % come from package titling
+
+\vspace{.25em}  % verticle space
+
+owenstake -- owen.git
+
+\end{center}
+}
+
+
+
+
+\title{R\'esume}
+\author{zhuang yulin}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{skills}
+\subsection{program languages}
+embeded system development
+\subsubsection{program languages}
+uboot eth
+
+\subsection{languages}
+fluent english writing
+
+\section{school}
+Fuzhou university
+
+\end{document}

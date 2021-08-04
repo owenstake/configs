@@ -3,5 +3,5 @@ all:
 
 
 clean:
-	rm *.aux  *.bbl  *.bcf  *.blg  *.log  MyDoc.pdf  *.run.xml
+	rm *.aux  *.bbl  *.bcf  *.blg  *.log  *.pdf  *.run.xml
 
