@@ -115,6 +115,7 @@ let mapleader = "\<space>"
     Plug 'junegunn/goyo.vim'
     Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
     Plug 'kshenoy/vim-signature' " bookmarker
+    Plug 'vim-latex/vim-latex'
 
     " Initialize plugin system
     call plug#end()
