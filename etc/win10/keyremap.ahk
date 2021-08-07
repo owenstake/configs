@@ -4,6 +4,10 @@
 ; some basic knowledge
 ; #win, !alt, ^ctl, +shift, ~do not overwrite
 
+; basic setting
+VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
+
+
 ;====== Basic Keyremap ===================================================
     ; arrow key map
         !u::send {PgUp}
@@ -202,13 +206,65 @@
         Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
             WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
             return
+    ; TaskBar
+        Alt & b::
+            NumPut(DllCall("Shell32\SHAppBarMessage", "UInt", 4 ; ABM_GETSTATE
+            , "Ptr", &APPBARDATA
+            , "Int")
+            ? 2:1, APPBARDATA, A_PtrSize=4 ? 32:40) ; 2 - ABS_ALWAYSONTOP, 1 - ABS_AUTOHIDE
+            , DllCall("Shell32\SHAppBarMessage", "UInt", 10 ; ABM_SETSTATE
+            , "Ptr", &APPBARDATA)
+            KeyWait, % A_ThisHotkey
+            Return
+
+            ; if toggle := !toggle {
+            ;     WinHide ahk_class Shell_TrayWnd
+            ;     ; WinMove, ahk_class Shell_TrayWnd,,0,1003,1920,1
+            ;     WinHide, Start ahk_class Button
+            ;     WinHide, ahk_class Shell_SecondaryTrayWnd
+            ;     WinSet, Transparent, 0, ahk_class Shell_TrayWnd
+            ; }
+            ; else {
+            ;     WinShow ahk_class Shell_TrayWnd
+            ;     ; WinMove, ahk_class Shell_TrayWnd,,0,1003,1920,77
+            ;     WinShow, Start ahk_class Button
+            ;     WinShow, ahk_class Shell_SecondaryTrayWnd
+            ;     WinSet, Transparent, 0, ahk_class Shell_TrayWnd
+            ; }
+            ; return
+
+            ; if toggle := !toggle {
+            ;     WinHide ahk_class CabinetWClass  
+            ;   ;     ; WinMove, ahk_class CabinetWClass,,0,1003,1920,1
+            ; }
+            ; else {
+            ;     WinShow ahk_class CabinetWClass  
+            ;     ; WinMove, ahk_class CabinetWClass,,0,1003,1920,77
+            ; }
+            ; WinActiveToggleClass("Shell_TrayWnd", "")
+            return
     ; Chrome
         Alt & c::
             WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
             return
+    ; Dword
+        Alt & d::
+            WinActiveToggle("WINWORD.EXE", "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
+            return
     ; Explorer
         Alt & e::
-            WinActiveToggle("explorer.exe", "C:\Windows\explorer.exe")
+            ; Shell := ComObjCreate("Shell.Application")
+
+            ; For Windows In Shell.Windows {
+            ;     Path := Windows.Document.Folder.Self.Path
+
+            ;       If (Path = ExplorerPath) {
+            ;           MsgBox, Folder is currently open
+            ;               Break
+            ;       }
+            ; }
+            WinActiveToggleClass("CabinetWClass", "C:\Windows\explorer.exe")
+            ; WinActiveToggle("explorer.exe", "C:\Windows\explorer.exe")
             return
     ; Foxit
         Alt & f::
@@ -230,6 +286,10 @@
         Alt & o::
             WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
             return
+    ; Ppt
+        Alt & p::
+            WinActiveToggle("POWERPNT.EXE", "C:\Program Files\Microsoft Office\root\Office16\POWERPNT.EXE")
+            return
     ; QQ
         Alt & q::
             WinActiveToggle("QQ.exe", "C:\Program Files (x86)\Tencent\QQ\Bin\QQ.exe")
@@ -246,6 +306,10 @@
         Alt & t::
             WinActiveToggle("Typora.exe", "C:\Program Files\Typora\Typora.exe")
             return
+    ; QMusic
+        Alt & u::
+            WinActiveToggle("QQMusic.exe", "C:\Program Files (x86)\Tencent\QQMusic\QQMusic.exe")
+            return
     ; Vscode
         Alt & v::
             WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
@@ -254,14 +318,18 @@
         Alt & w::
             WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
             return
-    ; ; WindowSpy
-    ;     Alt & s::
-    ;         run C:\Program Files\AutoHotkey\WindowSpy.ahk
-    ;         return
+    ; Excel
+        Alt & x::
+            WinActiveToggle("EXCEL.EXE", "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
+            return
     ; Zotero
         Alt & z::
             WinActiveToggle("zotero.exe", "C:\Program Files (x86)\Zotero\zotero.exe")
             return
+    ; ; WindowSpy
+    ;     Alt & s::
+    ;         run C:\Program Files\AutoHotkey\WindowSpy.ahk
+    ;         return
     ; WinActiveToggle for modulization and common interface
         WinActiveToggle(win_exe, run_exe) {
             if WinExist("ahk_exe" win_exe) {  ; This will be expanded because it is a expression
@@ -282,7 +350,28 @@
                 run %run_exe%
             }
             return
-    }
+        }
+
+        WinActiveToggleClass(win_class, run_exe) {
+            if WinExist("ahk_class" win_class) {  ; This will be expanded because it is a expression
+                if WinActive("ahk_class" win_class) {
+                    ; WinClose  ;   Uses the last found window.
+                    ; WinHide("ahk_exe" win_class)
+                    ; WinHide, ahk_exe %win_class%
+                    Send !{Esc}
+                    ; msgbox closing
+                } else {
+                    WinActivate, ahk_class %win_class%  ; Command syntax
+                    ; msgbox activing
+                }
+            } else {
+                ; msgbox % "running" run_exe     ; ok   This will be expanded because it is a expression
+                ; msgbox % %run_exe%           ; fail legacy syntax. This will be expanded because it is a expression
+                ; msgbox running %run_exe%     ; ok   expression. This will be expanded because it is a expression
+                run %run_exe%
+            }
+            return
+        }
 ;==== End Hotkey for app =====================================================
 
 ;最钟爱代码之音量随心所欲
