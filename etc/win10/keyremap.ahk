@@ -7,6 +7,32 @@
 ; basic setting
 VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
 
+$F12:: HideShowTaskbar(hide := !hide)
+
+HideShowTaskbar(action) {
+   static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
+   VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
+   NumPut(size, APPBARDATA), NumPut(WinExist("ahk_class Shell_TrayWnd"), APPBARDATA, A_PtrSize)
+   NumPut(action ? ABS_AUTOHIDE : ABS_ALWAYSONTOP, APPBARDATA, size - A_PtrSize)
+   DllCall("Shell32\SHAppBarMessage", UInt, ABM_SETSTATE, Ptr, &APPBARDATA)
+}
+
+#z::
+   hWnd := WinExist("A")
+   WinGet, MinMax, MinMax
+   if MinMax
+      WinRestore
+   WinGetPos,, Y_TaskBar,,, ahk_class Shell_TrayWnd
+   dX := dW := dH := 0
+   VarSetCapacity(RECT, 16, 0)
+   if DllCall("Dwmapi\DwmGetWindowAttribute", Ptr, hWnd, UInt, DWMWA_EXTENDED_FRAME_BOUNDS := 9, Ptr, &RECT, UInt, 16) = 0  {
+      WinGetPos, X, Y, W, H
+      dX := NumGet(RECT, "Int") - X
+      dW := X + W - NumGet(RECT, 8, "Int") + dX
+      dH := Y + H - NumGet(RECT, 12, "Int")
+   }
+   WinMove,,, (A_ThisHotkey =  "#z" ? 0 : A_ScreenWidth//2) - dX, 0, A_ScreenWidth//2 + dW, Y_TaskBar + dH
+   Return
 
 ;====== Basic Keyremap ===================================================
     ; arrow key map
