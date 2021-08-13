@@ -5,6 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "i.stack.imgur.com",
+    "*.stackexchange.com",
     "store.cloudss.org",
     "libgen.rs",
     "||stackoverflow.com",
