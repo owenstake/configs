@@ -530,6 +530,7 @@ let mapleader = "\<space>"
     autocmd Filetype markdown inoremap <buffer> ;i ** <++><Esc>F*i
     autocmd Filetype markdown inoremap <buffer> ;x - [ ] 
     autocmd Filetype markdown inoremap <buffer> ;c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+    autocmd Filetype markdown inoremap <buffer> ;m ```mermaid<Enter><Enter>```<Enter><Enter><++><Esc>3kA
     autocmd Filetype markdown inoremap <buffer> ;q `` <++><Esc>F`i
     autocmd Filetype markdown inoremap <buffer> ;1 #<Space><Enter><++><Esc>kA
     autocmd Filetype markdown inoremap <buffer> ;2 ##<Space><Enter><++><Esc>kA
