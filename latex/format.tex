@@ -143,11 +143,22 @@ three
 	\parbox[t]{0.2\linewidth}{TeX\bigskip\par\ TeX}
 
 
-This is \parbox[t]{3.5em}{an long
+This is \parbox[t]{4em}{an long
 example to show} how \parbox[b]
-{4em}{parbox' works perfectly.}
+{5em}{parbox' works perfectly.}
 
+This is 
+\begin{minipage}[t]{4em}
+an long
+example to show
+\end{minipage}
+how 
+\parbox[b]
+{5em}{parbox' works perfectly.}
 
+\parbox[t]{0.25\linewidth}{\includegraphics[scale=1.7]{universe.jpg}}
+\hfill
+\parbox[t]{0.25\linewidth}{zhuangyulin\par TEL;1865555555\par email:}
 
 \section{footnote}
 
@@ -157,6 +168,7 @@ This is an example\footnote{haah}.
 This is an example \footnotemark
 \footnotetext{haha}
 \end{minipage}
+
 
 \section{\fbox{Box}}
 \rotatebox[origin=c]{90}{R}otate box
