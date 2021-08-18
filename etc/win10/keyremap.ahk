@@ -5,17 +5,6 @@
 ; #win, !alt, ^ctl, +shift, ~do not overwrite
 
 ; basic setting
-VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
-
-$F12:: HideShowTaskbar(hide := !hide)
-
-HideShowTaskbar(action) {
-   static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
-   VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
-   NumPut(size, APPBARDATA), NumPut(WinExist("ahk_class Shell_TrayWnd"), APPBARDATA, A_PtrSize)
-   NumPut(action ? ABS_AUTOHIDE : ABS_ALWAYSONTOP, APPBARDATA, size - A_PtrSize)
-   DllCall("Shell32\SHAppBarMessage", UInt, ABM_SETSTATE, Ptr, &APPBARDATA)
-}
 
 #z::
    hWnd := WinExist("A")
@@ -49,6 +38,17 @@ HideShowTaskbar(action) {
         RAlt::Esc
         Launch_Mail::CapsLock
         #Up::WinMaximize, A
+
+        ; hide bar
+        VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
+        Browser_Home::HideShowTaskbar(hide := !hide)
+            HideShowTaskbar(action) {
+                static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
+                    VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
+                    NumPut(size, APPBARDATA), NumPut(WinExist("ahk_class Shell_TrayWnd"), APPBARDATA, A_PtrSize)
+                    NumPut(action ? ABS_AUTOHIDE : ABS_ALWAYSONTOP, APPBARDATA, size - A_PtrSize)
+                    DllCall("Shell32\SHAppBarMessage", UInt, ABM_SETSTATE, Ptr, &APPBARDATA)
+            }
 ;====== End keyremap ===================================================
 
 ;====== APP specified config i.e. chrome foxit ===================================================
@@ -233,15 +233,25 @@ HideShowTaskbar(action) {
             WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
             return
     ; TaskBar
-        Alt & b::
-            NumPut(DllCall("Shell32\SHAppBarMessage", "UInt", 4 ; ABM_GETSTATE
-            , "Ptr", &APPBARDATA
-            , "Int")
-            ? 2:1, APPBARDATA, A_PtrSize=4 ? 32:40) ; 2 - ABS_ALWAYSONTOP, 1 - ABS_AUTOHIDE
-            , DllCall("Shell32\SHAppBarMessage", "UInt", 10 ; ABM_SETSTATE
-            , "Ptr", &APPBARDATA)
-            KeyWait, % A_ThisHotkey
-            Return
+        ; Alt & b::
+        ;     NumPut(DllCall("Shell32\SHAppBarMessage", "UInt", 4 ; ABM_GETSTATE
+        ;     , "Ptr", &APPBARDATA
+        ;     , "Int")
+        ;     ? 2:1, APPBARDATA, A_PtrSize=4 ? 32:40) ; 2 - ABS_ALWAYSONTOP, 1 - ABS_AUTOHIDE
+        ;     , DllCall("Shell32\SHAppBarMessage", "UInt", 10 ; ABM_SETSTATE
+        ;     , "Ptr", &APPBARDATA)
+        ;     KeyWait, % A_ThisHotkey
+        ;     Return
+
+            ; VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
+            ; $F12:: HideShowTaskbar(hide := !hide)
+            ;     HideShowTaskbar(action) {
+            ;         static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
+            ;             VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
+            ;             NumPut(size, APPBARDATA), NumPut(WinExist("ahk_class Shell_TrayWnd"), APPBARDATA, A_PtrSize)
+            ;             NumPut(action ? ABS_AUTOHIDE : ABS_ALWAYSONTOP, APPBARDATA, size - A_PtrSize)
+            ;             DllCall("Shell32\SHAppBarMessage", UInt, ABM_SETSTATE, Ptr, &APPBARDATA)
+            ;     }
 
             ; if toggle := !toggle {
             ;     WinHide ahk_class Shell_TrayWnd

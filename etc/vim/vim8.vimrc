@@ -116,10 +116,13 @@ let mapleader = "\<space>"
     Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
     Plug 'kshenoy/vim-signature' " bookmarker
     Plug 'vim-latex/vim-latex'
+    Plug 'lyokha/vim-xkbswitch'
 
     " Initialize plugin system
     call plug#end()
 " }}} end of plugin
+
+let g:XkbSwitchEnabled =1
 
 " Basic Key Map {{{
     " nnoremap <C-j> :m .+0<CR>
