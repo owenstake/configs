@@ -54,14 +54,24 @@ netsh advfirewall firewall delete rule name=WSL2
 
 "Adding firewall wsl2 rules for $LISTEN_PORT"
 netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$LISTEN_PORT
+# for mobax xserver
+netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
 
 "Add firewall wsl2 rules for icmp ping"
 netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
 netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
 
 "Show firewall wsl2 rules"
+# https://support.microsoft.com/en-us/topic/44af15a8-72a1-e699-7290-569726b39d4a
+# netsh advfirewall firewall show rule name=WSL2
 # netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
 # netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
+
+# For mobax xserver
+# netsh advfirewall firewall add rule name=WSL2 dir=in action=allow program="C:\users\$env:username\documents\mobaxterm\slash\mx86_64b\bin\xwin_mobax.exe" enable=yes
+
+"start firewall"
+# netsh advfirewall set currentprofile state on
 
 "--------------------- Modify hosts - this require admin privillege ----------------------------------"
 # --%  https://stackoverflow.com/questions/18923315/using-in-powershell

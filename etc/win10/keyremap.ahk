@@ -1,7 +1,7 @@
 ; replaces the old instance automatically
 #SingleInstance force
 
-; some basic knowledge
+; Basic AHK key remap knowledge
 ; #win, !alt, ^ctl, +shift, ~do not overwrite
 
 ; basic setting
@@ -39,9 +39,10 @@
         Launch_Mail::CapsLock
         #Up::WinMaximize, A
 
-        ; hide bar
+        ; Hide taskbar
         VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
-        Browser_Home::HideShowTaskbar(hide := !hide)
+        ; Browser_Home::HideShowTaskbar(hide := !hide)
+        Scrolllock::HideShowTaskbar(hide := !hide)
             HideShowTaskbar(action) {
                 static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
                     VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
@@ -231,53 +232,6 @@
     ; Ahk help
         Alt & a::   ; "!a" diff "Alt & a", Alt is raw signal, can help us avoid recursive map problem
             WinActiveToggle("hh.exe", "C:\Windows\hh.exe")
-            return
-    ; TaskBar
-        ; Alt & b::
-        ;     NumPut(DllCall("Shell32\SHAppBarMessage", "UInt", 4 ; ABM_GETSTATE
-        ;     , "Ptr", &APPBARDATA
-        ;     , "Int")
-        ;     ? 2:1, APPBARDATA, A_PtrSize=4 ? 32:40) ; 2 - ABS_ALWAYSONTOP, 1 - ABS_AUTOHIDE
-        ;     , DllCall("Shell32\SHAppBarMessage", "UInt", 10 ; ABM_SETSTATE
-        ;     , "Ptr", &APPBARDATA)
-        ;     KeyWait, % A_ThisHotkey
-        ;     Return
-
-            ; VarSetCapacity(APPBARDATA, A_PtrSize=4 ? 36:48)
-            ; $F12:: HideShowTaskbar(hide := !hide)
-            ;     HideShowTaskbar(action) {
-            ;         static ABM_SETSTATE := 0xA, ABS_AUTOHIDE := 0x1, ABS_ALWAYSONTOP := 0x2
-            ;             VarSetCapacity(APPBARDATA, size := 2*A_PtrSize + 2*4 + 16 + A_PtrSize, 0)
-            ;             NumPut(size, APPBARDATA), NumPut(WinExist("ahk_class Shell_TrayWnd"), APPBARDATA, A_PtrSize)
-            ;             NumPut(action ? ABS_AUTOHIDE : ABS_ALWAYSONTOP, APPBARDATA, size - A_PtrSize)
-            ;             DllCall("Shell32\SHAppBarMessage", UInt, ABM_SETSTATE, Ptr, &APPBARDATA)
-            ;     }
-
-            ; if toggle := !toggle {
-            ;     WinHide ahk_class Shell_TrayWnd
-            ;     ; WinMove, ahk_class Shell_TrayWnd,,0,1003,1920,1
-            ;     WinHide, Start ahk_class Button
-            ;     WinHide, ahk_class Shell_SecondaryTrayWnd
-            ;     WinSet, Transparent, 0, ahk_class Shell_TrayWnd
-            ; }
-            ; else {
-            ;     WinShow ahk_class Shell_TrayWnd
-            ;     ; WinMove, ahk_class Shell_TrayWnd,,0,1003,1920,77
-            ;     WinShow, Start ahk_class Button
-            ;     WinShow, ahk_class Shell_SecondaryTrayWnd
-            ;     WinSet, Transparent, 0, ahk_class Shell_TrayWnd
-            ; }
-            ; return
-
-            ; if toggle := !toggle {
-            ;     WinHide ahk_class CabinetWClass  
-            ;   ;     ; WinMove, ahk_class CabinetWClass,,0,1003,1920,1
-            ; }
-            ; else {
-            ;     WinShow ahk_class CabinetWClass  
-            ;     ; WinMove, ahk_class CabinetWClass,,0,1003,1920,77
-            ; }
-            ; WinActiveToggleClass("Shell_TrayWnd", "")
             return
     ; Chrome
         Alt & c::

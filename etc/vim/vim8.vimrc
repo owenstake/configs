@@ -116,13 +116,13 @@ let mapleader = "\<space>"
     Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
     Plug 'kshenoy/vim-signature' " bookmarker
     Plug 'vim-latex/vim-latex'
-    Plug 'lyokha/vim-xkbswitch'
+    " Plug 'lyokha/vim-xkbswitch'
+    " let g:XkbSwitchEnabled =0
 
     " Initialize plugin system
     call plug#end()
 " }}} end of plugin
 
-let g:XkbSwitchEnabled =1
 
 " Basic Key Map {{{
     " nnoremap <C-j> :m .+0<CR>
@@ -541,7 +541,7 @@ let g:XkbSwitchEnabled =1
     autocmd Filetype markdown inoremap <buffer> ;4 ####<Space><Enter><++><Esc>kA
     autocmd Filetype markdown inoremap <buffer> <silent> ;t <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
     autocmd Filetype markdown inoremap <buffer> ;p ![](<++>) <++><Esc>F[a
-    autocmd Filetype markdown inoremap <buffer> ;a [](<++>) <++><Esc>F[a
+    autocmd Filetype markdown inoremap <buffer> ;a [](<++> )<++><Esc>F[a
     " autocmd Filetype markdown inoremap <buffer> ;x - [X]
     " autocmd Filetype markdown inoremap <buffer> ;m - [ ] 
 
@@ -591,6 +591,6 @@ let g:XkbSwitchEnabled =1
 " === 
 " ===
 
- set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
- set termencoding=utf-8
- set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8

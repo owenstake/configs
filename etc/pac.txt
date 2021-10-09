@@ -5,6 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "v2.suda.moe",
+    "askubuntu.com",
     "i.stack.imgur.com",
     "*.stackexchange.com",
     "store.cloudss.org",
@@ -12,6 +14,7 @@ var rules = [
     "||stackoverflow.com",
     "||libgen.rs",
     "*github.io",
+    "*gitbooks.io",
     "github.com",
     "*fandom.com",
     "||tmuxcheatsheet.com",
