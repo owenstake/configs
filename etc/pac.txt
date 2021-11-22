@@ -5,6 +5,9 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "www.openvswitch.org",
+    "*.readthedocs.io",
+    "gitlab.com",
     "v2.suda.moe",
     "askubuntu.com",
     "i.stack.imgur.com",
