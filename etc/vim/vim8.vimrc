@@ -17,6 +17,8 @@ let mapleader = "\<space>"
     " general setting {{{
         Plug 'mhinz/vim-startify'   " The fancy start screen for Vim
         Plug 'vim-scripts/ReplaceWithRegister'
+        Plug 'dhruvasagar/vim-zoom'
+        Plug 'mbbill/undotree'
     "}}}
 
     " markdown{{{
@@ -159,6 +161,30 @@ let mapleader = "\<space>"
     inoremap jk <esc>
     inoremap kj <esc>
 
+    " buffer manage
+    cnoremap bls ls
+    cnoremap vsb vertical sb 
+
+    " tab manage
+    cnoremap te tabedit 
+    cnoremap tc tabclose 
+    cnoremap to tabonly 
+    cnoremap tm tabmove 
+    cnoremap ts tabs 
+    cnoremap tf tabfirst 
+    cnoremap tl tablast 
+
+    nnoremap t. :tabedit %<cr>
+    nnoremap te :tabedit <cr>
+    nnoremap tc :tabclose <cr>
+    nnoremap to :tabonly <cr>
+    nnoremap tm :tabmove <cr>
+    nnoremap ts :tabs <cr>
+    nnoremap tf :tabfirst <cr>
+    nnoremap tl :tablast <cr>
+    nnoremap tn :tabnext <cr>
+    nnoremap tp :tabprevious <cr>
+
     " Allow saving of files as sudo when I forgot to start vim using sudo.
     " https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-trick-work
     " cmap w!! w !sudo tee > /dev/null %
@@ -203,6 +229,20 @@ let mapleader = "\<space>"
     cnoremap gp Gpush
     cnoremap gl Gpull
     cnoremap cmd CocCommand 
+
+    " undotree
+    if has("persistent_undo")
+       let target_path = expand('~/.undodir')
+
+        " create the directory and any parent directories
+        " if the location does not exist.
+        if !isdirectory(target_path)
+            call mkdir(target_path, "p", 0700)
+        endif
+
+        let &undodir=target_path
+        set undofile
+    endif
 
     " keymap vim-preview
     autocmd FileType    qf    nnoremap <silent><buffer>  p  :PreviewQuickfix<cr>
@@ -448,6 +488,7 @@ let mapleader = "\<space>"
     noremap q/          :Leaderf searchHistory<cr>
     noremap q:          :Leaderf cmdHistory<cr>
 
+    " LeaderF
     let g:Lf_ReverseOrder         = 1
     let g:Lf_StlSeparator         = { 'left': '', 'right': '', 'font': '' }
     let g:Lf_RootMarkers          = ['.project', '.root', '.svn', '.git']
