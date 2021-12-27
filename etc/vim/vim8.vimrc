@@ -166,13 +166,13 @@ let mapleader = "\<space>"
     cnoremap vsb vertical sb 
 
     " tab manage
-    cnoremap te tabedit 
-    cnoremap tc tabclose 
-    cnoremap to tabonly 
-    cnoremap tm tabmove 
-    cnoremap ts tabs 
-    cnoremap tf tabfirst 
-    cnoremap tl tablast 
+    " cnoremap te tabedit 
+    " cnoremap tc tabclose 
+    " cnoremap to tabonly 
+    " cnoremap tm tabmove 
+    " cnoremap ts tabs 
+    " cnoremap tf tabfirst 
+    " cnoremap tl tablast 
 
     nnoremap t. :tabedit %<cr>
     nnoremap te :tabedit <cr>
