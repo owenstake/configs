@@ -1,11 +1,16 @@
+
+# usage: https://wiki.archlinux.org/title/Newsboat
+# rss: https://docs.rsshub.app/
+
 https://lukesmith.xyz/rss.xml                       "luke smith"
 https://www.nba.com/lakers/rss.xml
 https://rsshub.app/zhibo8/more/nba
 https://rsshub.app/zhibo8/more/zuqiu
 https://rsshub.app/guokr/calendar
-https://rsshub.app/zhihu/people/answers/skywind3000 "zhihu"
+https://rsshub.app/zhihu/people/answers/skywind3000 "~林伟的知乎回答"
+https://rsshub.app/zhihu/people/answers/giantchen "~陈硕的知乎回答"
 https://rsshub.app/zhihu/people/posts/feiyangqingyun
- https://rsshub.app/zhihu/zhuanlan/feiyangqingyun
+https://rsshub.app/zhihu/zhuanlan/feiyangqingyun
 https://www.youtube.com/feeds/videos.xml?channel_id=UCghLs6s95LrBWOdlZUCH4qw "stone"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCrGSFNEBmCN0rqhATZels2Q "gongzi shen"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCaPc9GRK9FoSyqM_c7-fDgw "Vlog xinsheng"
@@ -14,3 +19,21 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCHkR3JnDhl5gLCsiAlGiZ6A "su
 https://linuxtoy.org/feeds/all.atom.xml
 http://www.skywind.me/blog/feed
 https://www.cnblogs.com/xiaolincoding/rss
+https://rsshub.app/lol/newsindex/all
+https://rsshub.app/allpoetry/newest
+https://rsshub.app/zhihu/topic/19759915 "~Tesla"
+https://rsshub.app/zhihu/topic/19573048 "~SpaceX"
+https://rsshub.app/zhihu/topic/19553101 "~Elon Musk"
+https://rsshub.app/zhihu/topic/19570193 "~Vim"
+
+https://rsshub.app/zhihu/people/activities/shao-shu-pai-46
+
+https://rsshub.app/bjp/apod
+https://rsshub.app/nasa/apod
+
+https://rsshub.app/uniqlo/stylingbook/men
+https://rsshub.app/smzdm/keyword/男装
+https://rsshub.app/smzdm/keyword/优衣库男
+https://rsshub.app/google/scholar/larsblackmore
+https://rsshub.app/latexstudio/home
+https://rsshub.app/blogs/wangyin

@@ -302,7 +302,7 @@
             return
     ; Vscode
         Alt & v::
-            WinActiveToggle("Code.exe", "C:\Users\zhuangyulin\AppData\Local\Programs\Microsoft VS Code\Code.exe")
+            WinActiveToggle("Code.exe", "C:\Program Files\Microsoft VS Code\Code.exe")
             return
     ; wxwork
         Alt & w::
