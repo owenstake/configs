@@ -20,6 +20,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 $WSLIP=$args[0] 
 $WINIP=$args[1] 
+$REMOTEHOST=$args[2] 
+$CLOUDHOST=$args[3] 
 
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
@@ -76,7 +78,11 @@ netsh advfirewall firewall set rule name="ÐéÄâ»ú¼à¿Ø(»ØÏÔÇëÇó- ICMPv4-In)" new e
 "--------------------- Modify hosts - this require admin privillege ----------------------------------"
 # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
 wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
+wsl --% sed -i '/remotehost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
+wsl --% sed -i '/cloudhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
 wsl "--%" "echo $WSLIP wslhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
+wsl "--%" "echo $REMOTEHOST remotehost >> /mnt/c/Windows/System32/drivers/etc/hosts"
+wsl "--%" "echo $CLOUDHOST cloudhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
 
 "-------------------- sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
