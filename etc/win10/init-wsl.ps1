@@ -18,28 +18,47 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 ##### end of get privillege #############################################################
 
-##### functions ################
-function wsl_add_proxy($DESCRIPTION, $WIN_PORT, $WSL_PORT) {
+################################
+##### Functions ################
+################################
+function wsl_add_proxy($DESCRIPTION, $WIN_IP, $WIN_PORT, $WSL_HOST, $WSL_PORT) {
     "wsl portproxy for $DESCRIPTION, win port = $WIN_PORT, sock port = $WSL_PORT"
     # "portproxy clear"
-    netsh interface portproxy delete v4tov4 listenport=$WIN_PORT listenaddress=0.0.0.0
+    # netsh interface portproxy delete v4tov4 listenport=$WIN_PORT listenaddress=$WIN_IP
     # "portproxy add"
-    netsh interface portproxy add v4tov4 listenport=$WIN_PORT listenaddress=0.0.0.0 connectport=$WSL_PORT connectaddress=wslhost
+    netsh interface portproxy add v4tov4 listenport=$WIN_PORT listenaddress=$WIN_IP connectport=$WSL_PORT connectaddress=$WSL_HOST
     # "portproxy add firewall"
     netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$WIN_PORT
 }
+
+function wsl_add_hostname_in_hostfile($HOSTIP, $HOSTNAME, $HOSTFILE) {
+    wsl -u root "--%" "sed -i '/$HOSTNAME/d' $HOSTFILE"
+    wsl -u root "--%" "echo $HOSTIP $HOSTNAME >> $HOSTFILE"
+}
+
+function wsl_add_hostname($HOSTIP, $HOSTNAME) {
+    # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
+    # wsl -u root sed -i '/wslhost/d'    /etc/hosts
+    # wsl -u root "--%" "echo $WSLIP      wslhost    >> /etc/hosts"
+    wsl_add_hostname_in_hostfile $HOSTIP $HOSTNAME "/mnt/c/Windows/System32/drivers/etc/hosts"
+    wsl_add_hostname_in_hostfile $HOSTIP $HOSTNAME "/etc/hosts"
+    # wsl_add_hostname_in_hostfile("cloudhost", "/mnt/c/Windows/System32/drivers/etc/hosts")
+}
 ##### end of functions ################
+#######################################
 
 "--------------------- var define -------------------------------------------"
 $WSLIP=$args[0] 
 $WINIP=$args[1] 
 $REMOTEHOST=$args[2] 
 $CLOUDHOST=$args[3] 
-
+$ANY_IP="0.0.0.0"
+$WSLPROXY="127.65.43.21"
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
 ##### end of var define #################
 
+"--------------------- wsl network config -------------------------------------------"
 # Add an IP address in Ubuntu, $WSLIP, named eth0:1
 # i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
 wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
@@ -48,19 +67,22 @@ wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
 netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
 "--------------------- add port proxy in wsl2 -------------------------------------------"
+"reset port proxy all "
+netsh interface portproxy reset
+
 # ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
 $WSL_SSHD_PORT="3322"          # for ssh
 $PROXY_HTTP_PORT="38080"
 $PROXY_SOCK_PORT="38081"
 
-wsl_add_proxy "ssh" 3322 22
-wsl_add_proxy "goproxy for http" $PROXY_HTTP_PORT $PROXY_HTTP_PORT
-wsl_add_proxy "goproxy for sock" $PROXY_SOCK_PORT $PROXY_SOCK_PORT
+wsl_add_proxy   "ssh"                 $ANY_IP      "3322"             wslhost   "22"
+wsl_add_proxy   "goproxy for http"    $ANY_IP      $PROXY_SOCK_PORT   wslhost   $PROXY_SOCK_PORT
+wsl_add_proxy   "wsl port for http"   "wslproxy"   "80"               wslhost   $PROXY_HTTP_PORT  # wslproxy:80 <=> wslhost:38080
 
-"Show port proxy wsl2 "
+"Show port proxy all "
 netsh interface portproxy show all
 
-" -------------------- FIREWALL ---------------------------------------- "
+" -------------------- Firewall ---------------------------------------- "
 # for mobax xserver
 netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
 
@@ -77,21 +99,11 @@ netsh advfirewall firewall set rule name="ÐéÄâ»ú¼à¿Ø(»ØÏÔÇëÇó- ICMPv4-In)" new e
 "TODO: start firewall "
 # netsh advfirewall set currentprofile state on
 
-"--------------------- Modify hosts - this require admin privillege ----------------------------------"
-# --%  https://stackoverflow.com/questions/18923315/using-in-powershell
-wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
-wsl --% sed -i '/remotehost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
-wsl --% sed -i '/cloudhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
-wsl "--%" "echo $WSLIP wslhost >> /mnt/c/Windows/System32/drivers/etc/hosts"   # "--%" is for >>
-wsl "--%" "echo $REMOTEHOST remotehost >> /mnt/c/Windows/System32/drivers/etc/hosts"
-wsl "--%" "echo $CLOUDHOST cloudhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
-
-wsl -u root sed -i '/wslhost/d'    /etc/hosts
-wsl -u root sed -i '/remotehost/d' /etc/hosts
-wsl -u root sed -i '/cloudhost/d'  /etc/hosts
-wsl -u root "--%" "echo $WSLIP      wslhost    >> /etc/hosts"
-wsl -u root "--%" "echo $REMOTEHOST remotehost >> /etc/hosts"
-wsl -u root "--%" "echo $CLOUDHOST  cloudhost  >> /etc/hosts"
+"--------------------- Modify hosts - require admin privillege ----------------------------------"
+wsl_add_hostname   $WSLIP        "wslhost"
+wsl_add_hostname   $REMOTEHOST   "remotehost"
+wsl_add_hostname   $CLOUDHOST    "cloudhost"
+wsl_add_hostname   $WSLPROXY     "wslproxy"
 
 "-------------------- sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
