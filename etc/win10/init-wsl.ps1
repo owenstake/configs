@@ -80,9 +80,16 @@ netsh advfirewall firewall set rule name="ÐéÄâ»ú¼à¿Ø(»ØÏÔÇëÇó- ICMPv4-In)" new e
 wsl --% sed -i '/wslhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
 wsl --% sed -i '/remotehost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
 wsl --% sed -i '/cloudhost/d' /mnt/c/Windows/System32/drivers/etc/hosts   # C:\Windows\System32\drivers\etc\hosts
-wsl "--%" "echo $WSLIP wslhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
+wsl "--%" "echo $WSLIP wslhost >> /mnt/c/Windows/System32/drivers/etc/hosts"   # "--%" is for >>
 wsl "--%" "echo $REMOTEHOST remotehost >> /mnt/c/Windows/System32/drivers/etc/hosts"
 wsl "--%" "echo $CLOUDHOST cloudhost >> /mnt/c/Windows/System32/drivers/etc/hosts"
+
+wsl -u root sed -i '/wslhost/d'    /etc/hosts
+wsl -u root sed -i '/remotehost/d' /etc/hosts
+wsl -u root sed -i '/cloudhost/d'  /etc/hosts
+wsl -u root "--%" "echo $WSLIP      wslhost    >> /etc/hosts"
+wsl -u root "--%" "echo $REMOTEHOST remotehost >> /etc/hosts"
+wsl -u root "--%" "echo $CLOUDHOST  cloudhost  >> /etc/hosts"
 
 "-------------------- sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
