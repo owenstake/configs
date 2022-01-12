@@ -58,9 +58,10 @@ function wsl_add_hostname($HOSTIP, $HOSTNAME) {
 "--------------------- var define -------------------------------------------"
 $WSLIP           = $args[0]
 $WINIP           = $args[1]
-$OPEN_PORTS      = $args[2]
-$REMOTEHOST      = $args[3]
-$CLOUDHOST       = $args[4]
+$OPEN_PORTS_BASE = $args[2]
+$OPEN_PORTS_NUM  = $args[3]
+$REMOTEHOST      = $args[4]
+$CLOUDHOST       = $args[5]
 
 $ANY_IP          = "0.0.0.0"
 
