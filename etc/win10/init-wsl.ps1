@@ -62,12 +62,12 @@ $OPEN_PORTS_BASE = $args[2]
 $OPEN_PORTS_NUM  = $args[3]
 $REMOTEHOST      = $args[4]
 $CLOUDHOST       = $args[5]
-
-$ANY_IP          = "0.0.0.0"
-
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
-##### end of var define #################
+
+"--------------------- local var define -------------------------------------------"
+$ANY_IP          = "0.0.0.0"
+$WSLPROXY               = "127.65.43.21"
 
 "--------------------- wsl network config -------------------------------------------"
 # Add an IP address in Ubuntu, $WSLIP, named eth0:1
@@ -82,17 +82,12 @@ netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 netsh interface portproxy reset
 
 $WSL_SSHD_PORT          = 3322     # for ssh ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
-$PROXY_HTTP_PORT        = $OPEN_PORTS + 0
-$PROXY_SOCK_PORT        = $OPEN_PORTS + 1
-$PROXY_HTTP_PORT_DIRECT = $OPEN_PORTS + 2
-$WSLPROXY               = "127.65.43.21"
-$NUM_PORTS = 5
 
 # ssh
-win_open_port          $ANY_IP     "$WSL_SSHD_PORT"   wslhost   22            
-win_open_ports_range   $ANY_IP     $OPEN_PORTS        wslhost   $OPEN_PORTS   $NUM_PORTS   
+win_open_port          $ANY_IP     $WSL_SSHD_PORT     wslhost   22            
+win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   
 # for   proxy
-win_open_ports_range   $WSLPROXY   80                 wslhost   $OPEN_PORTS   $NUM_PORTS
+win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM
 
 "Show port proxy all "
 netsh interface portproxy show all
@@ -115,11 +110,11 @@ netsh advfirewall firewall set rule name="ÐéÄâ»ú¼à¿Ø(»ØÏÔÇëÇó- ICMPv4-In)" new e
 # netsh advfirewall set currentprofile state on
 
 "--------------------- Modify hosts - require admin privillege ----------------------------------"
-wsl_add_hostname   $WSLIP        "wslhost"
-wsl_add_hostname   $WINIP        "winhost"
-wsl_add_hostname   $REMOTEHOST   "remotehost"
-wsl_add_hostname   $CLOUDHOST    "cloudhost"
-wsl_add_hostname   $WSLPROXY     "wslproxy"
+wsl_add_hostname   $WSLIP        wslhost
+wsl_add_hostname   $WINIP        winhost
+wsl_add_hostname   $REMOTEHOST   remotehost
+wsl_add_hostname   $CLOUDHOST    cloudhost
+wsl_add_hostname   $WSLPROXY     wslproxy
 
 "-------------------- sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
