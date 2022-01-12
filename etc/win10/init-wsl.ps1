@@ -21,14 +21,22 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 ################################
 ##### Functions ################
 ################################
-function wsl_add_proxy($DESCRIPTION, $WIN_IP, $WIN_PORT, $WSL_HOST, $WSL_PORT) {
-    "wsl portproxy for $DESCRIPTION, win port = $WIN_PORT, sock port = $WSL_PORT"
-    # "portproxy clear"
-    # netsh interface portproxy delete v4tov4 listenport=$WIN_PORT listenaddress=$WIN_IP
+function win_open_port($LIP, $LPORT, $CIP, $CPORT) {
+    # "wsl portproxy for $DESCRIPTION, win port = $LPORT, sock port = $CPORT"
+    # "portproxy clear" will be clear in outer
     # "portproxy add"
-    netsh interface portproxy add v4tov4 listenport=$WIN_PORT listenaddress=$WIN_IP connectport=$WSL_PORT connectaddress=$WSL_HOST
+    netsh interface portproxy add v4tov4 listenport=$LPORT listenaddress=$LIP connectport=$CPORT connectaddress=$CIP
     # "portproxy add firewall"
-    netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$WIN_PORT
+    netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$LPORT
+}
+
+function win_open_ports_range($lip, $lport_base, $cip, $cport_base, $len) {
+    for ($i = 0; $i -lt $len ; $i++)
+    {
+        $lport = $lport_base + $i
+        $cport = $cport_base + $i
+        win_open_port $lip $lport $cip $cport
+    }
 }
 
 function wsl_add_hostname_in_hostfile($HOSTIP, $HOSTNAME, $HOSTFILE) {
@@ -48,12 +56,14 @@ function wsl_add_hostname($HOSTIP, $HOSTNAME) {
 #######################################
 
 "--------------------- var define -------------------------------------------"
-$WSLIP=$args[0] 
-$WINIP=$args[1] 
-$REMOTEHOST=$args[2] 
-$CLOUDHOST=$args[3] 
-$ANY_IP="0.0.0.0"
-$WSLPROXY="127.65.43.21"
+$WSLIP           = $args[0]
+$WINIP           = $args[1]
+$OPEN_PORTS      = $args[2]
+$REMOTEHOST      = $args[3]
+$CLOUDHOST       = $args[4]
+
+$ANY_IP          = "0.0.0.0"
+
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
 ##### end of var define #################
@@ -67,17 +77,21 @@ wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
 netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
 "--------------------- add port proxy in wsl2 -------------------------------------------"
-"reset port proxy all "
+"clear port proxy all "
 netsh interface portproxy reset
 
-# ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
-$WSL_SSHD_PORT="3322"          # for ssh
-$PROXY_HTTP_PORT="38080"
-$PROXY_SOCK_PORT="38081"
+$WSL_SSHD_PORT          = 3322     # for ssh ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
+$PROXY_HTTP_PORT        = $OPEN_PORTS + 0
+$PROXY_SOCK_PORT        = $OPEN_PORTS + 1
+$PROXY_HTTP_PORT_DIRECT = $OPEN_PORTS + 2
+$WSLPROXY               = "127.65.43.21"
+$NUM_PORTS = 5
 
-wsl_add_proxy   "ssh"                 $ANY_IP      "3322"             wslhost   "22"
-wsl_add_proxy   "goproxy for http"    $ANY_IP      $PROXY_SOCK_PORT   wslhost   $PROXY_SOCK_PORT
-wsl_add_proxy   "wsl port for http"   "wslproxy"   "80"               wslhost   $PROXY_HTTP_PORT  # wslproxy:80 <=> wslhost:38080
+# ssh
+win_open_port          $ANY_IP     "$WSL_SSHD_PORT"   wslhost   22            
+win_open_ports_range   $ANY_IP     $OPEN_PORTS        wslhost   $OPEN_PORTS   $NUM_PORTS   
+# for   proxy
+win_open_ports_range   $WSLPROXY   80                 wslhost   $OPEN_PORTS   $NUM_PORTS
 
 "Show port proxy all "
 netsh interface portproxy show all
@@ -101,6 +115,7 @@ netsh advfirewall firewall set rule name="ÐéÄâ»ú¼à¿Ø(»ØÏÔÇëÇó- ICMPv4-In)" new e
 
 "--------------------- Modify hosts - require admin privillege ----------------------------------"
 wsl_add_hostname   $WSLIP        "wslhost"
+wsl_add_hostname   $WINIP        "winhost"
 wsl_add_hostname   $REMOTEHOST   "remotehost"
 wsl_add_hostname   $CLOUDHOST    "cloudhost"
 wsl_add_hostname   $WSLPROXY     "wslproxy"
