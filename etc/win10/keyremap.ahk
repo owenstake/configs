@@ -77,8 +77,8 @@
         ; return
     ;====== foxit config ===================================================
         ~j::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send {Down}
@@ -86,8 +86,8 @@
         }
         return
         ~k::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send {Up}
@@ -96,8 +96,8 @@
         return
         ; page up
         ~u::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send {PgUp}
@@ -106,8 +106,8 @@
         return
         ; page down
         ~d::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send {PgDn}
@@ -115,8 +115,8 @@
         }
         return
         ~+J::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send ^+{Tab}
@@ -124,8 +124,8 @@
         }
         return
         ~+K::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
-            ControlGetFocus, OutputVar, ahk_exe FoxitReader.exe
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
+            ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
             If InStr(OutputVar, "Edit") {
             } else {
                 send ^{Tab}
@@ -134,13 +134,13 @@
         return
         ; zoom in
         !=::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
             send ^{=}
         }
         return
         ; zoom out
         !-::
-        if WinActive("ahk_exe FoxitReader.exe") {  ; This will be expanded because it is a expression
+        if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
             send ^-
         }
         return
@@ -258,7 +258,7 @@
             return
     ; Foxit
         Alt & f::
-            WinActiveToggle("FoxitReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit Reader\FoxitReader.exe ")
+            WinActiveToggle("FoxitPDFReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe")
             return
     ; MobaXterm
         Alt & m::
@@ -272,9 +272,10 @@
         Alt & n::
             WinActiveToggle("v2rayN.exe", "C:\MY_SOFTWARE\v2rayN-windows-64\v2rayN-Core-64bit\v2rayN.exe")
             return
-    ; Outlook
+    ; email Outlook
         Alt & o::
-            WinActiveToggle("OUTLOOK.EXE", "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
+            ; WinActiveToggle("Foxmail.exe", "D:\Program Files\Foxmail 7.2\Foxmail.exe")
+            WinActiveToggle("OUTLOOK.EXE", "C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE")
             return
     ; Ppt
         Alt & p::

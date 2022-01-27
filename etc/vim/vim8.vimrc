@@ -189,6 +189,7 @@ let mapleader = "\<space>"
     " https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-trick-work
     " cmap w!! w !sudo tee > /dev/null %
     cmap w!! w !sudo tee % > /dev/null
+    cmap x!! x !sudo tee % > /dev/null
 " }}}
 
 " Special Key Map and config {{{
@@ -565,7 +566,7 @@ let mapleader = "\<space>"
 
     " shortcut in insert mode for md marker
     "autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
-    autocmd Filetype markdown inoremap <buffer> <silent> ;, <++>
+    autocmd Filetype markdown inoremap <buffer> <silent> ;, 
     autocmd Filetype markdown inoremap <buffer> ;f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
     autocmd Filetype markdown inoremap <buffer> ;w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
     autocmd Filetype markdown inoremap <buffer> ;l ---<Enter><Enter>
