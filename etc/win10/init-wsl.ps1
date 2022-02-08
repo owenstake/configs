@@ -116,6 +116,22 @@ wsl_add_hostname   $REMOTEHOST   remotehost
 wsl_add_hostname   $CLOUDHOST    cloudhost
 wsl_add_hostname   $WSLPROXY     wslproxy
 
+"--------------------- Schedule Tasks ----------------------------------"
+Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
+
+"-- for keyremap when logon --"
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$action  = New-ScheduledTaskAction -Execute 'D:\.local\win10\keyremap.ahk'
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-keyremap"
+
+"-- for shadow copy everyday --"
+$trigger = New-ScheduledTaskTrigger -Daily -At 3am
+$action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
+Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
+
+"Show Tasks result"
+Get-ScheduledTask "owen-*"
+
 "-------------------- sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
 
