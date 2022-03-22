@@ -5,7 +5,9 @@
 var proxy = "__PROXY__";
 
 var rules = [
-    "blog.csdn.net",
+    "zh.z-lib.org",
+    "zh.hk1lib.org",
+    "zh.*.org",
     "www.openvswitch.org",
     "*.readthedocs.io",
     "gitlab.com",
