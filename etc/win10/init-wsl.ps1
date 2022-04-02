@@ -88,7 +88,9 @@ win_open_port          $ANY_IP     $WSL_SSHD_PORT     wslhost   22
 win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   
 # for   proxy
 win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM
-# for apache
+# for apache - "sudo /etc/init.d/apache2 restart"
+win_open_port   wslproxy    8080               wslhost   8080
+# for python httpd - "python3 -m http.server"
 win_open_port   wslproxy    8080               wslhost   8080
 
 "Show port proxy all "
