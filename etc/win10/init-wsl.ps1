@@ -55,21 +55,21 @@ function wsl_add_hostname($HOSTIP, $HOSTNAME) {
 ##### end of functions ################
 #######################################
 
-"--------------------- var define -------------------------------------------"
+"--------------------- Var Define -------------------------------------------"
 $WSLIP           = $args[0]
 $WINIP           = $args[1]
-$OPEN_PORTS_BASE = $args[2]
-$OPEN_PORTS_NUM  = $args[3]
-$REMOTEHOST      = $args[4]
-$CLOUDHOST       = $args[5]
+# $OPEN_PORTS_BASE = $args[2]
+# $OPEN_PORTS_NUM  = $args[3]
+# $REMOTEHOST      = $args[4]
+# $CLOUDHOST       = $args[5]
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
 
-"--------------------- local var define -------------------------------------------"
+"--------------------- Local var define -------------------------------------------"
 $ANY_IP          = "0.0.0.0"
-$WSLPROXY               = "127.65.43.21"
+$WSLPROXY        = "127.65.43.21"
 
-"--------------------- wsl network config -------------------------------------------"
+"--------------------- WSL network config -------------------------------------------"
 # Add an IP address in Ubuntu, $WSLIP, named eth0:1
 # i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
 wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
@@ -84,21 +84,25 @@ netsh interface portproxy reset
 $WSL_SSHD_PORT          = 3322     # for ssh ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
 
 # ssh
-win_open_port          $ANY_IP     $WSL_SSHD_PORT     wslhost   22            
-win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   
+# win_open_port          $ANY_IP     $WSL_SSHD_PORT     wslhost   22            
+# win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   
 # for   proxy
-win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM
+# win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM
 # for apache - "sudo /etc/init.d/apache2 restart"
-win_open_port   wslproxy    8080               wslhost   8080
-# for python httpd - "python3 -m http.server"
-win_open_port   wslproxy    8080               wslhost   8080
+# win_open_port   wslproxy    8080               wslhost   8080
+# for python httpd - "python3 -m http.server --directory /mnt/d/svn/svnwork"
+# win_open_port   wslproxy    8080               wslhost   8080
 
 "Show port proxy all "
 netsh interface portproxy show all
 
 " -------------------- Firewall ---------------------------------------- "
 # for mobax xserver
-netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
+# netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
+
+"add rule for wsl with winhost"
+Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
+# New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
 
 "Add firewall wsl2 rules for icmp ping"
 netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
@@ -116,9 +120,9 @@ netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new e
 "--------------------- Modify hosts - require admin privillege ----------------------------------"
 wsl_add_hostname   $WSLIP        wslhost
 wsl_add_hostname   $WINIP        winhost
-wsl_add_hostname   $REMOTEHOST   remotehost
-wsl_add_hostname   $CLOUDHOST    cloudhost
-wsl_add_hostname   $WSLPROXY     wslproxy
+# wsl_add_hostname   $REMOTEHOST   remotehost
+# wsl_add_hostname   $CLOUDHOST    cloudhost
+# wsl_add_hostname   $WSLPROXY     wslproxy
 
 "--------------------- Schedule Tasks ----------------------------------"
 Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
@@ -128,15 +132,20 @@ $trigger = New-ScheduledTaskTrigger -AtLogOn
 $action  = New-ScheduledTaskAction -Execute 'D:\.local\win10\keyremap.ahk'
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-keyremap"
 
-"-- for shadow copy everyday --"
-$trigger = New-ScheduledTaskTrigger -Daily -At 3am
-$action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
-Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
+"-- for wsl set default user when logon --"
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z"'
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
+
+# "-- for shadow copy everyday --"
+# $trigger = New-ScheduledTaskTrigger -Daily -At 3am
+# $action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
+# Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
 
 "Show Tasks result"
 Get-ScheduledTask "owen-*"
 
-"-------------------- sshd start ------------------------"
+"-------------------- wsl sshd start ------------------------"
 wsl -u root /etc/init.d/ssh start
 
 sleep 10
