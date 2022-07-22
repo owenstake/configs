@@ -5,6 +5,7 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "www.oreilly.com",
     "zh.z-lib.org",
     "zh.hk1lib.org",
     "zh.*.org",
