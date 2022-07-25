@@ -306,9 +306,9 @@
             WinActiveToggle("Code.exe", "C:\Program Files\Microsoft VS Code\Code.exe")
             return
     ; wxwork
-        Alt & w::
-            WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
-            return
+    ;   Alt & w::
+    ;       WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
+    ;       return
     ; Excel
         Alt & x::
             WinActiveToggle("EXCEL.EXE", "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
