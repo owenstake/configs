@@ -237,9 +237,9 @@
         Alt & c::
             WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
             return
-    ; Dword
+    ; Drawio
         Alt & d::
-            WinActiveToggle("WINWORD.EXE", "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
+            WinActiveToggle("draw.io.exe", "C:\Program Files\draw.io\draw.io.exe")
             return
     ; Explorer
         Alt & e::
@@ -305,11 +305,11 @@
         Alt & v::
             WinActiveToggle("Code.exe", "C:\Program Files\Microsoft VS Code\Code.exe")
             return
-    ; wxwork
-    ;   Alt & w::
-    ;       WinActiveToggle("WXWork.exe", "C:\Program Files (x86)\WXWork\WXWork.exe")
-    ;       return
-    ; Excel
+    ; Word
+        Alt & w::
+            WinActiveToggle("WINWORD.EXE", "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
+            return
+    ; X Excel
         Alt & x::
             WinActiveToggle("EXCEL.EXE", "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
             return
