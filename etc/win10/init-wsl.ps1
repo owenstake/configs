@@ -21,21 +21,24 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 ################################
 ##### Functions ################
 ################################
-function win_open_port($LIP, $LPORT, $CIP, $CPORT) {
+function win_open_port($LIP, $LPORT, $CIP, $CPORT, $REMOTEIP) {
     # "wsl portproxy for $DESCRIPTION, win port = $LPORT, sock port = $CPORT"
     # "portproxy clear" will be clear in outer
     # "portproxy add"
     netsh interface portproxy add v4tov4 listenport=$LPORT listenaddress=$LIP connectport=$CPORT connectaddress=$CIP
+    # netsh interface portproxy add v4tov4 listenport=3322 listenaddress=0.0.0.0 connectport=22 connectaddress=wslhost
     # "portproxy add firewall"
-    netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$LPORT
+    netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=$LPORT remoteip=$REMOTEIP
+    # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=3322 remoteip=192.168.89.205
+    # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=3322
 }
 
-function win_open_ports_range($lip, $lport_base, $cip, $cport_base, $len) {
+function win_open_ports_range($lip, $lport_base, $cip, $cport_base, $len, $remoteip) {
     for ($i = 0; $i -lt $len ; $i++)
     {
         $lport = $lport_base + $i
         $cport = $cport_base + $i
-        win_open_port $lip $lport $cip $cport
+        win_open_port $lip $lport $cip $cport $remoteip
     }
 }
 
@@ -55,6 +58,10 @@ function wsl_add_hostname($HOSTIP, $HOSTNAME) {
 ##### end of functions ################
 #######################################
 
+"--------------------- System Clear -----------------------------------------"
+# clear firewall rule
+netsh advfirewall firewall delete rule name=WSL2
+
 "--------------------- Var Define -------------------------------------------"
 $WSLIP           = $args[0]
 $WINIP           = $args[1]
@@ -65,11 +72,14 @@ $WINIP           = $args[1]
 "WSL IP = " + $WSLIP
 "WIN IP = " + $WINIP
 
-"--------------------- Local var define -------------------------------------------"
-$ANY_IP          = "0.0.0.0"
-$WSLPROXY        = "127.65.43.21"
+"--------------------- Locadefine -------------------------------------------"
+$ANY_IP          = "0.0.0.0"                        # for proxy listening ip
+$OPEN_IP         = "192.168.89.205,192.168.89.206"    # allow connect to sshd
+$WSLPROXY        = "127.65.43.21"     # for wsl server port
+$WIN_SSHD_PORT          = 3322
 
-"--------------------- WSL network config -------------------------------------------"
+
+"--------------------- WSL network config -----------------------------------"
 # Add an IP address in Ubuntu, $WSLIP, named eth0:1
 # i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
 wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
@@ -77,17 +87,20 @@ wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
 # Add an IP address in Win10, $WINIP
 netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
-"--------------------- add port proxy in wsl2 -------------------------------------------"
+"--------------------- add port proxy in wsl2 -------------------------------"
 "clear port proxy all "
 netsh interface portproxy reset
 
-$WSL_SSHD_PORT          = 3322     # for ssh ssh config port $WSL_SSHD_PORT - see /etc/ssh/sshd_config
+"start ip helper"
+net start iphlpsvc
 
-# ssh
-# win_open_port          $ANY_IP     $WSL_SSHD_PORT     wslhost   22            
-# win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   
+# SSHD open port
+win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      $OPEN_IP
+# win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      any
+
+# win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
 # for   proxy
-# win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM
+# win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
 # for apache - "sudo /etc/init.d/apache2 restart"
 # win_open_port   wslproxy    8080               wslhost   8080
 # for python httpd - "python3 -m http.server --directory /mnt/d/svn/svnwork"
@@ -108,16 +121,16 @@ Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
 netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
 netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
 
-# "Show firewall wsl2 rules"
+"Show firewall wsl2 rules"
 # https://support.microsoft.com/en-us/topic/44af15a8-72a1-e699-7290-569726b39d4a
-# netsh advfirewall firewall show rule name=WSL2
-# netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
-# netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
+netsh advfirewall firewall show rule name=WSL2
+netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
+netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
 
-"TODO: start firewall "
+# "TODO: start firewall "
 # netsh advfirewall set currentprofile state on
 
-"--------------------- Modify hosts - require admin privillege ----------------------------------"
+"--------------------- Modify hosts - require admin privillege ----------------"
 wsl_add_hostname   $WSLIP        wslhost
 wsl_add_hostname   $WINIP        winhost
 # wsl_add_hostname   $REMOTEHOST   remotehost
@@ -134,7 +147,7 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-keyrema
 
 "-- for wsl set default user when logon --"
 $trigger = New-ScheduledTaskTrigger -AtLogOn
-$action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z"'
+$action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
 
 # "-- for shadow copy everyday --"
