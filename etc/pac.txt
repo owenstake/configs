@@ -5,6 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "afrc.mnd.gov.tw",
+    "wiki.linuxfoundation.org",
     "www.practicalnetworking.net",
     "www.juniper.net",
     "www.oreilly.com",
