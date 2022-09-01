@@ -116,6 +116,9 @@ netsh interface portproxy show all
 "add rule for wsl with winhost"
 Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
 # New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
+#
+"Add firewall wsl2 rules for proxy"
+netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
 
 "Add firewall wsl2 rules for icmp ping"
 netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes

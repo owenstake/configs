@@ -25,6 +25,8 @@ https://rsshub.app/zhihu/topic/19573048 "~SpaceX"
 https://rsshub.app/zhihu/topic/19553101 "~Elon Musk"
 https://rsshub.app/zhihu/topic/19570193 "~Vim"
 
+https://rsshub.app/bilibili/user/dynamic/21837784 "~阿斗归来了"
+
 https://rsshub.app/zhihu/people/activities/shao-shu-pai-46
 
 https://rsshub.app/bjp/apod

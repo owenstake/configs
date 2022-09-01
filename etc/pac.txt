@@ -5,6 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "*.typora.io",
+    "*.redhat.com",
     "afrc.mnd.gov.tw",
     "wiki.linuxfoundation.org",
     "www.practicalnetworking.net",
