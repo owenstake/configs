@@ -5,6 +5,10 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "zh.singlelogin.app",
+    "askubuntu.com",
+    "www.mongodb.com",
+    "www.sqlitetutorial.net",
     "*.typora.io",
     "*.redhat.com",
     "afrc.mnd.gov.tw",
