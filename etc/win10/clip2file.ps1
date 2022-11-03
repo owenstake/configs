@@ -15,7 +15,7 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
     if ($clipboard.ContainsImage()) {
         $img = get-clipboard -format image
         $img.save($IMGNAME)
-        "clipboard content saved as $IMGNAME"
+        "Image in clipboard and saved as $IMGNAME"
         return
     } else {
         "clipboard does not contains image data"
