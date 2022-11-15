@@ -5,6 +5,7 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "*wikimedia.org",
     "*.zlibrary.org",
     "*.google.com.hk",
     "zh.singlelogin.app",
