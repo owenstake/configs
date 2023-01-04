@@ -311,8 +311,13 @@
             return
     ; X Excel
         Alt & x::
-            WinActiveToggle("EXCEL.EXE", "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
+            WinActiveToggle("Xshell.exe", "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe")
             return
+    ; X Excel
+    ;   Alt & x::
+    ;       WinActiveToggle("EXCEL.EXE", "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE")
+    ;       return
+
     ; Zotero
         Alt & z::
             WinActiveToggle("zotero.exe", "C:\Program Files (x86)\Zotero\zotero.exe")
@@ -417,15 +422,15 @@
 ;======== End timer=================================================
 
 ;======== Hot strings =================================================
-    :*:iid::  ; 此热字串通过后面命令将热字串替换成当前日期和时间.
-    FormatTime, CurrentDateTime,, MM月dd ; 形式：小海01月17短片
-    ;FormatTime, CurrentDateTime,, MM月dd-HH点-mm-ss ; 形式：小海08月16-11点-43-51短片
-    SendInput 小海%CurrentDateTime%短片
-    return
-    :*:autoh:: ;自动输入AutoHotkey
-    clipboard = AutoHotkey
-    send,^v
-    return
+    ; :*:iid::  ; 此热字串通过后面命令将热字串替换成当前日期和时间.
+    ; FormatTime, CurrentDateTime,, MM月dd ; 形式：小海01月17短片
+    ; ;FormatTime, CurrentDateTime,, MM月dd-HH点-mm-ss ; 形式：小海08月16-11点-43-51短片
+    ; SendInput 小海%CurrentDateTime%短片
+    ; return
+    ; :*:autoh:: ;自动输入AutoHotkey
+    ; clipboard = AutoHotkey
+    ; send,^v
+    ; return
 ;======== End Hot strings =================================================
 
 ;======== google search  win+9 ================================================

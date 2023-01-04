@@ -5,6 +5,12 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "telegram.org",
+    "t.co",
+    "*.nytimes.com",
+    "deepnote.com",
+    "*.onion",
+    "singlelogin.me",
     "*wikimedia.org",
     "*.zlibrary.org",
     "*.google.com.hk",
