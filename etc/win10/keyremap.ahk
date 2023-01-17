@@ -274,8 +274,10 @@
             return
     ; email Outlook
         Alt & o::
-            ; WinActiveToggle("Foxmail.exe", "D:\Program Files\Foxmail 7.2\Foxmail.exe")
-            WinActiveToggle("OUTLOOK.EXE", "C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE")
+            ; Tor Browser
+            WinActiveToggle("firefox.exe", "C:\Users\owen\Desktop\Tor Browser\Browser\firefox.exe")
+            ; WinActiveToggle("Foxmail.exe", "C:\Foxmail 7.2\Foxmail.exe")
+            ; WinActiveToggle("OUTLOOK.EXE", "C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE")
             return
     ; Ppt
         Alt & p::
