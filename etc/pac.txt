@@ -5,6 +5,10 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "kubernetes.io/",
+    "ithelp.ithome.com.tw",
+    "serverfault.com",
+    "*openai.com",
     "library.lol",
     "telegram.org",
     "t.co",
