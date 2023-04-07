@@ -159,7 +159,7 @@ let mapleader = "\<space>"
 
     " for <ese> in insert mode
     inoremap jk <esc>
-    inoremap kj <esc>
+    " inoremap kj <esc>
 
     " buffer manage
     cnoremap bls ls

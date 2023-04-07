@@ -62,20 +62,7 @@
             send ^m
         }
         return
-        ; ^l::
-        ; if WinActive("ahk_exe chrome.exe") {
-        ;     ; For chrome, nothing control can be focused or detected
-        ;     Chrome_CtrlL_Cnt++
-        ;     if (Mod(Chrome_CtrlL_Cnt, 2)) {
-        ;         Controlclick, Chrome_RenderWidgetHostHWND1, ahk_exe chrome.exe
-        ;     } else {
-        ;         send ^l
-        ;     }
-        ; } else {
-        ;     send ^l
-        ; }
-        ; return
-    ;====== foxit config ===================================================
+    ;====== foxit keyremap config ===================================================
         ~j::
         if WinActive("ahk_exe FoxitPDFReader.exe") {  ; This will be expanded because it is a expression
             ControlGetFocus, OutputVar, ahk_exe FoxitPDFReader.exe
@@ -260,6 +247,10 @@
         Alt & f::
             WinActiveToggle("FoxitPDFReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe")
             return
+    ; Obsidian
+        Alt & i::
+            WinActiveToggle("Obsidian.exe", "C:\Users\owen\AppData\Local\Obsidian\Obsidian.exe")
+            return
     ; MobaXterm
         Alt & m::
             WinActiveToggle("MobaXterm.exe", "C:\Program Files (x86)\Mobatek\MobaXterm\MobaXterm.exe")
@@ -311,7 +302,7 @@
         Alt & w::
             WinActiveToggle("WINWORD.EXE", "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE")
             return
-    ; X Excel
+    ; X xshell
         Alt & x::
             WinActiveToggle("Xshell.exe", "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe")
             return
@@ -429,6 +420,7 @@
     ; ;FormatTime, CurrentDateTime,, MM月dd-HH点-mm-ss ; 形式：小海08月16-11点-43-51短片
     ; SendInput 小海%CurrentDateTime%短片
     ; return
+    :*:ahk::AutoHotkey
     ; :*:autoh:: ;自动输入AutoHotkey
     ; clipboard = AutoHotkey
     ; send,^v

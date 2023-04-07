@@ -5,6 +5,10 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "tex.stackexchange.com/",
+    "www.epochtimes.com",
+    "*linkedin.com/",
+    "*linkedin.cn/",
     "kubernetes.io/",
     "ithelp.ithome.com.tw",
     "serverfault.com",
@@ -39,10 +43,8 @@ var rules = [
     "v2.suda.moe",
     "askubuntu.com",
     "i.stack.imgur.com",
-    "*.stackexchange.com",
     "store.cloudss.org",
     "libgen.rs",
-    "||stackoverflow.com",
     "||libgen.rs",
     "*github.io",
     "*gitbooks.io",
@@ -5539,7 +5541,6 @@ var rules = [
     "||sstmlt.moe",
     "sstmlt.net",
     "||sstmlt.net",
-    "|http://stackoverflow.com/users/895245",
     ".stage64.hk",
     "||stage64.hk",
     "||standupfortibet.org",
