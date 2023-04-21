@@ -35,12 +35,13 @@ if [ $result -eq 1 ]
 then
     echo "we are in wsl~~~"
     cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
-    cp ~/.local/etc/typora/owen-auto-number.css /mnt/c/Users/owen/AppData/Roaming/Typora/owen-auto-number.css 
 
-    TYPORA_CSS_REF='@import "owen-auto-number.css";'
+    # typora config
+    cp ~/.local/etc/typora/owen-auto-number.css /mnt/c/Users/owen/AppData/Roaming/Typora/themes/owen-auto-number.css 
+    TYPORA_CSS_REF='@import "owen-auto-number.css";    /* owen config */'
     TYPORA_THEME_FILE="/mnt/c/Users/owen/AppData/Roaming/Typora/themes/github.css"
-    sed -i '/$TYPORA_CSS_REF/d' $TYPORA_THEME_FILE
-    sed -i '1s/^/<added text> \n/' $TYPORA_THEME_FILE
+    sed -i '/owen config/d' $TYPORA_THEME_FILE
+    sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
     mkdir -p /mnt/d/.local/
     rsync -r ~/.local/etc/win10/* /mnt/d/.local/win10

@@ -420,7 +420,7 @@
     ; ;FormatTime, CurrentDateTime,, MM月dd-HH点-mm-ss ; 形式：小海08月16-11点-43-51短片
     ; SendInput 小海%CurrentDateTime%短片
     ; return
-    :*:ahk::AutoHotkey
+    ; :*:ahk::AutoHotkey
     ; :*:autoh:: ;自动输入AutoHotkey
     ; clipboard = AutoHotkey
     ; send,^v
