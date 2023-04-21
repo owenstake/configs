@@ -5,6 +5,8 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "*.adblockplus.org/*",
+    "mermaid.js.org/*",
     "tex.stackexchange.com/",
     "www.epochtimes.com",
     "*linkedin.com/",
