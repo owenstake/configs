@@ -17,6 +17,8 @@ rsync -r etc/ranger ~/.config/
 rsync -r etc/newsboat ~/.config/
 # ln -sf $(realpath ./etc/ranger) ~/.config/
 
+ln -sf ~/.local/etc/vim/vim8.vimrc ~/.vimrc
+
 ### Force echo to zsh tmux config file
 if [[ $1 = "f" ]]
 then
@@ -26,7 +28,7 @@ then
     echo "zsh  $(realpath ~/.zshrc)"
     echo "tmux $(realpath ~/.tmux.conf)"
 else
-    _owen_force_echo=
+    _owen_force_echo=0
 fi
 
 # WSL config. cp pac to win10. ubt do not need it, because we use proxychain to manual control.
@@ -52,12 +54,12 @@ fi
 # unset _owen_zsh_sourced
 
 # enable config file and avoid configed twice
-if [ -e ~/.local/etc/zsh.conf ] && [ -z $_owen_force_echo ]
+if [ ! -e ~/.local/etc/zsh.conf ] || [[ $_owen_force_echo == 1 ]]
 then
-    echo "owen zsh configed"
-else
     echo "# -- owen zsh configing $(realpath ./etc/zsh.conf) -----">>~/.zshrc
     echo "source ~/.local/etc/zsh.conf">>~/.zshrc
+else
+    echo "owen zsh configed"
 fi
 
 
@@ -67,10 +69,10 @@ fi
 
 # enable config file and avoid configed twice
 # if [[ -z $_owen_zsh_configed ]] {
-if [ -e ~/.local/etc/tmux.conf ] && [ -z $_owen_force_echo ]
+if [ ! -e ~/.local/etc/tmux.conf ] || [ -z $_owen_force_echo == 1 ]
 then
-    echo "owen tmux configed"
-else
     echo "# -- owen tmux configing $(realpath ./etc/tmux.conf) ---">>~/.tmux.conf
     echo "source ~/.local/etc/tmux.conf">>~/.tmux.conf
+else
+    echo "owen tmux configed"
 fi
