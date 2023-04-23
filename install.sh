@@ -59,6 +59,7 @@ if [[ ! -e ./oh-my-tuna.py ]]; then
     wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
     sudo python3 oh-my-tuna.py --global -y
     sudo apt update
+    sudo apt upgrade -y
 fi
 
 if ! command_exists zsh; then
@@ -92,12 +93,6 @@ else
     return
 fi
 
-# zplug
-if [[ ! -e ~/.zplug ]]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-    echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
-fi
-
 # oh my zsh - should be first for override .zshrc first
 if [[ ! -e ~/.oh-my-zsh ]]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" \
@@ -106,6 +101,13 @@ if [[ ! -e ~/.oh-my-zsh ]]; then
     echo 'export ZSH="$HOME/.oh-my-zsh"' >> ~/.zshrc
     echo 'ZSH_THEME="robbyrussell"'      >> ~/.zshrc
     echo 'source $ZSH/oh-my-zsh.sh'      >> ~/.zshrc
+fi
+
+# zplug
+if [[ ! -e ~/.zplug ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    echo 'export ZPLUG_THREADS=2' >> ~/.zshrc
+    echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
 fi
 
 # fzf
