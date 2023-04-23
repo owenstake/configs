@@ -1,4 +1,0 @@
-[ZoneTransfer]
-ZoneId=3
-ReferrerUrl=https://github.com/snail007/goproxy/releases
-HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/103126070/992af4a1-ac88-4f08-b19d-7047d8daa953?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20220110%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220110T061421Z&X-Amz-Expires=300&X-Amz-Signature=8e1a6b77f9810863544973afe3a802f75d0834d7b1d05a59898ab63fc7ce1be4&X-Amz-SignedHeaders=host&actor_id=45960823&key_id=0&repo_id=103126070&response-content-disposition=attachment%3B%20filename%3Dproxy-linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
