@@ -75,7 +75,7 @@ fi
 if [[ ! -e ~/configs ]]; then
     git clone https://github.com/owenstake/configs.git
     cd configs
-    sudo ./bootstrap.sh
+    ./bootstrap.sh
     cd -
 fi
 
