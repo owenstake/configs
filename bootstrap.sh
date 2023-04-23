@@ -42,8 +42,8 @@ then
     cp ~/.local/etc/typora/owen-auto-number.css /mnt/c/Users/owen/AppData/Roaming/Typora/themes/owen-auto-number.css 
     TYPORA_CSS_REF='@import "owen-auto-number.css";    /* owen config */'
     TYPORA_THEME_FILE="/mnt/c/Users/owen/AppData/Roaming/Typora/themes/github.css"
-    sed -i '/owen config/d' $TYPORA_THEME_FILE
-    sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
+    sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
+    sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
     mkdir -p /mnt/d/.local/
     rsync -r ~/.local/etc/win10/* /mnt/d/.local/win10
