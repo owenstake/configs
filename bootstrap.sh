@@ -2,7 +2,6 @@
 ## override config
 # override local config    # Make sure the ~/.local exists, otherwise cp will cp dir to ~/.local instead of inside of ~/.local (result in ~/.local/etc)fig
 rsync -r etc ~/.local/
-rsync -r bin ~/.local/
 sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
 
 # mkdir -p ~/.local/; cp -r etc ~/.local/
