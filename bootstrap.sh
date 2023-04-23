@@ -55,8 +55,9 @@ fi
 # enable config file and avoid configed twice
 if [ ! -e ~/.local/etc/zsh.conf ] || [[ $_owen_force_echo==1 ]]
 then
-    echo "# -- owen zsh configing $(realpath ./etc/zsh.conf) -----">>~/.zshrc
-    echo "source ~/.local/etc/zsh.conf">>~/.zshrc
+    echo "# -- owen zsh configing $(realpath ./etc/zsh.conf) -----"     >> ~/.zshrc
+    echo "source ~/.local/etc/zsh.conf"                                 >> ~/.zshrc
+    echo "# -- end owen zsh configing $(realpath ./etc/zsh.conf) -----" >> ~/.zshrc
 else
     echo "owen zsh configed"
 fi
@@ -70,8 +71,9 @@ fi
 # if [[ -z $_owen_zsh_configed ]] {
 if [ ! -e ~/.local/etc/tmux.conf ] || [ $_owen_force_echo==1 ]
 then
-    echo "# -- owen tmux configing $(realpath ./etc/tmux.conf) ---">>~/.tmux.conf
-    echo "source ~/.local/etc/tmux.conf">>~/.tmux.conf
+    echo "# -- owen tmux configing $(realpath ./etc/tmux.conf) ---"     >>~/.tmux.conf
+    echo "source ~/.local/etc/tmux.conf"                                >>~/.tmux.conf
+    echo "# -- end owen tmux configing $(realpath ./etc/tmux.conf) ---" >>~/.tmux.conf
 else
     echo "owen tmux configed"
 fi

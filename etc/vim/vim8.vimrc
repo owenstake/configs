@@ -65,7 +65,7 @@ let mapleader = "\<space>"
         Plug 'sgur/vim-textobj-parameter'   " vi,
 
         " Enhanced C syntax
-        Plug 'justinmk/vim-syntax-extra' 
+        Plug 'justinmk/vim-syntax-extra'
         Plug 'octol/vim-cpp-enhanced-highlight'
     " }}}
 
@@ -163,16 +163,16 @@ let mapleader = "\<space>"
 
     " buffer manage
     cnoremap bls ls
-    cnoremap vsb vertical sb 
+    cnoremap vsb vertical sb
 
     " tab manage
-    " cnoremap te tabedit 
-    " cnoremap tc tabclose 
-    " cnoremap to tabonly 
-    " cnoremap tm tabmove 
-    " cnoremap ts tabs 
-    " cnoremap tf tabfirst 
-    " cnoremap tl tablast 
+    " cnoremap te tabedit
+    " cnoremap tc tabclose
+    " cnoremap to tabonly
+    " cnoremap tm tabmove
+    " cnoremap ts tabs
+    " cnoremap tf tabfirst
+    " cnoremap tl tablast
 
     nnoremap t. :tabedit %<cr>
     nnoremap te :tabedit <cr>
@@ -195,7 +195,7 @@ let mapleader = "\<space>"
 " Special Key Map and config {{{
 "
     " GitGutter Hunk config {{{
-        " some default 
+        " some default
         " <Leader>hs stage hunk
         " <Leader>hu unstage hunk
         " <Leader>hp preview diff hunk
@@ -229,7 +229,7 @@ let mapleader = "\<space>"
     cnoremap gca Gcommit -a -v
     cnoremap gp Gpush
     cnoremap gl Gpull
-    cnoremap cmd CocCommand 
+    cnoremap cmd CocCommand
 
     " undotree
     if has("persistent_undo")
@@ -283,7 +283,7 @@ let mapleader = "\<space>"
     set cc=80                 " set max charactors per line
     set smartcase ignorecase  " set for case search
                               " set relativenumber
-    syntax on                 
+    syntax on
     filetype plugin indent on
     filetype plugin on
     set expandtab smarttab autoindent noswapfile nowrap nobackup  " expandtab to space, especially for python
@@ -358,10 +358,10 @@ let mapleader = "\<space>"
         " Use tab for trigger completion with characters ahead and navigate.
         " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
         inoremap <silent><expr> <TAB>
-              \ pumvisible() ? "\<C-n>" :
+              \ coc#pum#visible() ? "\<C-n>" :
               \ <SID>check_back_space() ? "\<TAB>" :
               \ coc#refresh()
-        inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+        inoremap <expr><S-TAB> coc#pum#visible() ? "\<C-p>" : "\<C-h>"
 
         function! s:check_back_space() abort
             let col = col('.') - 1
@@ -373,7 +373,7 @@ let mapleader = "\<space>"
 
         " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
         " Coc only does snippet and additional edit on confirm.
-        inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+        inoremap <expr> <cr> coc#pum#visible() ? "\<C-y>" : "\<C-g>u\<CR>"
         " Or use `complete_info` if your vim support it, like:
         " inoremap <expr> <cr> complete_nfo()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
@@ -574,7 +574,7 @@ let mapleader = "\<space>"
     autocmd Filetype markdown inoremap <buffer> ;b **** <++><Esc>F*hi
     autocmd Filetype markdown inoremap <buffer> ;s ~~~~ <++><Esc>F~hi
     autocmd Filetype markdown inoremap <buffer> ;i ** <++><Esc>F*i
-    autocmd Filetype markdown inoremap <buffer> ;x - [ ] 
+    autocmd Filetype markdown inoremap <buffer> ;x - [ ]
     autocmd Filetype markdown inoremap <buffer> ;c ```<Enter><++><Enter>```<Enter><++><Esc>3kA
     autocmd Filetype markdown inoremap <buffer> ;m ```mermaid<Enter><Enter>```<Enter><Enter><++><Esc>3kA
     autocmd Filetype markdown inoremap <buffer> ;q `` <++><Esc>F`i
@@ -586,7 +586,7 @@ let mapleader = "\<space>"
     autocmd Filetype markdown inoremap <buffer> ;p ![](<++>) <++><Esc>F[a
     autocmd Filetype markdown inoremap <buffer> ;a [](<++> )<++><Esc>F[a
     " autocmd Filetype markdown inoremap <buffer> ;x - [X]
-    " autocmd Filetype markdown inoremap <buffer> ;m - [ ] 
+    " autocmd Filetype markdown inoremap <buffer> ;m - [ ]
 
     function! s:isAtStartOfLine(mapping)
       let text_before_cursor = getline('.')[0 : col('.')-1]
@@ -606,33 +606,21 @@ let mapleader = "\<space>"
 "{{{
     imap <C-l> <Plug>(coc-snippets-expand)
 
-    " tab trigger snippets auto-completion
-    inoremap <silent><expr> <TAB>
-          \ pumvisible() ? coc#_select_confirm() :
-          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
-          \ coc#refresh()
-
-    function! s:check_back_space() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
+"    " tab trigger snippets auto-completion
+"    inoremap <silent><expr> <TAB>
+"          \ pumvisible() ? coc#_select_confirm() :
+"          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+"          \ <SID>check_back_space() ? "\<TAB>" :
+"          \ coc#refresh()
+"
+"    function! s:check_back_space() abort
+"      let col = col('.') - 1
+"      return !col || getline('.')[col - 1]  =~# '\s'
+"    endfunction
 
     " let g:coc_snippet_next = '<c-j>'  " default c-j c-k is better,
     " let snippets.userSnippetsDirectory
 "}}}
-" ===
-" === 
-
-" ===
-" === da === asdfasf
-" ===
-
-" ===
-" === 
-" ===
-" === 
-" ===
 
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8

@@ -17,7 +17,7 @@ fi
 
 # apps
 apps="newsboat ranger zsh global python3-pip universal-ctags vim-gtk \
-    xclip net-tools x11-apps"
+    xclip net-tools x11-apps lua5.4 "
 sudo apt install -y $apps
 
 # python3
@@ -35,23 +35,27 @@ fi
 gateway=$(ip route | head -1 | awk '{print $3}')
 export all_proxy=http://$gateway:10809
 
-# oh my zsh - should be first for override .zshrc first
-if [[ ! -e ~/.oh-my-zsh ]]; then
-    export RUNZSH=no
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
 # zplug
 if [[ ! -e ~/.zplug ]]; then
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
     echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
 fi
 
+# oh my zsh - should be first for override .zshrc first
+if [[ ! -e ~/.oh-my-zsh ]]; then
+    export RUNZSH=yes  #  'no' means the installer will not run zsh after the install (default: yes)
+    export KEEP_ZSHRC=no       # 'yes' means the installer will not replace an existing .zshrc
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    echo 'export ZSH="$HOME/.oh-my-zsh"' >> ~/.zshrc
+    echo 'ZSH_THEME="robbyrussell"'      >> ~/.zshrc
+    echo 'source $ZSH/oh-my-zsh.sh'      >> ~/.zshrc
+fi
+
 # fzf
 if [[ ! -e ~/.fzf ]]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install --all
-    echo '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh' >> ~/.zshrc
+    # echo '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh # owen' >> ~/.zshrc
 fi
 
 # ripgrep
