@@ -11,7 +11,7 @@ echo "start install ..."
 # repo list config to Tsinghua
 if [[ ! -e ./oh-my-tuna.py ]]; then
     wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
-    sudo python3 oh-my-tuna.py --global
+    sudo python3 oh-my-tuna.py --global -y
     sudo apt update
 fi
 
