@@ -65,7 +65,7 @@ fi
 if ! command_exists zsh; then
     # apps
     apps="newsboat ranger global python3-pip universal-ctags vim-gtk \
-        xclip net-tools x11-apps lua5.4 \
+        xclip net-tools x11-apps lua5.4 subversion fd-find \
         zsh"  # install zsh final for check
     sudo apt install -y $apps
     # python3
@@ -104,10 +104,16 @@ if [[ ! -e ~/.oh-my-zsh ]]; then
 fi
 
 # zplug
-if [[ ! -e ~/.zplug ]]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-    echo 'export ZPLUG_THREADS=2' >> ~/.zshrc
-    echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
+# if [[ ! -e ~/.zplug ]]; then
+#     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+#     echo 'export ZPLUG_THREADS=1' >> ~/.zshrc
+#     echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
+# fi
+
+# zinit
+# if [[ ! -e ~/.zplug ]]; then
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
 fi
 
 # fzf
