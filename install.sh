@@ -104,17 +104,16 @@ if [[ ! -e ~/.oh-my-zsh ]]; then
 fi
 
 # zplug
-# if [[ ! -e ~/.zplug ]]; then
-#     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-#     echo 'export ZPLUG_THREADS=1' >> ~/.zshrc
-#     echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
-# fi
+if [[ ! -e ~/.zplug ]]; then
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    # echo 'export ZPLUG_THREADS=16' >> ~/.zshrc
+    echo 'source ~/.zplug/init.zsh' >> ~/.zshrc
+fi
 
 # zinit
-# if [[ ! -e ~/.zplug ]]; then
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
-fi
+# if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+#     bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+# fi
 
 # fzf
 if [[ ! -e ~/.fzf ]]; then
