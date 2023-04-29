@@ -64,9 +64,9 @@ try_config() {
 }
 
 # -- zsh ---------------------------------------------------------
-try_config "~/.zshrc" "source ~/.local/etc/zsh.conf"                                
+try_config ~/.zshrc "source ~/.local/etc/zsh.conf"                                
 
 # -- tmux ---------------------------------------------------------
-try_config "~/.tmux.conf" "source ~/.local/etc/tmux.conf"                                
+try_config ~/.tmux.conf "source ~/.local/etc/tmux.conf"                                
 
 
