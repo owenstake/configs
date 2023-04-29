@@ -1,5 +1,6 @@
 ; replaces the old instance automatically
 #SingleInstance force
+#MaxHotkeysPerInterval 200
 
 ; Basic AHK key remap knowledge
 ; #win, !alt, ^ctl, +shift, ~do not overwrite
