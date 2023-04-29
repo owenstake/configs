@@ -606,17 +606,22 @@ let mapleader = "\<space>"
 "{{{
     imap <C-l> <Plug>(coc-snippets-expand)
 
-"    " tab trigger snippets auto-completion
-"    inoremap <silent><expr> <TAB>
-"          \ pumvisible() ? coc#_select_confirm() :
-"          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-"          \ <SID>check_back_space() ? "\<TAB>" :
-"          \ coc#refresh()
-"
-"    function! s:check_back_space() abort
-"      let col = col('.') - 1
-"      return !col || getline('.')[col - 1]  =~# '\s'
-"    endfunction
+    " tab trigger snippets auto-completion
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? coc#_select_confirm() :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice.
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                                  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     " let g:coc_snippet_next = '<c-j>'  " default c-j c-k is better,
     " let snippets.userSnippetsDirectory
