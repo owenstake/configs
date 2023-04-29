@@ -6,7 +6,7 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
-source lib.sh
+source lib/lib.sh
 
 main() {
 setup_color
@@ -103,7 +103,7 @@ if [[ ! -e ./configs ]]; then
     # shallow clone
     git clone --depth=1 https://github.com/owenstake/configs.git
     cd configs
-    ./bootstrap.sh
+    ./bootstrap.sh f
     cd -
 fi
 
