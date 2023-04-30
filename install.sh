@@ -113,6 +113,14 @@ if ! command_exists tldr; then
     tldr --update
 fi
 
+# wudao - [ChestnutHeng/Wudao-dict: 有道词典的命令行版本，支持英汉互查和在线查询。](https://github.com/ChestnutHeng/Wudao-dict )
+(
+mkdir -p ~/.local/lib && cd $_
+git clone https://github.com/chestnutheng/wudao-dict --depth 1
+cd ./wudao-dict/wudao-dict
+sudo bash setup.sh #或者sudo ./setup.sh
+)
+
 fmt_info "finish install"
 
 # vim plug. auto trigger install
