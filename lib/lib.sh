@@ -22,7 +22,7 @@ fmt_error() {
 }
 
 setup_color() {
-  # Only use colors if connected to a terminal
+    # Only use colors if connected to a terminal
     FMT_RAINBOW="
       $(printf '\033[38;2;255;0;0m')
       $(printf '\033[38;2;255;97;0m')
@@ -33,11 +33,11 @@ setup_color() {
       $(printf '\033[38;2;245;0;172m')
     "
 
-  FMT_RED=$(printf '\033[31m')
-  FMT_GREEN=$(printf '\033[32m')
-  FMT_YELLOW=$(printf '\033[33m')
-  FMT_BLUE=$(printf '\033[34m')
-  FMT_BOLD=$(printf '\033[1m')
-  FMT_RESET=$(printf '\033[0m')
+    FMT_RED=$(printf '\033[31m')
+    FMT_GREEN=$(printf '\033[32m')
+    FMT_YELLOW=$(printf '\033[33m')
+    FMT_BLUE=$(printf '\033[34m')
+    FMT_BOLD=$(printf '\033[1m')
+    FMT_RESET=$(printf '\033[0m')
 }
 

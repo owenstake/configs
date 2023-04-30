@@ -6,7 +6,23 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
-source lib/lib.sh
+# function
+command_exists() {
+  command -v "$@" >/dev/null 2>&1
+}
+
+fmt_info() {
+  printf '%sInfo: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+}
+
+setup_color() {
+    FMT_RED=$(printf '\033[31m')
+    FMT_GREEN=$(printf '\033[32m')
+    FMT_YELLOW=$(printf '\033[33m')
+    FMT_BLUE=$(printf '\033[34m')
+    FMT_BOLD=$(printf '\033[1m')
+    FMT_RESET=$(printf '\033[0m')
+}
 
 main() {
 setup_color
@@ -115,10 +131,12 @@ fi
 
 # wudao - [ChestnutHeng/Wudao-dict: 有道词典的命令行版本，支持英汉互查和在线查询。](https://github.com/ChestnutHeng/Wudao-dict )
 (
-mkdir -p ~/.local/lib && cd $_
-git clone https://github.com/chestnutheng/wudao-dict --depth 1
-cd ./wudao-dict/wudao-dict
-sudo bash setup.sh #或者sudo ./setup.sh
+if ! command_exists wd; then
+    mkdir -p ~/.local/lib && cd $_
+    git clone https://github.com/chestnutheng/wudao-dict --depth 1
+    cd ./wudao-dict/wudao-dict
+    sudo bash setup.sh #或者sudo ./setup.sh
+fi
 )
 
 fmt_info "finish install"
