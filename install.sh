@@ -43,10 +43,19 @@ if ! command_exists zsh; then
         xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
         zsh"  # install zsh final for check
     sudo apt install -y $apps
-    # python3
-    python3 -m pip install --upgrade setuptools
 fi
 
+# python config
+if [[ ! -e ~/.pip/pip.conf ]]; then
+    mkdir -p ~/.pip
+    echo "[global]                                            " >> ~/.pip/pip.conf
+    echo "index-url = https://pypi.tuna.tsinghua.edu.cn/simple" >> ~/.pip/pip.conf
+    echo "[install]                                           " >> ~/.pip/pip.conf
+    echo "trusted-host=pypi.tuna.tsinghua.edu.cn              " >> ~/.pip/pip.conf
+    # python3 - upgrade pip
+    python3 -m pip install --upgrade setuptools
+    python3 -m pip install bs4 lxml   # for wudao-dict
+fi
 
 if ! command_exists node ; then
     # nodejs - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
@@ -150,5 +159,7 @@ fmt_info "finish install"
 
 fmt_info "time elasped => "
 time main "$@"
+
+
 
 
