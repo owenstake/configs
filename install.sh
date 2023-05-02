@@ -148,6 +148,7 @@ fmt_info "finish install"
 # wsl --import-in-place ubt-test f:\wsl\test\ext4-ubt22-pure.vhdx
 }
 
-main "$@"
+fmt_info "time elasped => "
+time main "$@"
 
 
