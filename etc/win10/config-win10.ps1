@@ -1,6 +1,7 @@
 ###########################################################
 # Init win10 config
 ###########################################################
+
 "------ Show system info ----"
 systeminfo
 
@@ -26,24 +27,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 
 
 
-"------ Enable WSL using PowerShell ----"
-"Ref - https://blog.csdn.net/yushuzhen2008/article/details/104944579"
-
-"1.win10开启WSL组件 "
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-
-"2.默认安装wsl2的linux系统"
-wsl --set-default-version 2
-
-"3.默认安装wsl2的linux系统"
-# Microsoft Store应用商店 安装ubt
-# 必须先完成上一步，即 默认wsl2 !!! (wsl2才有ext4.vhdx)
-
-# check
-# wsl -l -v
-
-# 重启wsl组件
-# net stop LxssManager
-# net start LxssManager
+"------ Install WSL using PowerShell ----"
+# [Install WSL | Microsoft Learn](https://learn.microsoft.com/en-us/windows/wsl/install )
+wsl --install
 

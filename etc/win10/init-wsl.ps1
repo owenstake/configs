@@ -117,8 +117,8 @@ netsh interface portproxy show all
 Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
 # New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
 #
-"Add firewall wsl2 rules for proxy"
-netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
+# "Add firewall wsl2 rules for proxy"
+# netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
 
 "Add firewall wsl2 rules for icmp ping"
 netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
@@ -148,10 +148,10 @@ $trigger = New-ScheduledTaskTrigger -AtLogOn
 $action  = New-ScheduledTaskAction -Execute 'D:\.local\win10\keyremap.ahk'
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-keyremap"
 
-"-- for wsl set default user when logon --"
-$trigger = New-ScheduledTaskTrigger -AtLogOn
-$action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
+# "-- for wsl set default user when logon --"
+# $trigger = New-ScheduledTaskTrigger -AtLogOn
+# $action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
+# Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
 
 # "-- for shadow copy everyday --"
 # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
@@ -162,6 +162,6 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set
 Get-ScheduledTask "owen-*"
 
 "-------------------- wsl sshd start ------------------------"
-wsl -u root /etc/init.d/ssh start
+# wsl -u root /etc/init.d/ssh start
 
-sleep 10
+sleep 5
