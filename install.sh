@@ -15,6 +15,10 @@ fmt_info() {
   printf '%sInfo: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
+fmt_error() {
+  printf '%sInfo: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+}
+
 setup_color() {
     FMT_RED=$(printf '\033[31m')
     FMT_GREEN=$(printf '\033[32m')
