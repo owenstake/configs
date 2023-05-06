@@ -8,15 +8,20 @@ trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
 # function
 command_exists() {
-  command -v "$@" >/dev/null 2>&1
+    command -v "$@" >/dev/null 2>&1
 }
 
 fmt_info() {
-  printf '%sInfo: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+    printf '%sInfo: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
 fmt_error() {
-  printf '%sInfo: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+    printf '%sInfo: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+}
+
+git_clone() {
+    # local url=$1
+    git clone --depth 1 $@
 }
 
 setup_color() {
@@ -108,7 +113,7 @@ fi
 
 # fzf
 if [[ ! -e ~/.fzf ]]; then
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    git_clone https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install --all  # --all for set short-cut <ctrl-t> <ctrl-r>
     # echo '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh # owen' >> ~/.zshrc
 fi
@@ -125,7 +130,7 @@ fi
 # oh my tmux
 if [[ ! -e ~/.tmux ]]; then
     cd
-    git clone https://github.com/gpakosz/.tmux.git
+    git_clone https://github.com/gpakosz/.tmux.git
     ln -s -f .tmux/.tmux.conf
     cp .tmux/.tmux.conf.local .
     cd - 2>/dev/null
@@ -133,7 +138,7 @@ fi
 
 if [[ ! -e ./configs ]]; then
     # shallow clone
-    git clone --depth=1 https://github.com/owenstake/configs.git
+    git_clone https://github.com/owenstake/configs.git
     cd configs
     ./bootstrap.sh f
     cd -
@@ -149,7 +154,7 @@ fi
 (
 if ! command_exists wd; then
     mkdir -p ~/.local/lib && cd $_
-    git clone https://github.com/chestnutheng/wudao-dict --depth 1
+    git_clone https://github.com/chestnutheng/wudao-dict
     cd ./wudao-dict/wudao-dict
     sudo bash setup.sh #或者sudo ./setup.sh
 fi
