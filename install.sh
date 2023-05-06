@@ -45,8 +45,11 @@ if ! command_exists zsh; then
     # apps
     apps="newsboat ranger global python3-pip universal-ctags vim-gtk \
         xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
+        openssh-server \
         zsh"  # install zsh final for check
     sudo apt install -y $apps
+    # start service
+    sudo systemctl enable ssh --now
 fi
 
 # python config

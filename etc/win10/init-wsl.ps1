@@ -55,113 +55,134 @@ function wsl_add_hostname($HOSTIP, $HOSTNAME) {
     wsl_add_hostname_in_hostfile $HOSTIP $HOSTNAME "/etc/hosts"
     # wsl_add_hostname_in_hostfile("cloudhost", "/mnt/c/Windows/System32/drivers/etc/hosts")
 }
+
+function ExecFileAtLogOn($taskName, $file) {
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $action  = New-ScheduledTaskAction -Execute $file
+    Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName
+}
 ##### end of functions ################
 #######################################
 
-"--------------------- System Clear -----------------------------------------"
-# clear firewall rule
-netsh advfirewall firewall delete rule name=WSL2
+function main() {
+    "--------------------- System Clear -----------------------------------------"
+    # clear firewall rule
+    netsh advfirewall firewall delete rule name=WSL2
 
-"--------------------- Var Define -------------------------------------------"
-$WSLIP           = $args[0]
-$WINIP           = $args[1]
-# $OPEN_PORTS_BASE = $args[2]
-# $OPEN_PORTS_NUM  = $args[3]
-# $REMOTEHOST      = $args[4]
-# $CLOUDHOST       = $args[5]
-"WSL IP = " + $WSLIP
-"WIN IP = " + $WINIP
+    "--------------------- Var Define -------------------------------------------"
+    $WSLIP           = $args[0]
+    $WINIP           = $args[1]
+    # $OPEN_PORTS_BASE = $args[2]
+    # $OPEN_PORTS_NUM  = $args[3]
+    # $REMOTEHOST      = $args[4]
+    # $CLOUDHOST       = $args[5]
+    "WSL IP = " + $WSLIP
+    "WIN IP = " + $WINIP
 
-"--------------------- Locadefine -------------------------------------------"
-$ANY_IP          = "0.0.0.0"                        # for proxy listening ip
-$OPEN_IP         = "192.168.89.205,192.168.89.206"    # allow connect to sshd
-$WSLPROXY        = "127.65.43.21"     # for wsl server port
-$WIN_SSHD_PORT          = 3322
+    "--------------------- Local Define -------------------------------------------"
+    $ANY_IP          = "0.0.0.0"                        # for proxy listening ip
+    $OPEN_IP         = "192.168.89.205,192.168.89.206"    # allow connect to sshd
+    $WSLPROXY        = "127.65.43.21"     # for wsl server port
+    $WIN_SSHD_PORT   = 3322
 
 
-"--------------------- WSL network config -----------------------------------"
-# Add an IP address in Ubuntu, $WSLIP, named eth0:1
-# i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
-wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
+    "--------------------- WSL network config -----------------------------------"
+    # Add an IP address in Ubuntu, $WSLIP, named eth0:1
+    # i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
+    wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
 
-# Add an IP address in Win10, $WINIP
-netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
+    # Add an IP address in Win10, $WINIP
+    netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
-"--------------------- add port proxy in wsl2 -------------------------------"
-"clear port proxy all "
-netsh interface portproxy reset
+    "--------------------- add port proxy in wsl2 -------------------------------"
+    "clear port proxy all "
+    netsh interface portproxy reset
 
-"start ip helper"
-net start iphlpsvc
+    "start ip helper"
+    net start iphlpsvc
 
-# SSHD open port
-win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      $OPEN_IP
-# win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      any
+    # SSHD open port
+    win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      $OPEN_IP
+    # win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      any
 
-# win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
-# for   proxy
-# win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
-# for apache - "sudo /etc/init.d/apache2 restart"
-# win_open_port   wslproxy    8080               wslhost   8080
-# for python httpd - "python3 -m http.server --directory /mnt/d/svn/svnwork"
-# win_open_port   wslproxy    8080               wslhost   8080
+    # win_open_ports_range   $ANY_IP     $OPEN_PORTS_BASE   wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
+    # for   proxy
+    # win_open_ports_range   wslproxy    80                 wslhost   $OPEN_PORTS_BASE   $OPEN_PORTS_NUM   any
+    # for apache - "sudo /etc/init.d/apache2 restart"
+    # win_open_port   wslproxy    8080               wslhost   8080
+    # for python httpd - "python3 -m http.server --directory /mnt/d/svn/svnwork"
+    # win_open_port   wslproxy    8080               wslhost   8080
 
-"Show port proxy all "
-netsh interface portproxy show all
+    "Show port proxy all "
+    netsh interface portproxy show all
 
-" -------------------- Firewall ---------------------------------------- "
-# for mobax xserver
-# netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
+    " -------------------- Firewall ---------------------------------------- "
+    # for mobax xserver
+    # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
 
-"add rule for wsl with winhost"
-Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
-# New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
-#
-# "Add firewall wsl2 rules for proxy"
-# netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
+    "add rule for wsl with winhost"
+    Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
+    # New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
+    #
+    # "Add firewall wsl2 rules for proxy"
+    # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
 
-"Add firewall wsl2 rules for icmp ping"
-netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
-netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
+    "Add firewall wsl2 rules for icmp ping"
+    netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
+    netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
 
-"Show firewall wsl2 rules"
-# https://support.microsoft.com/en-us/topic/44af15a8-72a1-e699-7290-569726b39d4a
-netsh advfirewall firewall show rule name=WSL2
-netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
-netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
+    # "Del firewall wsl2 rules for icmp ping"
+    # netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=no
+    # netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=no
 
-# "TODO: start firewall "
-# netsh advfirewall set currentprofile state on
+    "Show firewall wsl2 rules"
+    # https://support.microsoft.com/en-us/topic/44af15a8-72a1-e699-7290-569726b39d4a
+    netsh advfirewall firewall show rule name=WSL2
+    netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
+    netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
 
-"--------------------- Modify hosts - require admin privillege ----------------"
-wsl_add_hostname   $WSLIP        wslhost
-wsl_add_hostname   $WINIP        winhost
-# wsl_add_hostname   $REMOTEHOST   remotehost
-# wsl_add_hostname   $CLOUDHOST    cloudhost
-# wsl_add_hostname   $WSLPROXY     wslproxy
+    # "TODO: start firewall "
+    # netsh advfirewall set currentprofile state on
 
-"--------------------- Schedule Tasks ----------------------------------"
-Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
+    "--------------------- Modify Hosts File - Require Admin Privillege ----------------"
+    wsl_add_hostname   $WSLIP        wslhost
+    wsl_add_hostname   $WINIP        winhost
+    # wsl_add_hostname   $REMOTEHOST   remotehost
+    # wsl_add_hostname   $CLOUDHOST    cloudhost
+    # wsl_add_hostname   $WSLPROXY     wslproxy
 
-"-- for keyremap when logon --"
-$trigger = New-ScheduledTaskTrigger -AtLogOn
-$action  = New-ScheduledTaskAction -Execute 'D:\.local\win10\keyremap.ahk'
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-keyremap"
+    "--------------------- Schedule Tasks ----------------------------------"
+    Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
 
-# "-- for wsl set default user when logon --"
-# $trigger = New-ScheduledTaskTrigger -AtLogOn
-# $action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
-# Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
+    # "-- For keyremap At logon --"
+    # ExecFileAtLogOn "owen-keyremap" "D:\.local\win10\keyremap.ahk"
 
-# "-- for shadow copy everyday --"
-# $trigger = New-ScheduledTaskTrigger -Daily -At 3am
-# $action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
-# Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
+    # "-- For easy-marker At logon --"
+    # ExecFileAtLogOn "owen-easy-marker" "D:\.local\win10\easy-marker\common-markdown.ahk"
 
-"Show Tasks result"
-Get-ScheduledTask "owen-*"
+    "-- For All At logon --"
+    ExecFileAtLogOn "owen-all-entry" "D:\.local\win10\easy-marker\EntryAtLogOn.ps1"
 
-"-------------------- wsl sshd start ------------------------"
-# wsl -u root /etc/init.d/ssh start
+    # "-- for wsl set default user when logon --"
+    # $trigger = New-ScheduledTaskTrigger -AtLogOn
+    # $action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
+    # Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
 
-sleep 5
+    # "-- for shadow copy everyday --"
+    # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
+    # $action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
+    # Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
+
+    "Show Tasks result"
+    Get-ScheduledTask "owen-*"
+
+    "-------------------- WSL sshd start ------------------------"
+    # wsl -u root /etc/init.d/ssh start
+
+    "-------------------- Pause for key press ------------------------"
+    cmd /c pause
+}
+
+# real start exec
+main
+
