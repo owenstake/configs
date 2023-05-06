@@ -154,19 +154,8 @@ function main() {
     "--------------------- Schedule Tasks ----------------------------------"
     Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
 
-    # "-- For keyremap At logon --"
-    # ExecFileAtLogOn "owen-keyremap" "D:\.local\win10\keyremap.ahk"
-
-    # "-- For easy-marker At logon --"
-    # ExecFileAtLogOn "owen-easy-marker" "D:\.local\win10\easy-marker\common-markdown.ahk"
-
     "-- For All At logon --"
     ExecFileAtLogOn "owen-all-entry" "D:\.local\win10\easy-marker\EntryAtLogOn.ps1"
-
-    # "-- for wsl set default user when logon --"
-    # $trigger = New-ScheduledTaskTrigger -AtLogOn
-    # $action  = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument '-Command "Ubuntu2004 config --default-user z; sleep 1; echo done"'
-    # Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "owen-wsl-set-default-user" -RunLevel Highest
 
     # "-- for shadow copy everyday --"
     # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
@@ -175,9 +164,6 @@ function main() {
 
     "Show Tasks result"
     Get-ScheduledTask "owen-*"
-
-    "-------------------- WSL sshd start ------------------------"
-    # wsl -u root /etc/init.d/ssh start
 
     "-------------------- Pause for key press ------------------------"
     cmd /c pause
