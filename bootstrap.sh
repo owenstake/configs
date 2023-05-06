@@ -52,8 +52,8 @@ try_config() {
     local file=$1
     local msg=$2
     MarkLine="# owen configed" 
-    if  ! grep -q "$MarkLine" $file ; then
-        echo "owen zsh is configing"
+    if ! grep -q "$MarkLine" $file ; then
+        echo "owen $file is configing"
         echo "$MarkLine"                      >> $file
         echo "# -- owen $file config -- "     >> $file
         echo "$msg"                           >> $file
