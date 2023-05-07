@@ -1,8 +1,8 @@
 
-$ConfigDir='D:\.local\win10\'
+$WorkDir='D:\.local\win10\'
 
 function ExecFile($file) {
-    $absPath=$ConfigDir+$file
+    $absPath=$WorkDir+$file
     explorer.exe $absPath
 }
 

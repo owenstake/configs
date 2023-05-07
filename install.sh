@@ -38,23 +38,25 @@ main() {
     # start install
     fmt_info "start install ..."
 
-    # repo list config to Tsinghua
-    if [[ ! -e ./oh-my-tuna.py ]]; then
+    oldDir=$PWD
+    buildDir=$(mktemp -d)
+    fmt_info "Build dir is $buildDir"
+    cd $buildDir
+
+    if ! command_exists zsh; then
+        # repo list config to Tsinghua
         wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
         sudo python3 oh-my-tuna.py --global -y
         sudo apt update
         sudo apt upgrade -y
-    fi
-
-    if ! command_exists zsh; then
         # apps
         apps="newsboat ranger global python3-pip universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
-            openssh-server \
+            openssh-server tree \
             zsh"  # install zsh final for check
         sudo apt install -y $apps
         # start service
-        sudo systemctl enable ssh --now
+        sudo systemctl enable ssh
     fi
 
     # python config
@@ -66,18 +68,22 @@ main() {
         echo "trusted-host=pypi.tuna.tsinghua.edu.cn              " >> ~/.pip/pip.conf
         # python3 - upgrade pip
         python3 -m pip install --upgrade setuptools
-        python3 -m pip install bs4 lxml   # for wudao-dict
     fi
 
     if ! command_exists node ; then
-        # nodejs - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
+        # nodejs 18 install - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
         curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt install -y nodejs
+        # npm config
+        # sudo npm config set registry https://registry.npm.taobao.org  # mirror list
+        sudo npm config set update-notifier false  # avoid update notice
+        sudo npm config set fund false             # avoid fund notice
+        # sudo npm config ls -l  # show all node config key=value
         node --version
         npm  --version
     fi
 
-    # proxy for github
+    # Proxy for github
     gateway=$(ip route | head -1 | awk '{print $3}')
     export all_proxy=http://$gateway:10809
 
@@ -122,43 +128,47 @@ main() {
     if ! command_exists rg; then
         curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
         sudo dpkg -i ripgrep_13.0.0_amd64.deb
-        rm ripgrep_13.0.0_amd64.deb
+        # rm ripgrep_13.0.0_amd64.deb
     fi
 
     # zlua (already install in zplug)
 
     # oh my tmux
     if [[ ! -e ~/.tmux ]]; then
-        cd
+        cd ~
         git_clone https://github.com/gpakosz/.tmux.git
         ln -s -f .tmux/.tmux.conf
         cp .tmux/.tmux.conf.local .
         cd - 2>/dev/null
     fi
 
-    if [[ ! -e ./configs ]]; then
+    if [[ ! -e ~/configs ]]; then
+        (
+        cd ~
         # shallow clone
         git_clone https://github.com/owenstake/configs.git
         cd configs
-        ./bootstrap.sh f
-        cd -
+        ./bootstrap.sh
+        )
     fi
 
     # tldr
     if ! command_exists tldr; then
+        fmt_info "tldr install and config"
         sudo npm install -g tldr
         tldr --update
     fi
 
     # wudao - [ChestnutHeng/Wudao-dict: 有道词典的命令行版本，支持英汉互查和在线查询。](https://github.com/ChestnutHeng/Wudao-dict )
-    (
     if ! command_exists wd; then
+        (
+        python3 -m pip install bs4 lxml   # for wudao-dict
         mkdir -p ~/.local/lib && cd $_
         git_clone https://github.com/chestnutheng/wudao-dict
         cd ./wudao-dict/wudao-dict
         sudo bash setup.sh #或者sudo ./setup.sh
+        )
     fi
-    )
 
     # lazygit
 
@@ -167,7 +177,7 @@ main() {
         curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
         tar xf lazygit.tar.gz lazygit
         sudo install lazygit /usr/local/bin
-        rm lazygit lazygit.tar.gz # clean
+        # rm lazygit lazygit.tar.gz # clean
     fi
 
     fmt_info "finish install"
@@ -177,6 +187,7 @@ main() {
     # wsl config
     # wsl --unregister ubt-test
     # wsl --import-in-place ubt-test f:\wsl\test\ext4-ubt22-pure.vhdx
+    cd $oldDir
 }
 
 time main "$@"

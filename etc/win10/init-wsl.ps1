@@ -42,17 +42,19 @@ function win_open_ports_range($lip, $lport_base, $cip, $cport_base, $len, $remot
     }
 }
 
-function wsl_add_hostname_in_hostfile($HOSTIP, $HOSTNAME, $HOSTFILE) {
-    wsl -u root "--%" "sed -i '/$HOSTNAME/d' $HOSTFILE"
-    wsl -u root "--%" "echo $HOSTIP $HOSTNAME >> $HOSTFILE"
+function wsl_add_hostname_in_hostfile($wslName, $hostIp, $hostName, $hostFile) {
+    # delete first
+    wsl -d $wslName -u root "--%" "sed -i '/$hostName/d' $hostFile"
+    # add host item
+    wsl -d $wslName -u root "--%" "echo $hostIp $hostName >> $hostFile"
 }
 
-function wsl_add_hostname($HOSTIP, $HOSTNAME) {
+function wsl_add_hostname($wslName, $hostIp, $hostName) {
     # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
     # wsl -u root sed -i '/wslhost/d'    /etc/hosts
     # wsl -u root "--%" "echo $WSLIP      wslhost    >> /etc/hosts"
-    wsl_add_hostname_in_hostfile $HOSTIP $HOSTNAME "/mnt/c/Windows/System32/drivers/etc/hosts"
-    wsl_add_hostname_in_hostfile $HOSTIP $HOSTNAME "/etc/hosts"
+    wsl_add_hostname_in_hostfile $wslName $hostIp $hostName "/mnt/c/Windows/System32/drivers/etc/hosts"
+    wsl_add_hostname_in_hostfile $wslName $hostIp $hostName "/etc/hosts"
     # wsl_add_hostname_in_hostfile("cloudhost", "/mnt/c/Windows/System32/drivers/etc/hosts")
 }
 
@@ -64,20 +66,18 @@ function ExecFileAtLogOn($taskName, $file) {
 ##### end of functions ################
 #######################################
 
-function main() {
+function main($WSLNAME,$WSLIP,$WINIP) {
     "--------------------- System Clear -----------------------------------------"
     # clear firewall rule
     netsh advfirewall firewall delete rule name=WSL2
 
-    "--------------------- Var Define -------------------------------------------"
-    $WSLIP           = $args[0]
-    $WINIP           = $args[1]
     # $OPEN_PORTS_BASE = $args[2]
     # $OPEN_PORTS_NUM  = $args[3]
     # $REMOTEHOST      = $args[4]
     # $CLOUDHOST       = $args[5]
-    "WSL IP = " + $WSLIP
-    "WIN IP = " + $WINIP
+    "WSL NAME = " + $WSLNAME
+    "WSL IP = "   + $WSLIP
+    "WIN IP = "   + $WINIP
 
     "--------------------- Local Define -------------------------------------------"
     $ANY_IP          = "0.0.0.0"                        # for proxy listening ip
@@ -89,10 +89,10 @@ function main() {
     "--------------------- WSL network config -----------------------------------"
     # Add an IP address in Ubuntu, $WSLIP, named eth0:1
     # i.e. wsl -u root ip addr add 192.168.50.1/24 broadcast 192.168.50.255 dev eth0 label eth0:1
-    wsl -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
+    # wsl -d $WSLNAME -u root ip addr add $WSLIP/24 dev eth0 label eth0:1
 
     # Add an IP address in Win10, $WINIP
-    netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
+    # netsh interface ip add address "vEthernet (WSL)" $WINIP 255.255.255.0
 
     "--------------------- add port proxy in wsl2 -------------------------------"
     "clear port proxy all "
@@ -128,7 +128,9 @@ function main() {
     # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
 
     "Add firewall wsl2 rules for icmp ping"
+    # allow receive ping connection from other PC
     netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
+    # allow wsl ping win10
     netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
 
     # "Del firewall wsl2 rules for icmp ping"
@@ -145,8 +147,8 @@ function main() {
     # netsh advfirewall set currentprofile state on
 
     "--------------------- Modify Hosts File - Require Admin Privillege ----------------"
-    wsl_add_hostname   $WSLIP        wslhost
-    wsl_add_hostname   $WINIP        winhost
+    wsl_add_hostname  $wslName  $WSLIP   $wslName
+    wsl_add_hostname  $wslName  $WINIP   winhost
     # wsl_add_hostname   $REMOTEHOST   remotehost
     # wsl_add_hostname   $CLOUDHOST    cloudhost
     # wsl_add_hostname   $WSLPROXY     wslproxy
@@ -169,6 +171,11 @@ function main() {
     cmd /c pause
 }
 
-# real start exec
-main
+
+"--------------------- Var Define -------------------------------------------"
+$WSLNAME         = $args[0]
+$WSLIP           = $args[1]
+$WINIP           = $args[2]
+
+main $WSLNAME $WSLIP $WINIP
 
