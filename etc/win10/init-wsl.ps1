@@ -71,6 +71,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # clear firewall rule
     netsh advfirewall firewall delete rule name=WSL2
 
+    "--------------------- Print Args -----------------------------------------"
     # $OPEN_PORTS_BASE = $args[2]
     # $OPEN_PORTS_NUM  = $args[3]
     # $REMOTEHOST      = $args[4]
@@ -101,7 +102,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     "start ip helper"
     net start iphlpsvc
 
-    # SSHD open port
+    "SSHD open port"
     win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      $OPEN_IP
     # win_open_port       $ANY_IP     $WIN_SSHD_PORT      wslhost   22      any
 
@@ -121,7 +122,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
 
     "add rule for wsl with winhost"
-    Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
+    # Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
     # New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
     #
     # "Add firewall wsl2 rules for proxy"
