@@ -68,24 +68,25 @@ main() {
         echo "trusted-host=pypi.tuna.tsinghua.edu.cn              " >> ~/.pip/pip.conf
         # python3 - upgrade pip
         python3 -m pip install --upgrade setuptools
+        python3 -m pip install asciinema
     fi
+
+    # Proxy for github
+    gateway=$(ip route | head -1 | awk '{print $3}')
+    export all_proxy=http://$gateway:10809
 
     if ! command_exists node ; then
         # nodejs 18 install - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
         curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt install -y nodejs
         # npm config
-        # sudo npm config set registry https://registry.npm.taobao.org  # mirror list
+        sudo npm config set registry https://registry.npm.taobao.org  # mirror list
         sudo npm config set update-notifier false  # avoid update notice
         sudo npm config set fund false             # avoid fund notice
         # sudo npm config ls -l  # show all node config key=value
         node --version
         npm  --version
     fi
-
-    # Proxy for github
-    gateway=$(ip route | head -1 | awk '{print $3}')
-    export all_proxy=http://$gateway:10809
 
     # check network proxy
     if curl -s www.google.com --connect-timeout 3 > /dev/null; then
