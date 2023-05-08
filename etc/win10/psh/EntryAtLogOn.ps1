@@ -6,6 +6,6 @@ function ExecFile($file) {
     explorer.exe $absPath
 }
 
-ExecFile 'keyremap.ahk'
-ExecFile 'easy-marker\easy-marker.ahk'
+ExecFile 'ahk\keyremap.ahk'
+ExecFile 'ahk\easy-marker\easy-marker.ahk'
 

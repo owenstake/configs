@@ -4,7 +4,7 @@
 
 Param(
     [Parameter(Mandatory = $True, Position = 1)][string] $DesDirPath, 
-    [Parameter(Position = 2)][string] $IMGNAME
+    [Parameter(Position = 2)][string] $imgName
 )
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -14,8 +14,9 @@ if (-not [System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
     $clipboard = [System.Windows.Forms.Clipboard]::GetDataObject()
     if ($clipboard.ContainsImage()) {
         $img = get-clipboard -format image
-        $img.save($IMGNAME)
-        "Image in clipboard and saved as $IMGNAME"
+        $imgPath = $DesDirPath + '\' + $imgName
+        $img.save($imgPath)
+        "Image in clipboard and saved as $imgPath"
         return
     } else {
         "clipboard does not contains image data"

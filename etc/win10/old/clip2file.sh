@@ -15,4 +15,5 @@ dirname=$(dirname "$realpath")
 
 WINFILENAME=$(wslpath -wa $dirname)"\\""$filename"
 
-$POWERSHELL_PATH -File 'D:\.local\win10\clip2file.ps1' "$DesDirPath" "$WINFILENAME"  # etc/win10/clip2file.ps1
+powershell.exe -File 'D:\.local\win10\clip2file.ps1' "$DesDirPath" "$WINFILENAME"  # etc/win10/clip2file.ps1
+# $POWERSHELL_PATH -File 'D:\.local\win10\clip2file.ps1' "$DesDirPath" "$WINFILENAME"  # etc/win10/clip2file.ps1
