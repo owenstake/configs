@@ -18,14 +18,6 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 ##### end of get privillege #############################################################
 
-### parameter
-Param(
-    [Parameter(Mandatory = $True, Position = 1)][string] $WSLNAME, 
-    [Parameter(Mandatory = $True, Position = 2)][string] $WSLIP, 
-    [Parameter(Mandatory = $True, Position = 3)][string] $WINIP, 
-    [Parameter(Mandatory = $True, Position = 4)][string] $PshDir 
-)
-
 ################################
 ##### Functions ################
 ################################
@@ -82,7 +74,7 @@ function ExecPowershellScriptAtLogOn($taskName, $script) {
 ##### end of functions ################
 #######################################
 
-function main($WSLNAME,$WSLIP,$WINIP) {
+function main($WSLNAME,$WSLIP,$WINIP,$PshDir) {
     "--------------------- System Clear -----------------------------------------"
     # clear firewall rule
     netsh advfirewall firewall delete rule name=WSL2
@@ -93,8 +85,9 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # $REMOTEHOST      = $args[4]
     # $CLOUDHOST       = $args[5]
     "WSL NAME = " + $WSLNAME
-    "WSL IP = "   + $WSLIP
-    "WIN IP = "   + $WINIP
+    "WSL IP   = " + $WSLIP
+    "WIN IP   = " + $WINIP
+    "PshDir   = " + $PshDir
 
     "--------------------- Local Define -------------------------------------------"
     $ANY_IP          = "0.0.0.0"                        # for proxy listening ip
@@ -189,9 +182,10 @@ function main($WSLNAME,$WSLIP,$WINIP) {
 
 
 "--------------------- Var Define -------------------------------------------"
-# $WSLNAME         = $args[0]
-# $WSLIP           = $args[1]
-# $WINIP           = $args[2]
+$WSLNAME         = $args[0]
+$WSLIP           = $args[1]
+$WINIP           = $args[2]
+$PshDir          = $args[3]
 
-main $WSLNAME $WSLIP $WINIP
+main $WSLNAME $WSLIP $WINIP $PshDir
 
