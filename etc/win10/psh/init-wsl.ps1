@@ -108,7 +108,7 @@ function main($WSLNAME,$WSLIP,$WINIP,$PshDir) {
     "clear port proxy all "
     netsh interface portproxy reset
 
-    "start ip helper"
+    "start ip helper for portproxy"
     net start iphlpsvc
 
     "SSHD open port"
