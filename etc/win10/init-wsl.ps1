@@ -63,6 +63,14 @@ function ExecFileAtLogOn($taskName, $file) {
     $action  = New-ScheduledTaskAction -Execute $file
     Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName
 }
+
+function ExecPowershellScriptAtLogOn($taskName, $script) {
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    # $action  = New-ScheduledTaskAction -Execute $file
+    $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-File $script"
+    Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName
+# $Action = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\MyScript.ps1"'
+}
 ##### end of functions ################
 #######################################
 
@@ -158,7 +166,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
 
     "-- For All At logon --"
-    ExecFileAtLogOn "owen-all-entry" "D:\.local\win10\EntryAtLogOn.ps1"
+    ExecPowershellScriptAtLogOn "owen-all-entry" "D:\.local\win10\EntryAtLogOn.ps1"
 
     # "-- for shadow copy everyday --"
     # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
