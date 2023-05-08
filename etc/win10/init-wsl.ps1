@@ -130,9 +130,8 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=6000
 
     "add rule for wsl with winhost"
-    # Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
-    # New-NetFirewallRule -DisplayName "WSL" -Direction Inbound  -InterfaceAlias "vEthernet (WSL)"  -Action Allow
-    #
+    Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
+
     # "Add firewall wsl2 rules for proxy"
     # netsh advfirewall firewall add rule name=WSL2 dir=in action=allow protocol=TCP localport=10809 remoteip=$OPEN_IP
 
@@ -140,7 +139,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # allow receive ping connection from other PC
     netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=yes
     # allow wsl ping win10
-    netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
+    # netsh advfirewall firewall set rule name="虚拟机监控(回显请求- ICMPv4-In)" new enable=yes
 
     # "Del firewall wsl2 rules for icmp ping"
     # netsh advfirewall firewall set rule name="文件和打印机共享(回显请求 - ICMPv4-In)" new enable=no
@@ -150,7 +149,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     # https://support.microsoft.com/en-us/topic/44af15a8-72a1-e699-7290-569726b39d4a
     netsh advfirewall firewall show rule name=WSL2
     netsh advfirewall firewall show rule name="文件和打印机共享(回显请求 - ICMPv4-In)"
-    netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
+    # netsh advfirewall firewall show rule name="虚拟机监控(回显请求- ICMPv4-In)"
 
     # "TODO: start firewall "
     # netsh advfirewall set currentprofile state on
@@ -176,7 +175,7 @@ function main($WSLNAME,$WSLIP,$WINIP) {
     "Show Tasks result"
     Get-ScheduledTask "owen-*"
 
-    "-------------------- Pause for key press ------------------------"
+    "-------------------- Pause util key press ------------------------"
     cmd /c pause
 }
 
