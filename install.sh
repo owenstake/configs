@@ -132,7 +132,10 @@ main() {
         # rm ripgrep_13.0.0_amd64.deb
     fi
 
-    # zlua (already install in zplug)
+    # zlua (already installed in zplug)
+    # if ! command_exists z; then
+    #     export RANGER_ZLUA="~/.zplug/repos/skywind3000/z.lua/z.lua"
+    # fi
 
     # oh my tmux
     if [[ ! -e ~/.tmux ]]; then

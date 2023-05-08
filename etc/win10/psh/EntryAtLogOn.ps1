@@ -1,9 +1,9 @@
 
-$WorkDir='D:\.local\win10\'
+$WorkDir= 'D:\.local\win10'
 
 function ExecFile($file) {
-    $absPath=$WorkDir+$file
-    explorer.exe $absPath
+    $filePath = $WorkDir + '\' + $file
+    explorer.exe $filePath
 }
 
 ExecFile 'ahk\keyremap.ahk'
