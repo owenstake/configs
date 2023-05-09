@@ -128,3 +128,4 @@ class fzf_select(Command):
                self.fm.cd(selected)
            else:
                self.fm.select_file(selected)   
+
