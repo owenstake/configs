@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 #
-export WinUserName=$(echo $PATH | sed 's$.*/mnt/c/Users/\([^/]*\)/AppData.*$\1$g')
+export WinUserName=$(echo $PATH | sed 's#.*/mnt/c/Users/\([^/]*\)/.*#\1#')
 
 function try_config() {
     local file=$1
