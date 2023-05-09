@@ -223,7 +223,7 @@
             return
     ; Chrome
         Alt & c::
-            WinActiveToggle("chrome.exe", "C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe")
+            WinActiveToggle("chrome.exe", "C:\Program Files\Google\Chrome Dev\Application\chrome.exe")
             return
     ; Drawio
         Alt & d::

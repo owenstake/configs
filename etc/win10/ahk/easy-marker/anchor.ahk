@@ -16,9 +16,9 @@ Z_CUR_FILE_LOG_LEVEL    := %LOG_PREFIX_STR%DEBUG
 Z_LOGFILE := A_ScriptDir "\ahk_z.log"
 FileDelete, %Z_LOGFILE%
 
-z_log("ERROR", "Z_CUR_TOOLTIP_LOG_LEVEL:" Z_CUR_TOOLTIP_LOG_LEVEL ".")
-z_log("ERROR", "Z_CUR_FILE_LOG_LEVEL:" Z_CUR_FILE_LOG_LEVEL ".")
-z_log("ERROR", "level:" level ".")
+; z_log("ERROR", "Z_CUR_TOOLTIP_LOG_LEVEL:" Z_CUR_TOOLTIP_LOG_LEVEL ".")
+; z_log("ERROR", "Z_CUR_FILE_LOG_LEVEL:" Z_CUR_FILE_LOG_LEVEL ".")
+; z_log("ERROR", "level:" level ".")
 
 JumpToAnchorByRegExMatch(str,hiddenEmptyLine:=true) {
     lengthMatch := 0
@@ -42,81 +42,6 @@ JumpToAnchorByRegExMatch(str,hiddenEmptyLine:=true) {
             SendInput {BackSpace}
         }
     }
-}
-
-; JumpToAnchorByInStr(str) {
-;     needleStr1 := "<++>"
-;     needleLen1 := StrLen(needleStr1)
-;     FoundPos1 := InStr(str, needleStr1)
-;     needleStr2 := "《++》"
-;     needleLen2 := StrLen(needleStr2)
-;     FoundPos2 := InStr(str,  needleStr2)
-;     If (FoundPos1 or FoundPos2) {
-;         If (FoundPos1=0) {
-;             pos := FoundPos2
-;         } Else if (FoundPos2=0) {
-;             pos := FoundPos1
-;         } Else {
-;             pos := Min(FoundPos1, FoundPos2)
-;         }
-;         pos += needleLen1 - 1  ; FoundPos is start from 1 not 0
-;         SendInput {right %pos%}{BackSpace %needleLen1%}
-;     }
-; }
-
-JumpToAnchor1(waitForCopySth:=False, dir:="Down") {
-    clipboardSaved := ClipboardAll ; save clipboard
-    Clipboard    := ""  ; 必须清空, 才能检测是否有效.
-    ; select a detection region for anchor
-    action = {shift down}{%dir% 4}{end}{shift up}   
-    SelectAndCopy(action, "{Left}",waitForCopySth)
-    ; maxCntCopyTimeout := 10
-    ; cntCopyTimeout    := 0
-    ; while(cntCopyTimeout < maxCntCopyTimeout) {
-    ;     SendInput ^c      ; this copy can be fail because selection is slow.
-    ;     ClipWait % 1      ; wait util clipboard not empty for timeout
-    ;     If (Clipboard != "" || !waitForCopySth) {
-    ;         Break
-    ;     }
-    ;     ; wait for selection ready and copy
-    ;     cntCopyTimeout++
-    ; }
-    ; If (Clipboard = "") {
-    ;     If (waitForCopySth) {
-    ;         ; It is abnormal because caller expects for non-empty Clipboard
-    ;         logstr = 
-    ;         ( LTrim
-    ;         wait Copy Timeout!! 
-    ;         (cntCopyTimeout,%cntCopyTimeout%)
-    ;         (maxCntCopyTimeout,%maxCntCopyTimeout%)
-    ;         )
-    ;         z_log("ERROR", A_ThisFunc " " logstr)
-    ;     } Else {
-    ;         ; It is normal if cursor is in the end of article
-    ;         logstr =
-    ;         ( LTrim
-    ;         Copy nothing, JumpToAnchor <__++> fail.
-    ;         Two reason:
-    ;         1. Curor is at the end of textbox.
-    ;         2. Selection is not completed since some IDE rendering is slow.
-    ;         )
-    ;         z_log("INFO", A_ThisFunc " " logstr)
-    ;     }
-    ;     Clipboard := clipboardSaved  ; restore clipboard
-    ;     Return
-    ; }
-
-    ; If (waitForCopySth && cntCopyTimeout) {
-    ;     logstr = (cntCopyTimeout,%cntCopyTimeout%)
-    ;     z_log("WARN", A_ThisFunc " " logstr)
-    ; }
-
-    ; SendInput {left}  ; Back to what we start.
-    ; jump to anchor <++>
-    ; or JumpToAnchorByInStr(Clipboard)  
-    JumpToAnchorByRegExMatch(Clipboard)
-    Clipboard := clipboardSaved  ; restore clipboard
-    Return
 }
 
 JumpToAnchor(waitForCopySth:=False, dir:="Down") {
@@ -160,15 +85,18 @@ z_log(logLevelStr, log) {
 		z_log("ERROR", "logLevelStr is illegal " logLevelStr)
 		return
 	}
+
+    funcName := Exception("", -2).what
+    logstr := Z_LOG_STRINGS[log_level] " | " funcName " " log
+
     ; log to file
     If (log_level >= Z_CUR_FILE_LOG_LEVEL) {
         FormatTime, TimeString,, yyyy-MM-dd HH:mm:ss
-        logstr := TimeString " | " Z_LOG_STRINGS[log_level] " | " funcName " " log
+        logstrTofile := TimeString " | " logstr
         FileAppend, %logstr%`n, %Z_LOGFILE%
     }
     ; log to tooltip
     If (log_level >= Z_CUR_TOOLTIP_LOG_LEVEL) {
-        logstr := Z_LOG_STRINGS[log_level] " | " log
         tooltip % logstr
         SetTimer, RemoveToolTip, 5000
     }
@@ -205,7 +133,7 @@ ParseFuncAndEval(funcCallStr) {
     ret := EvalFunc(funcName,args)
     If (ret == -1) {
         logstr = funcName %funcName% do not exists! funcCallStr=%funcCallStr%
-        z_log("ERROR", A_ThisFunc " " logstr)
+        z_log("ERROR", logstr)
     }
     Return ret
 }
@@ -213,14 +141,14 @@ ParseFuncAndEval(funcCallStr) {
 EvalFunc(funcName, arrParams) {
     If (!IsFunc(funcName)) {
         logstr = funcName %funcName% do not exists!
-        z_log("ERROR", A_ThisFunc " " logstr)
+        z_log("ERROR", logstr)
         Return -1
     }
     fn := Func(funcName)
     arrCount := arrParams.Count()
     If (arrCount < fn.MinParams Or arrCount > arrParams.Count()) {
         logstr = %arrCount% not correct for %funcName%!
-        z_log("ERROR", A_ThisFunc " " logstr)
+        z_log("ERROR", logstr)
         Return -1
     }
     Return DoEvalFunc(fn,arrParams)
@@ -250,11 +178,11 @@ DoEvalFunc(function, arr, params*) {
             ret := DoEvalFunc(function,arr,%arg%,params*) ; Eval var
             ; varExist := VarSetCapacity(%arg%)
             ; If (!varExist) {
-            z_log("INFO", A_ThisFunc " " arg)
+            z_log("INFO", arg)
             If ( arg!= "Clipboard") {
                 If (!IsSet(%arg%)) {
                     logstr = parameter var %arg% is not defined
-                    z_log("WARN", A_ThisFunc " " logstr)
+                    z_log("WARN", logstr)
                 }
             }
         }

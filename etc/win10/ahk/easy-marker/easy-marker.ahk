@@ -188,7 +188,7 @@ DoCopyCurrentLine(doCut:=false) {
     Clipboard := line
     ClipWait 2
     If (Clipboard = "") {
-        z_log("ERROR", A_ThisFunc " copy time out for text=" text)
+        z_log("ERROR", "copy time out for text=" text)
         Return
     }
     if (doCut) {
@@ -209,7 +209,7 @@ DoCheckbox(action:="") {
             line := RegExReplace(line,checkboxRegexPattern,"")
             posInLine -= StrLen(checkboxStr)
         } Else {
-            z_log("INFO", A_ThisFunc " Delete fail, this line not contains a checkbox")
+            z_log("INFO", "Delete fail, this line not contains a checkbox")
         }
     Default:
         If (pos) {
@@ -236,7 +236,7 @@ GetCodeblockStr(language, content:="<++>") {
     ``````
     <++>
     )
-    z_log("DEBUG", A_ThisFunc " test=" test)
+    z_log("DEBUG", "test=" test)
     return str
 }
 
@@ -400,97 +400,10 @@ RegisterHotstringMap() {
     }
 }
 
+; main
 Hotkey, IfWinActive, ahk_group zEditors
 RegisterHotstringMap()
 Hotkey, IfWinActive
-
-; #IfWinActive ahk_group zEditors
-; {
-;     ; common markdown operation between typora and obsidian
-;     ; markdown format shortcut
-;     ; jump to anchor
-;     :*?:;f::   ; get to next anchor <++> in current line. ? means can be substr
-;         JumpToAnchor()
-;         Return
-;     :*:;p::    ; add picture link
-;         Snippet("figure")
-;         Return
-;     :*?:;a::    ; add alt hyper link
-;         Snippet("hyperlink")
-;         Return
-;     :*:;x::    ; check box
-;         Snippet("checkbox")
-;         Return
-;
-;     ; pair modifer in markdown
-;     :*?:;b::   ; bold
-;         Snippet("bold")
-;         Return
-;     :*?:;i::    ; italic
-;         Snippet("italic")
-;         Return
-;     :*?:;s::    ; deleteline
-;         Snippet("deleteline")
-;         Return
-;     :*?:;h::    ; highlight
-;         Snippet("highlight")
-;         Return
-;     :*?:;q::    ; back-quote
-;         Snippet("backquote")
-;         Return
-;     :*?:;u::    ; under line
-;         Snippet("underline")
-;         Return
-;     :*?:;r::    ; red font
-;         Snippet("red")
-;         Return
-;     :*?:;k::    ; red font
-;         Snippet("keyboard")
-;         Return
-;
-;     :*?:;ll::
-;         Snippet("list")
-;         Return
-;
-;     ; figure caption
-;     :*R:/ca::
-;         Snippet("figureCaption")
-;         Return
-;
-;     ; code block
-;     :*:;cb::    ; add code block for c
-;         SendInput ``````c{enter}
-;         Return
-;     :*:;cc::    ; add code block for bash
-;         SendInput ``````bash{enter}
-;         Return
-;     :*:;m::    ; add mermaid code block
-;         SendInput {TEXT}
-;         ( LTrim
-;         ``````mermaid
-;         graph LR
-;         `ta-->b
-;         )
-;         Return
-;
-;     ; equation
-;     :*:;e::   ; equetion inline ; \usepackage{mathtools}  % math formation
-;         Snippet("equetion")
-;         Return
-;     :*?:;o::  ; ref eq
-;         Snippet("ref")
-;         Return
-;
-;     ; emoj in typora
-;     ; emoj all https://blog.csdn.net/weixin_42395140/article/details/111642339
-;     ; emoj can be input in vim as <C-v>Uxxxx<esc>  xxxx is unicode
-;     :*:;wi::  ; ℹ info sign 2139   :information_source: 说明信息
-;         Snippet("info")
-;         Return
-;     :*:;ww::  ; ⚠ warn 26A0   :warning:  注意说明
-;         Snippet("warn")
-;         Return
-; }
 
 Snippet(action) {
     app := GetActiveApp() ; apps: Typora,Obsidian,Overleaf,CSDN
@@ -544,7 +457,7 @@ DoTitle(action:="Increase",level:=1) {
             line := RegExReplace(line,titleLevelPattern,"")
             posInLine -= StrLen(matchStr)
         } Else {
-            z_log("INFO", A_ThisFunc " Delete fail, this line not contains a checkbox")
+            z_log("INFO", "Delete fail, this line not contains a checkbox")
         }
     Case "Increase":
         If (pos) {
@@ -578,15 +491,15 @@ DoTitle(action:="Increase",level:=1) {
 
         If (pos) {
             line := RegExReplace(line,"O)" titleLevelPattern,titleLevelStr)
-            z_log("INFO", A_ThisFunc " has title")
+            z_log("INFO", "has title")
             posInLine += StrLen(titleLevelStr) - StrLen(subPat[1])
         } Else { ; no title and do nothing
-            z_log("INFO", A_ThisFunc " no title")
+            z_log("INFO", "no title")
             line := titleLevelStr . line
             posInLine += StrLen(titleLevelStr)
         }
     Default:
-        z_log("ERROR", A_ThisFunc " unknow action=" action)
+        z_log("ERROR", "unknow action=" action)
         Return
     }
     EmptyCurrentLine()

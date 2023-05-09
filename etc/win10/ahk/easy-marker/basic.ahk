@@ -16,12 +16,12 @@ DoCopyCtrlC(waitTimeout:=True) {
         i++
     }
     If (i>0) {
-        z_log("WARN", A_ThisFunc " copy try counts i=" i)
+        z_log("WARN", " copy try counts i=" i)
     }
     str := Clipboard
     Clipboard := clipboardSaved
     If (str = "") {
-        z_log("ERROR", A_ThisFunc " ctrl-C copy fail. i=" i ",MaxCtrlCTryCount=" MaxCtrlCTryCount)
+        z_log("ERROR", " ctrl-C copy fail. i=" i ",MaxCtrlCTryCount=" MaxCtrlCTryCount)
     }
     Return str
 }
@@ -44,7 +44,7 @@ SelectAndCopy(selectAction:="", postAction:="", waitTimeout:=True) {
     SleepAfterSelection()
     str := DoCopyCtrlC(waitTimeout)
     If (str = "") {
-        z_log("ERROR", A_ThisFunc " copy time out for " selectAction)
+        z_log("ERROR", " copy time out for " selectAction)
     } Else {
         SendInput %postAction%  ; do sth after select copy.
     }
@@ -143,7 +143,7 @@ LineSelectAndCopyWhile(dir,IsLineWeWant) {
         cond := %IsLineWeWant%(str)
         cnt += step
     }
-    z_log("DEBUG", A_ThisFunc " final cnt=" cnt)
+    z_log("DEBUG", " final cnt=" cnt)
     If(cnt>=MaxTryCount) {
         logstr = Markdown Table %borderType% line need more than %MaxTryCount% $Dir$
         z_log("WARN",logstr)
@@ -171,7 +171,7 @@ SleepBasedOnTextByATan(text,ratio:=0.005,offset:=0.4,maxLimit:=2.5,dryRun:=false
         cntLines := StrLen(text) / 60  ; assume one line has 50 char
     }
     sleepTime := offset + maxLimit * ATan(cntLines * ratio)
-    z_log("DEBUG", A_ThisFunc " cntLines=" cntLines ",sleep time" sleepTime)
+    z_log("DEBUG", " cntLines=" cntLines ",sleep time" sleepTime)
     If (dryRun) {
         Return
     }
@@ -203,11 +203,11 @@ SleepBasedOnText(text, ratio:="Normal", offset:=0.3, maxLimit:=2.5) {
         }
         Else
         {
-            z_log("ERROR", A_ThisFunc " unknow parameter ratio=" ratio)
+            z_log("ERROR", " unknow parameter ratio=" ratio)
             Return
         }
     }
-    z_log("DEBUG", A_ThisFunc " sleep time => " sleepTime)
+    z_log("DEBUG", " sleep time => " sleepTime)
     Sleep % sleepTime
 }
 
@@ -218,7 +218,7 @@ SleepForCtrlVDone() {
 ; Input long text by paste is faster
 SendByPaste(text,vimlike:=false) {
     If (text = "") {
-        z_log("ERROR", A_ThisFunc " text is null")
+        z_log("ERROR", " text is null")
         return 0
     }
     If (vimlike) {
@@ -229,7 +229,7 @@ SendByPaste(text,vimlike:=false) {
     Clipboard := text
     ClipWait 2
     If (Clipboard = "") {
-        z_log("ERROR", A_ThisFunc " copy time out for text=" text)
+        z_log("ERROR", " copy time out for text=" text)
         Clipboard := clipboardSaved
         Return
     }
@@ -250,8 +250,8 @@ MergeVar(varName, type:="Map") {
     i := 1
     while(i<10) {
         If (!IsSet(%varName%%i%)) {
-            logstr = var %varName%%i% is not defined
-            z_log("DEBUG", A_ThisFunc " " logstr)
+            ; logstr = var %varName%%i% is not defined
+            ; z_log("DEBUG", " " logstr)
             Break
         }
         Switch type {
@@ -261,16 +261,16 @@ MergeVar(varName, type:="Map") {
             For key,val in %varName%%i% {
                 %varName%[key] := val
                 ; logstr =  key=%key%,val=%val%
-                ; z_log("WARN", A_ThisFunc " " logstr)
+                ; z_log("WARN", " " logstr)
             }
         Default:
-            z_log("ERROR", A_ThisFunc " unknow type=" type)
+            z_log("ERROR", " unknow type=" type)
             return
         }
         i++
     }
     i--
-    logstr = merged %i% sub elements for varName=%varName% type=%type%
-    z_log("DEBUG", A_ThisFunc " " logstr)
+    ; logstr = merged %i% sub elements for varName=%varName% type=%type%
+    ; z_log("DEBUG", " " logstr)
 }
 

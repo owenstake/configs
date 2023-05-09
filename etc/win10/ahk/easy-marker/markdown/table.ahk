@@ -74,7 +74,7 @@ IsMarkdownTableRow() {
         ; z_log("DEBUG", "str right " selectedStr)
         ; lenCursorRight := StrLen(selectedStr)
         If (selectedStr = "") {
-            z_log("INFO", A_ThisFunc " it is an empty line")
+            z_log("INFO", "it is an empty line")
             return 0  ; here means empty line
         }
     }
@@ -84,8 +84,8 @@ IsMarkdownTableRow() {
     If (matched) {
         Return posInLine
     } Else {
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row.")
-        z_log("INFO", A_ThisFunc " selectedStr=" selectedStr "matched=" matched)
+        z_log("INFO", "cursor is not in a markdown table row.")
+        z_log("INFO", "selectedStr=" selectedStr "matched=" matched)
         Return 0
     }
 }
@@ -109,7 +109,7 @@ GenerateNewRow(row) {
 
 MarkdownTableRowAdd() {
     If (!IsMarkdownTableRow()) { ; means start with "|"
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row")
+        z_log("INFO", "cursor is not in a markdown table row")
         SendInput {Raw}|`n
         Return
     }
@@ -124,7 +124,7 @@ MarkdownTableRowAdd() {
 
 MarkdownTableRowDel() {
     If (!IsMarkdownTableRow()) { ; means start with "|"
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row")
+        z_log("INFO", "cursor is not in a markdown table row")
         Return
     }
     SendInput {Home}{Shift Down}{End}{Right}{Shift Up}{Backspace}
@@ -134,7 +134,7 @@ MarkdownTableColumnAdd() {
     str := CopyCursorDirection("Left")
     StrReplace(str, "|", "", colNum)
     If (!colNum) {
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row")
+        z_log("INFO", "cursor is not in a markdown table row")
         Return
     }
     MarkdownTableForamt(colNum)
@@ -144,7 +144,7 @@ MarkdownTableColumnDel() {
     str := CopyCursorDirection("Left")
     StrReplace(str, "|", "", colNum)
     If (!colNum) {
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row")
+        z_log("INFO", "cursor is not in a markdown table row")
         Return
     }
     MarkdownTableForamt(,colNum)
@@ -157,7 +157,7 @@ inMarkdownTable(dir,text) {
     case "Down":
     regexPatern := "(`n|\|\s*$)"
     Default:
-        z_log("ERROR", A_ThisFunc "unknow direction")
+        z_log("ERROR", "unknow direction")
     }
     RegExReplace(text,regexPatern,"",matchCnt)
     logstr = cnt=%cnt%,matchCnt%matchCnt%
@@ -191,7 +191,7 @@ DetectMarkdownTable(text, ByRef output, ByRef meetBorder, maxMatchCnt, dirTo:="U
     Case "Up":
         arrRows := ReverseArray(arrRows)
     Default:
-        z_log("ERROR", A_ThisFunc " unknow parameter " dirTo)
+        z_log("ERROR", "unknow parameter " dirTo)
         Return 0
     }
     i := 2
@@ -219,7 +219,7 @@ DetectMarkdownTable(text, ByRef output, ByRef meetBorder, maxMatchCnt, dirTo:="U
         Case "Up":
             arrRows := ReverseArray(arrRows)
         Default:
-            z_log("ERROR", A_ThisFunc " unknow parameter " dirTo)
+            z_log("ERROR", "unknow parameter " dirTo)
             Return 0
         }
         output := ""
@@ -250,7 +250,7 @@ CopyMarkdownTableToBorderLine(borderType, ByRef textMarkdownTable, alreadyInMark
     }
     ; check if we are in markdown table line
     If (!alreadyInMarkdownTableRow && !IsMarkdownTableRow()) {
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row")
+        z_log("INFO", "cursor is not in a markdown table row")
         return -1
     }
     ; jump to border, narrow down the range which contains the table border
@@ -288,65 +288,32 @@ CopyMarkdownTableToBorderLine(borderType, ByRef textMarkdownTable, alreadyInMark
     return matchCnt
 }
 
-; GetMarkdownTableBorderLineByResetSelect(borderType, ByRef pos) {
-;     cnt := 0
-;     While (cnt<10) {
-;         Switch borderType {
-;         Case "begin":
-;             selectAction = {Shift Down}{Up %cnt%}{Home}{Shift Up}
-;             selectedStr := SelectAndCopy(selectAction,"{Right}")
-;             RegExReplace(selectedStr, "(^\s*\||`n)","",matchCnt)
-;         Case "end":
-;             selectAction = {Shift Down}{Down %cnt%}{End}{Shift Up}
-;             selectedStr := SelectAndCopy(selectAction,"{Left}")
-;             RegExReplace(selectedStr, "(`n|\|\s*$)","",matchCnt)
-;         Default:
-;             z_log("ERROR","unknow borderType " borderType)
-;             Return
-;         }
-;         ; z_log("DEBUG", A_ThisFunc " cnt => " cnt)
-;         ; z_log("DEBUG", A_ThisFunc " matchCnt => " matchCnt)
-;         If (matchCnt != cnt+1) {
-;             break
-;         }
-;         ; here means we are in table
-;         cnt++
-;     }
-;     ; z_log("DEBUG", A_ThisFunc " cnt => " cnt)
-;     If(cnt==10) {
-;         logstr = Table %borderType% line need more than 10 {Up/Down}
-;         z_log("WARN",logstr)
-;         Return cnt
-;     }
-;     return cnt-1
-; }
-
 MarkdownTableForamt(insertAtColumn := 0, deleteColumn :=0, deleteTable := false) {
     ; Return test
     posInLine := IsMarkdownTableRow()
     If (!posInLine) {
-        z_log("INFO", A_ThisFunc " cursor is not in a markdown table row. Stop table format")
+        z_log("INFO", "cursor is not in a markdown table row. Stop table format")
         Return
     }
     text := ""
     upCnt     := CopyMarkdownTableToBorderLine("begin",text,True)
     downCnt   := CopyMarkdownTableToBorderLine("end",  text,True)
-    z_log("DEBUG", A_ThisFunc " upCnt=" upCnt ",downCnt=" downCnt ",posInLine=" posInLine)
-    z_log("DEBUG", A_ThisFunc " text =>`n" text)
+    z_log("DEBUG", "upCnt=" upCnt ",downCnt=" downCnt ",posInLine=" posInLine)
+    z_log("DEBUG", "text =>`n" text)
     DeleteCursorAroundlines(upCnt,downCnt)
     ; SleepBasedOnText()
     If(deleteTable) {
-        z_log("DEBUG", A_ThisFunc " delete table")
+        z_log("DEBUG", "delete table")
         return
     }
-    z_log("DEBUG", A_ThisFunc " insertAtColumn=" insertAtColumn ",deleteColumn=" deleteColumn)
+    z_log("DEBUG", "insertAtColumn=" insertAtColumn ",deleteColumn=" deleteColumn)
     text := Tablize(text, insertAtColumn, deleteColumn)
-    z_log("DEBUG", A_ThisFunc " text after format =>`n" text)
+    z_log("DEBUG", "text after format =>`n" text)
     SendByPaste(text)  ; faster for long text than raw text input
     ; back to what cursor start
     backUpCnt    := downCnt + 1
     backRightCnt := posInLine
-    ; z_log("DEBUG", A_ThisFunc " backUpCnt=" backUpCnt ",posInLine=" posInLine)
+    ; z_log("DEBUG", "backUpCnt=" backUpCnt ",posInLine=" posInLine)
     SendInput {Up %backUpCnt%}{Right %backRightCnt%}
 }
 
@@ -426,7 +393,7 @@ PadStr(str, size,alignMode:="Left") {
            str := str . A_Space
         ; return ""
     Default:
-        z_log("ERROR", A_ThisFunc "unknow align mode " alignMode)
+        z_log("ERROR", "unknow align mode " alignMode)
         Return ""
     }
     return str
@@ -460,7 +427,7 @@ GetAlignMode(str) {
 
 FormatAlignStr(mode,width) {
     If (!alignStrMap[mode]) {
-        z_log("ERROR", A_ThisFunc " unknow align mode " mode)
+        z_log("ERROR", "unknow align mode " mode)
         return ""
     }
     baseStr := ""

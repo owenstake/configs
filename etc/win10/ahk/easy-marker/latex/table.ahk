@@ -112,7 +112,7 @@ inMarkdownTable(dir,text) {
     case "Down":
     regexPatern := "(`n|\|\s*$)"
     Default:
-        z_log("ERROR", A_ThisFunc "unknow direction")
+        z_log("ERROR", "unknow direction")
     }
     RegExReplace(text,regexPatern,"",matchCnt)
     logstr = cnt=%cnt%,matchCnt%matchCnt%
@@ -157,7 +157,7 @@ GetMarkdownTableBorderLineByContinueSelect(borderType) {
         ; here means we are in table
         cnt += step
     }
-    z_log("DEBUG", A_ThisFunc " final cnt=" cnt)
+    z_log("DEBUG", "final cnt=" cnt)
     If(cnt==MaxTryCount) {
         logstr = Markdown Table %borderType% line need more than 10 $Dir$
         z_log("WARN",logstr)
@@ -184,15 +184,15 @@ GetMarkdownTableBorderLineByResetSelect(borderType, ByRef pos) {
             z_log("ERROR","unknow borderType " borderType)
             Return
         }
-        ; z_log("DEBUG", A_ThisFunc " cnt => " cnt)
-        ; z_log("DEBUG", A_ThisFunc " matchCnt => " matchCnt)
+        ; z_log("DEBUG", "cnt => " cnt)
+        ; z_log("DEBUG", "matchCnt => " matchCnt)
         If (matchCnt != cnt+1) {
             break
         }
         ; here means we are in table
         cnt++
     }
-    ; z_log("DEBUG", A_ThisFunc " cnt => " cnt)
+    ; z_log("DEBUG", "cnt => " cnt)
     If(cnt==10) {
         logstr = Table %borderType% line need more than 10 {Up/Down}
         z_log("WARN",logstr)
@@ -220,14 +220,14 @@ SendByPaste(text) {
         i++
     }
     If (i>1) {
-        z_log("WARN", A_ThisFunc " i=" i)
+        z_log("WARN", "i=" i)
     }
     If (Clipboard = "") {
-        z_log("ERROR", A_ThisFunc "copy time out for " selectAction)
+        z_log("ERROR", "copy time out for " selectAction)
         Return
     }
     time := (StrLen(text) / 2000 + 0.1 ) * 1000 
-    z_log("DEBUG", A_ThisFunc " sleep time => " time)
+    z_log("DEBUG", "sleep time => " time)
     ; Sleep % time
     SendInput ^v
     Sleep % time  ; wait for clipboard in win10 ready
@@ -317,7 +317,7 @@ PadStr(str, size,alignMode:="Left") {
            str := str . A_Space
         ; return ""
     Default:
-        z_log("ERROR", A_ThisFunc "unknow align mode " alignMode)
+        z_log("ERROR", "unknow align mode " alignMode)
         Return ""
     }
     return str
@@ -351,7 +351,7 @@ GetAlignMode(str) {
 
 FormatAlignStr(mode,width) {
     If (!alignStrMap[mode]) {
-        z_log("ERROR", A_ThisFunc " unknow align mode " mode)
+        z_log("ERROR", "unknow align mode " mode)
         return ""
     }
     baseStr := ""
