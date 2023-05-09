@@ -1,5 +1,7 @@
 ﻿#SingleInstance force
-#Include %A_ScriptDir%\anchor.ahk
+; #Include %A_ScriptDir%\lib\zlog.ahk
+; #Include %A_ScriptDir%\lib\anchor.ahk
+#Include %A_ScriptDir%\lib\lib.ahk
 #Include %A_ScriptDir%\markdown\table.ahk
 
 SetTitleMatchMode 2    ; 2 is instr mode

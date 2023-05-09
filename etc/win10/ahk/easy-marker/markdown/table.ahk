@@ -1,5 +1,4 @@
-#Include %A_ScriptDir%\anchor.ahk
-#Include %A_ScriptDir%\basic.ahk
+#Include %A_ScriptDir%\lib\lib.ahk
 
 global GuiTableWidth  := 0
 global GuiTableHeight := 0
@@ -7,6 +6,8 @@ global GuiTableHeight := 0
 ; markdown table
 MarkdownTableCreate() {
     ; global
+    local vGuiTableWidth
+    local vGuiTableHeight
     Gui, Add, Text,, Please enter table width:
     Gui, Add, Edit, vGuiTableWidth, 4
     Gui, Add, Text,, Please enter table height:
@@ -20,10 +21,11 @@ ButtonTableCreateOK:
     z_log("DEBUG", "GuiTableHeight=" GuiTableHeight)
     output := DoMarkdownTableCreate(GuiTableWidth,GuiTableHeight)
     SendInput {Raw}%output%
+    Gui, Destroy   ; important
     Return
-GuiClose:
-    Gui, Submit  ; Save the input from the user to each control's associated variable.
-    return
+; GuiClose:
+;     Gui, Submit  ; Save the input from the user to each control's associated variable.
+;     return
 }
 
 MarkdownTableDelete() {

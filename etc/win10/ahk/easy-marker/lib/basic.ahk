@@ -1,7 +1,6 @@
+#Include %A_ScriptDir%\lib\zlog.ahk
 
 ; basic op: copy select, cursor
-
-
 DoCopyCtrlC(waitTimeout:=True) {
     clipboardSaved := ClipboardAll ; save clipboard
     Clipboard := ""  ; 必须清空, 才能检测是否有效.

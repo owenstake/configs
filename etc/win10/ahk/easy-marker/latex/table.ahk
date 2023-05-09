@@ -1,3 +1,4 @@
+#Include %A_ScriptDir%\lib\lib.ahk
 
 global GuiTableWidth  := 0
 global GuiTableHeight := 0
@@ -18,10 +19,8 @@ ButtonOK:
     z_log("DEBUG","GuiTableHeight=" GuiTableHeight)
     output := DoMarkdownTableCreate(GuiTableWidth,GuiTableHeight)
     SendInput {Raw}%output%
+    Gui, Destroy
     Return
-GuiClose:
-    Gui, Submit  ; Save the input from the user to each control's associated variable.
-    return
 }
 
 MarkdownTableDelete() {
