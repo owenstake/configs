@@ -43,6 +43,7 @@ function win_open_ports_range($lip, $lport_base, $cip, $cport_base, $len, $remot
 }
 
 function wsl_add_hostname_in_hostfile($wslName, $hostIp, $hostName, $hostFile) {
+    # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
     # delete first
     wsl -d $wslName -u root "--%" "sed -i '/$hostName/d' $hostFile"
     # add host item
@@ -50,12 +51,8 @@ function wsl_add_hostname_in_hostfile($wslName, $hostIp, $hostName, $hostFile) {
 }
 
 function wsl_add_hostname($wslName, $hostIp, $hostName) {
-    # --%  https://stackoverflow.com/questions/18923315/using-in-powershell
-    # wsl -u root sed -i '/wslhost/d'    /etc/hosts
-    # wsl -u root "--%" "echo $WSLIP      wslhost    >> /etc/hosts"
     wsl_add_hostname_in_hostfile $wslName $hostIp $hostName "/mnt/c/Windows/System32/drivers/etc/hosts"
     wsl_add_hostname_in_hostfile $wslName $hostIp $hostName "/etc/hosts"
-    # wsl_add_hostname_in_hostfile("cloudhost", "/mnt/c/Windows/System32/drivers/etc/hosts")
 }
 
 function ExecFileAtLogOn($taskName, $file) {
@@ -66,7 +63,6 @@ function ExecFileAtLogOn($taskName, $file) {
 
 function ExecPowershellScriptAtLogOn($taskName, $script) {
     $trigger = New-ScheduledTaskTrigger -AtLogOn
-    # $action  = New-ScheduledTaskAction -Execute $file
     $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-File $script"
     Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskName
 # $Action = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\MyScript.ps1"'

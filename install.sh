@@ -12,11 +12,11 @@ command_exists() {
 }
 
 fmt_info() {
-    printf '%sInfo: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+    printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
 fmt_error() {
-    printf '%sInfo: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+    printf '%sERRO: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
 git_clone() {
