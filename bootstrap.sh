@@ -7,15 +7,32 @@ function try_config() {
     local msg=$2
     MarkLine="# owen configed" 
     if ! grep -q "$MarkLine" $file ; then
-        echo "owen $file is configing"
+        fmt_info "owen $file is configing"
         echo "$MarkLine"                      >> $file
         echo "# -- owen $file config -- "     >> $file
         echo "$msg"                           >> $file
         echo "# -- end owen $file config -- " >> $file
     else
-        echo "owen $file is configed already"
+        fmt_info "owen $file is configed already"
     fi
 }
+
+# log function {{{
+FMT_RED=$(printf '\033[31m')
+FMT_GREEN=$(printf '\033[32m')
+FMT_YELLOW=$(printf '\033[33m')
+FMT_BLUE=$(printf '\033[34m')
+FMT_BOLD=$(printf '\033[1m')
+FMT_RESET=$(printf '\033[0m')
+
+function fmt_info() {
+    printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+}
+
+function fmt_error() {
+    printf '%sERRO: [%s] %s%s\n' "${FMT_RED}${FMT_BOLD}" "$funcstack[2] $@" "$*" "$FMT_RESET"  1>&2
+}
+# }}}
 
 function main() {
     ## override config
@@ -29,17 +46,17 @@ function main() {
     ### Force echo to zsh tmux config file
     if [[ $1 = "f" ]]; then
         _owen_force_update=1
-        echo "Force update config files including zsh,tmux"
-        echo "You must take care of the duplicated term in zsh/tmux config file~~~"
-        echo "zsh  $(realpath ~/.zshrc)"
-        echo "tmux $(realpath ~/.tmux.conf)"
+        fmt_info "Force update config files including zsh,tmux"
+        fmt_info "You must take care of the duplicated term in zsh/tmux config file~~~"
+        fmt_info "zsh  $(realpath ~/.zshrc)"
+        fmt_info "tmux $(realpath ~/.tmux.conf)"
     else
         _owen_force_update=
     fi
 
     # WSL config. cp pac to win10. ubt do not need it, because we use proxychain to manual control.
     if uname -r | grep -qi "microsof"; then
-        echo "we are in wsl~~~"
+        fmt_info "We are in wsl~~~"
         # wsl system configs
         sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
         # v2ray

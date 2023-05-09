@@ -14,6 +14,10 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     exit;
 }
 
+"------ Prepare ----"
+" powershell 允许脚本执行. require administor privillege "
+" powershell.exe -Command set-executionpolicy remotesigned "
+
 "------ Show system info ----"
 systeminfo
 
@@ -36,8 +40,6 @@ Enable-NetFirewallRule -DisplayGroup "远程桌面"          # for chn
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 
 # Add-WindowsFeature RSAT-Hyper-V-Tools -IncludeAllSubFeature
-
-
 
 "------ Install WSL using PowerShell ----"
 # [Install WSL | Microsoft Learn](https://learn.microsoft.com/en-us/windows/wsl/install )
