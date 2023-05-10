@@ -23,7 +23,26 @@ class fzf(ranger.Command):
             # match files and directories
             command = "find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
             -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
-        fzf = self.fm.execute_command(command, stdout=subprocess.PIPE)
+
+        env = os.environ.copy()
+        env['FZF_DEFAULT_COMMAND'] = "fzf-tmux"
+        env['FZF_DEFAULT_OPTS'] = '--height=100% --layout=reverse --ansi        \
+            --prompt "All> "                                                    \
+            --header "CTRL-D: Directories / CTRL-F: Files"                      \
+            --bind "ctrl-d:change-prompt(Directories> )+reload(find * -type d)" \
+            --bind "ctrl-f:change-prompt(Files> )+reload(find * -type f)"       \
+            --preview="{}"'.format('''
+               (
+                   ~/.config/fzf/fzf-scope.sh {} ||
+                   #batcat --color=always {} ||
+                   #bat --color=always {} ||
+                   #cat {} ||
+                   tree -ahpCL 3 -I '.git' -I '*.py[co]' -I '__pycache__' {}
+               ) 2>/dev/null | head -n 100
+            ''')
+
+
+        fzf = self.fm.execute_command(command, env=env, stdout=subprocess.PIPE)
         stdout, _ = fzf.communicate()
         if fzf.returncode == 0:
             fzf_file = os.path.abspath(stdout.decode('utf-8').rstrip('\n'))

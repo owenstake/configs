@@ -52,9 +52,10 @@ main() {
         # apps
         apps="newsboat ranger global python3-pip universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
-            openssh-server tree \
+            openssh-server tree bat \
             zsh"  # install zsh final for check
         sudo apt install -y $apps
+        sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
         # start service
         sudo systemctl enable ssh
     fi
