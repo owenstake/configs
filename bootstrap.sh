@@ -1,6 +1,11 @@
 #!/usr/bin/zsh
 #
 export WinUserName=$(echo $PATH | sed 's#.*/mnt/c/Users/\([^/]*\)/.*#\1#')
+export WinUserHome=/mnt/c/Users/${WinUserName}
+export WinUserDownloads=${WinUserHome}/Downloads
+export WinUserDesktop=${WinUserHome}/Desktop
+export WinUserWeiyun="/mnt/c/Weiyun/Personal"
+export WinUserWeiyunNote="/mnt/c/Weiyun/Personal/my_note"
 
 function try_config() {
     local file=$1
@@ -42,6 +47,7 @@ function main() {
     rsync -r etc/newsboat ~/.config/
     rsync -r etc/fzf      ~/.config/
     ln -sf ~/.local/etc/vim/vim8.vimrc ~/.vimrc
+    ln -sf ~/.local/etc/vim/vim8.vimrc ~/.vimrc
 
     ### Force echo to zsh tmux config file
     if [[ $1 = "f" ]]; then
@@ -68,6 +74,9 @@ function main() {
         TYPORA_THEME_FILE="/mnt/c/Users/$WinUserName/AppData/Roaming/Typora/themes/github.css"
         sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
         sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
+
+        # win10 _vimrc
+        cp etc/vim/vim8.vimrc $WinUserHome/_vimrc
 
         # cp to 
         mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10

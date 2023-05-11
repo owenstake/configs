@@ -44,7 +44,7 @@ class fzf(ranger.Command):
         #       ) 2>/dev/null | head -n 100
         #    ''')
 
-        env['FZF_DEFAULT_OPTS'] = env['FZF_CTRL_T_OPTS'] + '--reverse --height 50%'
+        env['FZF_DEFAULT_OPTS'] = env['FZF_CTRL_T_OPTS'] + '--height 100%'
 
         fzf = self.fm.execute_command(command, env=env, stdout=subprocess.PIPE)
         stdout, _ = fzf.communicate()

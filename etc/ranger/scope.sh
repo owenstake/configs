@@ -70,6 +70,7 @@ case "$extension" in
         try als "$path" && { dump | trim; exit 0; }
         try acat "$path" && { dump | trim; exit 3; }
         try bsdtar -lf "$path" && { dump | trim; exit 0; }
+        try tar -tvf "$path" && { dump | trim; exit 0; }
         exit 1;;
     rar)
         # avoid password prompt by providing empty password

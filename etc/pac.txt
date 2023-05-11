@@ -5,9 +5,12 @@
 var proxy = "__PROXY__";
 
 var rules = [
+    "superuser.com/",
+    "stackoverflow.com/",
+    "*.chocolatey.org/",
     "*.adblockplus.org/*",
     "mermaid.js.org/*",
-    "tex.stackexchange.com/",
+    "*.stackexchange.com/",
     "www.epochtimes.com",
     "*linkedin.com/",
     "*linkedin.cn/",
@@ -77,7 +80,6 @@ var rules = [
     "||onlinegdb.com",
     "||camo.githubusercontent.com",
     "||www.realtek.com.tw",
-    "||stackoverflow.com",
     "*wikipedia.org*",
     "||quora.com",
     "||quoracdn.net",

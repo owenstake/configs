@@ -49,12 +49,14 @@ main() {
         sudo python3 oh-my-tuna.py --global -y
         sudo apt update
         sudo apt upgrade -y
-        # apps
-        apps="newsboat ranger global python3-pip universal-ctags vim-gtk \
+        # apps. rank.
+        apps1="newsboat ranger global python3-pip universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
-            openssh-server tree bat \
-            zsh"  # install zsh final for check
-        sudo apt install -y $apps
+            openssh-server tree bat "
+        apps2=" poppler-utils "
+        sudo apt install -y $apps1
+        sudo apt install -y $apps2
+        sudo apt install -y zsh   # install zsh final for check
         sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
         # start service
         sudo systemctl enable ssh
