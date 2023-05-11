@@ -9,7 +9,6 @@ $PSVersionTable
 choco install tencentqq
 choco install wechat
 
-winget install qqmusic
 
 # choco config
 choco feature enable -n=allowGlobalConfirmation
@@ -53,3 +52,32 @@ choco install cpu-z
 #
 # [Scoop](https://scoop.sh/ )
 scoop install SarasaGothic
+
+####################
+### winget #########
+####################
+winget install DEVCOM.Lua
+
+winget install Tencent.qqmusic
+winget install Tencent.qq
+winget install Tencent.wechat
+BurntSushi.ripgrep.MSVC
+Lexikos.AutoHotkey
+TorProject.TorBrowser
+
+sharkdp.fd
+flux.flux
+Microsoft.VisualStudioCode
+voidtools.Everything
+winget install -e --id SomePythonThings.WingetUIStore
+
+Foxit.FoxitReader
+WiresharkFoundation.Wireshark
+
+Google.Chrome.Dev
+calibre.calibre     ? portable
+
+junegunn.fzf
+sharkdp.bat
+
+

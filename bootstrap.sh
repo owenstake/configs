@@ -80,6 +80,9 @@ function main() {
 
         # cp to 
         mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
+
+        # win10 profile
+        cp etc/win10/profile.ps1 "$WinUserHome/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
     fi
 
     # -- zsh config ---------------------------------------------------------
