@@ -39,6 +39,13 @@ function fmt_error() {
 }
 # }}}
 
+function bootstrap_win10() {
+    # win10 _vimrc
+    cp etc/vim/vim8.vimrc $WinUserHome/_vimrc
+    # win10 profile
+    cp etc/win10/profile.ps1 "$WinUserHome/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+}
+
 function main() {
     ## override config
     mkdir -p ~/.local $$ mkdir -p ~/.config
@@ -75,14 +82,10 @@ function main() {
         sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
         sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
-        # win10 _vimrc
-        cp etc/vim/vim8.vimrc $WinUserHome/_vimrc
-
         # cp to 
         mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
 
-        # win10 profile
-        cp etc/win10/profile.ps1 "$WinUserHome/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+        bootstrap_win10
     fi
 
     # -- zsh config ---------------------------------------------------------

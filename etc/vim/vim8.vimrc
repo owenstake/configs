@@ -2,18 +2,40 @@
 
 let mapleader = "\<space>"
 
+if has('win64') || has('win32')
+    let &pythonthreedll = 'D:\scoop\apps\python\3.11.3\python311.dll'
+endif
+
 " Before plugin load {{{
     " if no vim-plug, then download
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-            \ https://raw.GitHub.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    endif
+    " if empty(glob('~/.vim/autoload/plug.vim'))
+    "     if has('win64') || has('win32')
+			" !powershell.exe -Command 
+    "             \ "iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim | ni ~/.vim/autoload/plug.vim -Force"
+    "     else
+    "         !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    "             \ https://raw.GitHub.com/junegunn/vim-plug/master/plug.vim
+    "     endif
+    "     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	" endif
+	if has('win64') || has('win32')
+		if empty(glob('~/vimfiles/autoload/plug.vim'))
+			!powershell.exe -Command 
+              \ "iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |ni $HOME/vimfiles/autoload/plug.vim -Force"
+          autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+		endif
+	else
+		if empty(glob('~/.vim/autoload/plug.vim'))
+          !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+              \ https://raw.GitHub.com/junegunn/vim-plug/master/plug.vim
+          autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+		endif
+	endif
 
 " }}}
 
 " Plugins load {{{
-    call plug#begin('~/.vim/plugged')
+    call plug#begin()
     " general setting {{{
         Plug 'mhinz/vim-startify'   " The fancy start screen for Vim
         Plug 'vim-scripts/ReplaceWithRegister'
