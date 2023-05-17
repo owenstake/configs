@@ -1,3 +1,5 @@
+
+
 # https://zhuanlan.zhihu.com/p/594363658
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
@@ -8,30 +10,55 @@ Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
 }
 
+Function fmt_warn {
+    Write-Host $args -ForegroundColor Yellow -BackgroundColor DarkGreen
+}
+
 Function fmt_error {
 	Write-Host $args -BackgroundColor DarkRed
 }
 
 Function Test-CommandExists {
 	Param ($command)
-	$oldPreference = $ErrorActionPreference
-	$ErrorActionPreference = 'stop'
-	try {if(Get-Command $command){RETURN $true}}
-	Catch {fmt_error "$command does not exist"; RETURN $false}
-	Finally {$ErrorActionPreference=$oldPreference}
+    If (Get-Command $command -ErrorAction SilentlyContinue) {
+        return $true
+    } else {
+        return $false
+    }
+	# $oldPreference = $ErrorActionPreference
+	# $ErrorActionPreference = 'stop'
+	# try {if(Get-Command $command){RETURN $true}}
+	# Catch {fmt_error "$command does not exist"; RETURN $false}
+	# Finally {$ErrorActionPreference=$oldPreference}
 }
 
-Function bootstrap {
-	# bootstrap
-	# profile file
-	if (!(Test-Path -Path $PROFILE )) {
-		New-Item -Type File -Path $PROFILE -Force
-	}
-	cp etc\win10\profile.ps1 $Profile
-	cp etc\vim\vim8.vimrc $HOME\_vimrc
+Function Test-AppExistsInScoop($appName) {
+    $scoopInfo = scoop export | ConvertFrom-Json
+    If ($scoopInfo.apps | where-object -FilterScript {$PSitem -match "$appName"}) {
+        return $true
+    } else {
+        return $false
+    }
+}
+
+Function Test-AppExistsInChoco($app) {
+    $retArr = choco list --localonly $app
+    return [int](($retArr[-1]).split()[0]) -ne 0
+}
+
+Function ScoopInstallApp($app) {
+    If ( (Test-CommandExists scoop) -and  (Test-AppExistsInScoop "$app") ) { # ??
+        return
+    }
+    # If ( (Test-CommandExists choco) -and  (Test-AppExistsInChoco $app) ) { # ??
+    #     return
+    # }
+
+    scoop install $app
 }
 
 Function scoop-install {
+    fmt_info "Scoop install apps"
 	# fix ssl in tyy win10 server 2016 - 
 	# TLS - https://learn.microsoft.com/zh-cn/dotnet/framework/network-programming/tls
 	# [System.Net.ServicePointManager]::SecurityProtocol += [System.Net.SecurityProtocolType]::Tls12;
@@ -49,16 +76,16 @@ Function scoop-install {
 		Set-ExecutionPolicy RemoteSigned -scope CurrentUser
 		iwr -useb scoop.201704.xyz | iex	
 	} else {
-		# fmt_info "Scoop cmd exists"
+		fmt_info "Scoop cmd exists"
 	}
 
 	$lastApp="scoop-completion"
 	If (Test-Path $env:scoop\apps\$lastApp) {
 		If (scoop info $lastApp) {
-			fmt_info "All apps is already installed in scoop"
+			fmt_warn "All apps is already installed in scoop"
 			return
 		} else {
-			fmt_info "All apps dir is exists but not installed in scoop."
+			fmt_warn "All apps dir is exists but not installed in scoop."
 			# Write-Host "You can run `scoop reset *` to restore scoop apps"
 			$confirmation = Read-Host "Do you want to recover it? [Y]/N"
 			if ($confirmation -ne 'n') {
@@ -72,9 +99,11 @@ Function scoop-install {
 
 	fmt_info "App is installing in Scoop. Dir is $scoopInstallDir"
 	
+    # git install first for scoop
 	if (!(Test-CommandExists git)) {  # git maybe install outside
 		scoop install git
 	}
+
 	# scoop install Aria2
 
 	if (!(Test-CommandExists git)) {
@@ -82,7 +111,7 @@ Function scoop-install {
 		return -1
 	} else {
 		if (scoop bucket list | findstr version) {
-			fmt_info "Bucket is updated"
+			fmt_warn "Bucket is updated"
 		} else {
 			fmt_info "Updating bucket - not neccesary. final download is still github."
 			scoop bucket rm main
@@ -95,16 +124,17 @@ Function scoop-install {
 	}
 
 	# autohotkey V1 need manual installation
-    If (!(scoop info psfzf)) {
+    If (!(Test-AppExistsInScoop psfzf)) {
         scoop install psfzf@2.2.0
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
 	
 	# CLI handy tool
 	$appstr = "
-		gow sudo lua fd ripgrep z.lua fzf vim-tux    # CLI basic tool
-		ffmpeg  nodejs-lts                           # CLI 
-		snipaste ScreenToGif notepadplusplus         # UI basic tool
+		gow sudo vim-tux less bat   # CLI basic tool
+        lua fd ripgrep z.lua fzf    # CLI super tool
+		autohotkey ffmpeg  python nodejs-lts   # CLI program envir
+		snipaste ScreenToGif notepadplusplus   # UI simple tool
 		# UI tool
 		foxit-reader v2rayN typora vscode draw.io googlechrome
 		qq wechat foxit-reader mobaxterm foxmail
@@ -124,7 +154,13 @@ Function scoop-install {
 	scoop install $lastApp
 }
 
-Function chocolatey-install {
+Function chocolatey-install() {
+    fmt_info "Choco install apps"
+    If ($WinVersion -ge 17763) {
+        fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
+        return
+    }
+    # install chocolatey
     If (!(Test-CommandExists choco)) {
         # need proxy and admin priviledge
         Start-Process powershell -verb runas -ArgumentList "
@@ -135,12 +171,47 @@ Function chocolatey-install {
             cmd /c pause
             "
     }
+    $appstr = "
+    "
+	$appstr = $appstr -replace "#.*"
+	$apps = $appstr.trim() -split '\s+'
+    If (!($apps)) {
+        return
+    } else {
+        sudo choco install $apps
+    }
+}
+
+Function winget-install() {
+    fmt_info "winget install apps"
+    If ($WinVersion -lt 17763) {
+        fmt_warn "At least WindowsServer2019(17763) is required to use winget."
+        return
+    }
+    If (!(Test-CommandExists winget)) {
+        scoop install winget wingetUI
+    }
+    $appstr = "
+        Sogou.SogouInput  Tencent.WeiyunSync  Baidu.BaiduNetdisk
+        Thunder.Xmp  Tencent.QQMusic
+    "
+	$appstr = $appstr -replace "#.*"
+	$apps = $appstr.trim() -split '\s+'
+
+	fmt_info "installing apps =>"
+	fmt_info "apps count is" $apps.count
+	fmt_info $apps
+
+    Foreach ($app in $apps) {
+        winget install --id="$app" -e --no-upgrade -l "d:\owen\winget"
+    }
 }
 
 Function main {
-	bootstrap
+	.\bootstrap-win.ps1
 	scoop-install
     chocolatey-install
+    winget-install
 }
 
 $time = Measure-Command { main }

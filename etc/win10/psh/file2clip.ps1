@@ -3,25 +3,32 @@
 #################################################
 
 # Param([Parameter(Mandatory = $True, Position = 1)][string] $filePath)
-Add-Type -AssemblyName System.Windows.Forms
-$files = new-object System.Collections.Specialized.StringCollection
+echo "$PSCommandPath"
 
-# get files from args
-foreach ($var in $args)
-{
-    # FullName is need. Get-Item usage can refer to 
-    # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-item?view=powershell-7.1
-    $count = $files.Add((Get-Item -Path $var).FullName)
-}
-$count++
+Function SetFileDropList() {
+    Add-Type -AssemblyName System.Windows.Forms
+    $files = new-object System.Collections.Specialized.StringCollection
 
-# add files to clipboard
-if (-not [System.Windows.Forms.Clipboard]::SetFileDropList($files)) {
-    "PSH: Copy $count items to clipboard"
-    foreach ($var in $args)
+    # get files from args
+    Foreach ($arg in $args)
     {
-        "PSH:     " + (Get-Item -Path $var).FullName
+        Foreach ($pathName in $(Get-Item -Path $arg)) {  # path maybe wildcard like *png
+            $files.Add($pathName)
+        }
     }
-} else {
-    "PSH: Fail SetFileDropList"
+
+    # add files to clipboard
+    If (-not [System.Windows.Forms.Clipboard]::SetFileDropList($files)) {
+        $count = $files.count
+        "PSH: Copy $count items to clipboard"
+        Foreach ($file in $files)
+        {
+            "PSH:     " + $file
+        }
+    } else {
+        "PSH: Fail SetFileDropList"
+    }
 }
+
+SetFileDropList($args)
+
