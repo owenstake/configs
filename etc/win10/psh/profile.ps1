@@ -27,6 +27,10 @@ Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
 }
 
+Function fmt_warn {
+    Write-Host $args -ForegroundColor Yellow -BackgroundColor DarkGreen
+}
+
 Function fmt_error {
 	Write-Host $args -BackgroundColor DarkRed
 }
@@ -63,16 +67,18 @@ Function exp($pathName=".") {
 
 Function yww() {
     # powershell -File 'D:\.local\win10\psh\file2clip.ps1' "$args"
-    return powershell -Command "D:\.local\win10\psh\file2clip.ps1 $args"
+    return powershell -Command "D:\.local\win10\psh\clipboard.ps1 set $args"
 }
 
 Function pww() {
-    return powershell -Command "D:\.local\win10\psh\clip2file.ps1 $args"
+    return powershell -Command "D:\.local\win10\psh\clipboard.ps1 get $args"
 }
 
 # zlua
 If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
     Invoke-Expression (& { (lua $env:scoop\apps\z.lua\current\z.lua --init powershell) -join "`n" })
+    Function zb {z -b}
+    Function zc($p) {z -c $p}
 }
 
 # psfzf
@@ -105,6 +111,10 @@ If ( $WinVersion -lt 14931) {
 Function RealPath() {
     (Get-Item $args[0]).FullName
 }
+
+del alias:rp -Force
+Set-Alias rp RealPath
+Set-Alias wrp RealPath
 
 # Import the Chocolatey Profile that contains the necessary code to enable
 # tab-completions to function for `choco`.
