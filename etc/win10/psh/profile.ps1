@@ -74,6 +74,10 @@ Function pww() {
     return powershell -Command "D:\.local\win10\psh\clipboard.ps1 get $args"
 }
 
+Function pwm() {
+    return powershell -Command "D:\.local\win10\psh\clipboard.ps1 move $args"
+}
+
 # zlua
 If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
     Invoke-Expression (& { (lua $env:scoop\apps\z.lua\current\z.lua --init powershell) -join "`n" })

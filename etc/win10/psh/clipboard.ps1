@@ -40,13 +40,18 @@ Function SetClipboard() {
             }
     }
 
+    If (!$files) {
+        "PSH: Nothing Copied"
+        return
+    }
+
     # add files to clipboard
     If (-not [System.Windows.Forms.Clipboard]::SetFileDropList($files)) {
         $count = $files.count
         "PSH: Copy $count items to clipboard"
         Foreach ($file in $files)
         {
-            "PSH:     " + $file
+            "PSH:     $file"
         }
     } else {
         "PSH: Fail SetClipboard"
@@ -84,14 +89,9 @@ Function ShowClipboard {
 }
 
 Function GetClipboard {
-    # Param(
-    #     [Parameter(Position = 0)][string] $DesDirPath = ".", 
-    #     [Parameter(Position = 1)][string] $imageName = "screenshot-{0:yyyyMMdd-HHmmss}.png" -f (Get-Date)
-    # )
+    Add-Type -AssemblyName System.Windows.Forms
 
     $flatArgs = FlattenArgs($args)
-    echo "flatArgs is $flatArgs"
-
     If ($flatArgs[0]) {
         $DesDirPath = $flatArgs[0]
     } else {
@@ -103,64 +103,61 @@ Function GetClipboard {
     } else {
         $imageName = "screenshot-{0:yyyyMMdd-HHmmss}.png" -f (Get-Date)
     }
-
-    # echo "new is $flatArgs"
-    # echo "new 0 is $($flatArgs[0])"
-    # echo "new 1 is $($flatArgs[1])"
-    # echo "new 2 is $($flatArgs[2])"
-
-    # echo "DesDirPath is $DesDirPath"
-    # echo "imageName is $imageName"
-
-    Add-Type -AssemblyName System.Windows.Forms
-    # $fileDropList = new-object System.Collections.Specialized.StringCollection;
-
     If ([System.Windows.Forms.Clipboard]::ContainsImage()) {
         $img = get-clipboard -format image
         $fullname = $(Get-Item ${DesDirPath}).FullName
         $imgPath = "${fullname}\${imageName}"
         $img.save($imgPath)
-        "Psh: Image in clipboard and saved as $DesDirPath\$imageName"
+        Write-Host "Psh: Image in clipboard and saved as $DesDirPath\$imageName"
     } ElseIf ([System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
         $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
-        "Psh: Psh copy clipboard $($fileDropList.count) Items to DesDir " 
-        "Psh: Destination Directory: "
-        "Psh:     $DesDirPath\$imageName"
-        "Psh: Items: " 
+        Write-Host "Psh: Psh copy clipboard $($fileDropList.count) Items to DesDir " 
+        Write-Host "Psh: Destination Directory: "
+        Write-Host "Psh:     $DesDirPath"
+        Write-Host "Psh: Items: " 
 
         Foreach ($file in $fileDropList) {
-            "Psh:     " + $file + "`t=>`t" + $DesDirPath + '\' + (Get-Item -Path $file).Name
+            Write-Host "Psh:     $file`t=>`t$DesDirPath\$((Get-Item -Path $file).Name)"
             Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
         }
     } Else {
-        "Psh: No appendable content was found."
+        Write-Host "Psh: No appendable content was found."
     }
 }
 
+Function MoveClipboard {
+    $flatArgs = FlattenArgs($args)
+    $DesDirPath = $flatArgs[0]
+
+    $files = ShowClipboard
+
+    "Psh: Psh Move clipboard $($files.count) Items to DesDir" 
+    "Psh: Destination Directory: "
+    "Psh:     $(Get-Item -Path $DesDirPath).FullName\"
+    "Psh: Items: " 
+    foreach ($file in $files) {
+        "Psh:     Move $((Get-Item -Path $file).Name) to $DesDirPath\"
+        Move-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName
+    }
+}
 
 Function Clipboard() {
-    $flatArgs = @()
-    Foreach ($arg in $local:args) {
-        Foreach ($a in $arg) {  # path maybe wildcard like *png
-            $flatArgs += $a
-        }
-    }
-
-    $action = $flatArgs[0]
-
+    # $flatArgs = @()
+    # Foreach ($arg in $local:args) {
+    #     Foreach ($a in $arg) {  # path maybe wildcard like *png
+    #         $flatArgs += $a
+    #     }
+    # }
+    $flatArgs = FlattenArgs($args)
+    $action   = $flatArgs[0]
     $flatArgs = $flatArgs | select -skip 1    # skip first arg
-
-    # echo "new is $flatArgs"
-    # echo "new 0 is $($flatArgs[0])"
-    # echo "new 1 is $($flatArgs[1])"
-    # echo "new 2 is $($flatArgs[2])"
-
     Switch ($action) {
-        {$_ -eq 'set' }  { SetClipboard       $flatArgs }
+        {$_ -eq 'set'  } { SetClipboard       $flatArgs }
         {$_ -eq 'push' } { AppendClipboard    $flatArgs }
-        {$_ -eq 'show'}  { ShowClipboard      $flatArgs }
-        {$_ -eq 'get' }  { GetClipboard       $flatArgs }
-        {$_ -eq 'test'}  { echo "args is"     $local:args }
+        {$_ -eq 'show' } { ShowClipboard      $flatArgs }
+        {$_ -eq 'get'  } { GetClipboard       $flatArgs }
+        {$_ -eq 'move' } { MoveClipboard      $flatArgs }
+        {$_ -eq 'test' } { echo "args is"     $local:args }
         Default          { echo "unknow action $action"  }
     }
 }
