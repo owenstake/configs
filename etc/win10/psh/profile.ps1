@@ -108,9 +108,13 @@ Function rgf {
 }
 
 ## git function
-Function ga($p)  {git add $p}
-Function gd  {git diff}
+Function ga  {git add $args}
+Function gd  {git diff $args}
 Function gst {git status}
+Function gca {git commit -v -a $args}
+
+# del alias:rm -errorAction silentlyContinue
+# Function rm { $args }
 
 # zlua
 If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
