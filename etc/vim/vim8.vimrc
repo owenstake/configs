@@ -533,7 +533,8 @@ endif
 
 " GTAGS config {{{
     " enable gtags module
-    let g:gutentags_modules = ['ctags', 'gtags_cscope']
+    " let g:gutentags_modules = ['ctags', 'gtags_cscope']
+    let g:gutentags_modules = ['gtags_cscope']
 
     " config project root markers. If you don't want to generate tags, then touch file .notags in the project root.
     let g:gutentags_project_root = ['.root']
