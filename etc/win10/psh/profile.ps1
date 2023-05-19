@@ -113,6 +113,9 @@ Function gd  {git diff $args}
 Function gst {git status}
 Function gca {git commit -v -a $args}
 
+## jobs function
+Function bg() {Start-Process -NoNewWindow @args}
+
 # del alias:rm -errorAction silentlyContinue
 # Function rm { $args }
 

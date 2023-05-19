@@ -53,23 +53,6 @@ Function CreateShortCut($SourceFilePath,$ShortcutPath) {
     $shortcut.Save()
 }
 
-$DirStartUp = '~\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
-
-Function SetScoopAppStartUp($app) {
-    $DirScoopAppsDir = '~\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps'
-    # CreateShortCut "$DirScoopAppsDir\$app.lnk" "$DirStartUp\$app.lnk"
-    cp "$DirScoopAppsDir\$app.lnk" "$DirStartUp\"
-}
-Function SetFileToStartUp($SourceFilePath) {
-    $SourceFilePath       = ( Get-Item -Path "$SourceFilePath" ).FullName
-    $SourceFileName       = ( Get-Item -Path "$SourceFilePath" ).Name
-    CreateShortCut $SourceFilePath $DirStartUp\$SourceFileName.lnk
-}
-
-Function SetStartUp() {
-    SetScoopAppStartUp qq
-    CreateShortCut "D:\.local\win10\psh\keyremap.ahk" $DirStartUp
-}
 
 Function BootstrapWin() {
     If (!(test-path D:\.local\win10\ -PathType Container)) {
@@ -88,6 +71,9 @@ Function BootstrapWin() {
     }
     TryConfig "$HOME\_vimrc"  "source D:\.local\_vimrc"  '"'  "utf8"  # vimrc must be utf8 for parsing
     TryConfig "$profile"      ". D:\.local\win10\psh\profile.ps1" 
+    # setup startup tasks
+    $DirStartUp = '~\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+    cp etc\win10\owen-startup.cmd $DirStartUp\ -Force
 }
 
 BootstrapWin
