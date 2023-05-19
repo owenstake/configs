@@ -23,6 +23,8 @@ $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
 # basic setting
 set-PSReadLineOption -EditMode Emacs
 
+
+
 Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
 }
@@ -78,11 +80,54 @@ Function pwm() {
     return powershell -Command "D:\.local\win10\psh\clipboard.ps1 move $args"
 }
 
+Function RealPath() {
+    (Get-Item $args[0]).FullName
+}
+
+# basic alias
+del alias:rp -Force
+Set-Alias rp RealPath
+Set-Alias wrp RealPath
+
+# basic function
+Function vic { vim ~\_vimrc }
+Function psc { vim $profile }
+Function rgf {
+    $argStr = $args -join " "
+    $line = $(rg --color=always --line-number --no-heading --smart-case "${argStr}" | `
+      fzf --ansi `
+          --color "hl:-1:underline,hl+:-1:underline:reverse" `
+          --delimiter : `
+          --preview 'bat --color=always {1} --highlight-line {2}' `
+          --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' `
+          )
+    $arr = $line -split ":"
+    $file = $arr[0]
+    $n = $arr[1]
+    vim $file +$n
+}
+
+## git function
+Function ga($p)  {git add $p}
+Function gd  {git diff}
+Function gst {git status}
+
 # zlua
 If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
     Invoke-Expression (& { (lua $env:scoop\apps\z.lua\current\z.lua --init powershell) -join "`n" })
     Function zb {z -b}
     Function zc($p) {z -c $p}
+    Function zr {cd ~/Desktop }
+    Function zd {cd ~/Downloads }
+    # refine cd as linux bash
+    del alias:cd -errorAction silentlyContinue
+    Function cd($dir="~") {
+        If ($dir -eq "-") {
+            z -
+        } else {
+            Set-Location "$dir"
+        }
+    }
 }
 
 # psfzf
@@ -112,13 +157,10 @@ If ( $WinVersion -lt 14931) {
 	Set-alias vim "${env:scoop}\shims\gvim.exe"
 }
 
-Function RealPath() {
-    (Get-Item $args[0]).FullName
-}
 
-del alias:rp -Force
-Set-Alias rp RealPath
-Set-Alias wrp RealPath
+If (Test-AppExistsInScoop "autohotkey") {
+    exp D:\.local\win10\ahk\keyremap.ahk
+}
 
 # Import the Chocolatey Profile that contains the necessary code to enable
 # tab-completions to function for `choco`.
@@ -129,4 +171,6 @@ $ChocolateyProfile = "${env:ChocolateyInstall}\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
   Import-Module "$ChocolateyProfile"
 }
+
+
 
