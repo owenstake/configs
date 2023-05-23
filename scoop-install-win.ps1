@@ -125,16 +125,16 @@ Function scoop-install {
 
 	# autohotkey V1 need manual installation
     If (!(Test-AppExistsInScoop psfzf)) {
-        scoop install psfzf@2.2.0
+        scoop install psfzf@2.4.0
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
 	
 	# CLI handy tool
 	$appstr = "
-		gow sudo vim-tux less bat   # CLI basic tool
-        lua fd ripgrep z.lua fzf    # CLI super tool
-		autohotkey ffmpeg  python nodejs-lts   # CLI program envir
-		snipaste ScreenToGif notepadplusplus   # UI simple tool
+		gow sudo vim-tux less bat tre-command recycle-bin file # CLI basic tool
+        lua fd ripgrep z.lua fzf  extras/pscolor               # CLI super tool
+		autohotkey ffmpeg  python nodejs-lts                   # CLI program envir
+		snipaste ScreenToGif notepadplusplus                   # UI simple tool
 		# UI tool
 		foxit-reader v2rayN typora vscode draw.io googlechrome
 		qq wechat foxit-reader mobaxterm foxmail
@@ -156,10 +156,10 @@ Function scoop-install {
 
 Function chocolatey-install() {
     fmt_info "Choco install apps"
-    If ($WinVersion -ge 17763) {
-        fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
-        return
-    }
+    # If ($WinVersion -ge 17763) {
+    #     fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
+    #     return
+    # }
     # install chocolatey
     If (!(Test-CommandExists choco)) {
         # need proxy and admin priviledge

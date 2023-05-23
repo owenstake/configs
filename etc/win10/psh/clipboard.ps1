@@ -1,43 +1,39 @@
 
+Add-Type -AssemblyName System.Windows.Forms  # Introduce .net clipboard
+
 Function IsArray() {
 	return "RemoveAt" -in $args[0].PSobject.Methods.Name
 }
 
 # flatten array to elem
-Function FlattenArgs() {
-    $local:flatArgs = @()
-    Foreach ($arg in $local:args) {
-		If (IsArray($arg)) {
-			Foreach ($a in $arg) {  # path maybe wildcard like *png
-				If (IsArray($a)) {
-					$n = FlattenArgs($a)
-					Foreach ($i in $n) {  # path maybe wildcard like *png
-						$local:flatArgs += $i
-					}
-				} else {
-					$local:flatArgs += $a
-				}
-			}
-        } else {
-			$local:flatArgs += $arg
-		}
-    }
-    return ,$local:flatArgs
-}
-
-
+# Function FlattenArgs() {
+#     $fargs = @()
+#     Foreach ($arg in $args) {
+# 		If (IsArray($arg)) {
+# 			Foreach ($a in $arg) {  # path maybe wildcard like *png
+# 				If (IsArray $a ) {
+# 					$n = FlattenArgs @a 
+# 					Foreach ($i in $n) {  # path maybe wildcard like *png
+# 						$fargs += $i
+# 					}
+# 				} else {
+# 					$fargs += $a
+# 				}
+# 			}
+#         } else {
+# 			$fargs += $arg
+# 		}
+#     }
+#     return ,$fargs
+# }
 
 Function SetClipboard() {
-    Add-Type -AssemblyName System.Windows.Forms
     $files = new-object System.Collections.Specialized.StringCollection
-
-    $flatArgs = FlattenArgs($args)
-
     # get files from args
-    Foreach ($arg in $flatArgs) {
-            Foreach ($pathName in $(Get-Item -Path $arg)) {  # path maybe wildcard like *png
-                [void]$files.Add($pathName)
-            }
+    Foreach ($arg in $args) {
+        Foreach ($pathName in $(Get-Item -Path $arg)) {  # path maybe wildcard like *png
+            [void]$files.Add($pathName)
+        }
     }
 
     If (!$files) {
@@ -59,21 +55,18 @@ Function SetClipboard() {
 }
 
 Function AppendClipboard {
-    Add-Type -AssemblyName System.Windows.Forms
-
     # get files from clipboard
     if ([System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
         $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
 
         foreach ($file in $fileDropList) {
-            $local:args += (Get-Item -Path $file).FullName
+            $args += (Get-Item -Path $file).FullName
         }
     }
-    SetClipboard($local:args)
+    SetClipboard($args)
 }
 
 Function ShowClipboard {
-    Add-Type -AssemblyName System.Windows.Forms
     $files = new-object System.Collections.Specialized.StringCollection
 
     # get files from clipboard
@@ -84,31 +77,30 @@ Function ShowClipboard {
             [void]$files.Add((Get-Item -Path $file).FullName)
         }
     }
-    # Write-Host $files
     return $files
 }
 
-Function GetClipboard {
-    Add-Type -AssemblyName System.Windows.Forms
-
-    $flatArgs = FlattenArgs($args)
-    If ($flatArgs[0]) {
-        $DesDirPath = $flatArgs[0]
+Function GetClipboard($DesDirPath, $ImageName)
+{
+    # default args value do not take effect because of @args
+    If ($args[0]) {
+        $DesDirPath = $args[0]
     } else {
         $DesDirPath = "."
     }
 
-    If ($flatArgs[1]) {
-        $imageName = $flatArgs[1]
+    If ($args[1]) {
+        $ImageName = $args[1]
     } else {
-        $imageName = "screenshot-{0:yyyyMMdd-HHmmss}.png" -f (Get-Date)
+        $ImageName = "screenshot-{0:yyyyMMdd-HHmmss}.png" -f (Get-Date)
     }
+
     If ([System.Windows.Forms.Clipboard]::ContainsImage()) {
         $img = get-clipboard -format image
         $fullname = $(Get-Item ${DesDirPath}).FullName
-        $imgPath = "${fullname}\${imageName}"
+        $imgPath = "${fullname}\${ImageName}"
         $img.save($imgPath)
-        Write-Host "Psh: Image in clipboard and saved as $DesDirPath\$imageName"
+        Write-Host "Psh: Image in clipboard and saved as $DesDirPath\$ImageName"
     } ElseIf ([System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
         $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
         Write-Host "Psh: Psh copy clipboard $($fileDropList.count) Items to DesDir " 
@@ -118,7 +110,7 @@ Function GetClipboard {
 
         Foreach ($file in $fileDropList) {
             Write-Host "Psh:     $file`t=>`t$DesDirPath\$((Get-Item -Path $file).Name)"
-            Copy-Item -Path $file -Destination (Get-Item -Path $DesDirPath).FullName -Recurse
+            Copy-Item -Recurse -Path $file -Destination (Get-Item -Path $DesDirPath).FullName
         }
     } Else {
         Write-Host "Psh: No appendable content was found."
@@ -126,8 +118,7 @@ Function GetClipboard {
 }
 
 Function MoveClipboard {
-    $flatArgs = FlattenArgs($args)
-    $DesDirPath = $flatArgs[0]
+    $DesDirPath = $args[0]
 
     $files = ShowClipboard
 
@@ -141,30 +132,23 @@ Function MoveClipboard {
     }
 }
 
-Function Clipboard() {
-    # $flatArgs = @()
-    # Foreach ($arg in $local:args) {
-    #     Foreach ($a in $arg) {  # path maybe wildcard like *png
-    #         $flatArgs += $a
-    #     }
-    # }
-    $flatArgs = FlattenArgs($args)
-    $action   = $flatArgs[0]
-    $flatArgs = $flatArgs | select -skip 1    # skip first arg
+Function Clipboard {
+    $action = $args[0]
+    $newArgs  = $args | select -skip 1    # shift args
     Switch ($action) {
-        {$_ -eq 'set'  } { SetClipboard       $flatArgs }
-        {$_ -eq 'push' } { AppendClipboard    $flatArgs }
-        {$_ -eq 'show' } { ShowClipboard      $flatArgs }
-        {$_ -eq 'get'  } { GetClipboard       $flatArgs }
-        {$_ -eq 'move' } { MoveClipboard      $flatArgs }
-        {$_ -eq 'test' } { echo "args is"     $local:args }
+        {$_ -eq 'set'  } { SetClipboard        $newArgs }  # use $fargs, not @fargs. fargs is already flatten, do no need @args to flatten again.
+        {$_ -eq 'push' } { AppendClipboard     $newArgs }
+        {$_ -eq 'show' } { ShowClipboard       $newArgs }
+        {$_ -eq 'get'  } { GetClipboard        $newArgs }
+        {$_ -eq 'move' } { MoveClipboard       $newArgs }
+        {$_ -eq 'test' } { echo "args is"      $args }
         Default          { echo "unknow action $action"  }
     }
 }
 
 If ($MyInvocation.InvocationName -match $MyInvocation.MyCommand.Name) {
 	# echo "we are exec this script"
-    Clipboard $script:args
+    Clipboard @script:args
 } else {
 	# echo "we are source this script"
 }

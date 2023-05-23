@@ -1,5 +1,6 @@
 
 $OwenLocalDir= 'D:\.local\win10'
+$DirScoopAppsDir = "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
 
 Function ExecFile($file) {
     $filePath = "$OwenLocalDir\$file"
@@ -9,7 +10,6 @@ Function ExecFile($file) {
 ExecFile 'ahk\keyremap.ahk'
 ExecFile 'ahk\easy-marker\easy-marker.ahk'
 
-# StartUp Scoop Apps
-$DirScoopAppsDir = "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
+# StartUp Scoop Apps. scoop app need auto startup mechanism
 explorer $DirScoopAppsDir\QQ.lnk
 
