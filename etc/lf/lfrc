@@ -1,0 +1,149 @@
+# [lf command - github.com/gokcehan/lf - Go Packages](https://pkg.go.dev/github.com/gokcehan/lf#section-readme )
+
+# ========= Option ============================
+set shell       powershell
+set shellflag   -c   # flag for powreshell fast start
+# lf specified powershell profile is $env:LOCALAPPDATA\lf\lib.ps1
+# set shellopts   '. $env:LOCALAPPDATA\lf\lib.ps1;'   # flag for powreshell fast start
+
+# user-specified env var for internal use
+set user_pager  bat
+set user_editor vim
+set user_open   explorer
+
+set preview   true
+set previewer D:\\.local\\bin\\previewer.exe     # golang exe. source code file previewer.go
+
+set mouse   true
+set icons   true
+set info    size:ctime
+set sortby  ctime    # change(write) time.
+set reverse         # descending order
+set promptfmt "\033[32;1m%u@%h\033[0m:\033[34;1m%d\033[0m\033[1m\033[0m"
+
+# set user_shell powershell  # flag for powershell super-fast start
+
+# ========= Map ============================
+# Basic
+map A  rename
+map xx cut
+map d  # unset d
+map dd cut
+map db db  # debug
+map i  ${{& $env:lf_user_pager  $env:f}}
+map e  ${{& $env:lf_user_editor $env:f}}
+map E  ${{& $env:lf_user_open   $env:f}}
+map w  ${{& $env:lf_shell }}  # TODO: unset $env:lf ?
+# trash Need recycle-bin installed. "@files" will unpack files array
+map D  !{{ $files = LfFormatEnvFx $env:fx; trash @files }}
+map <c-t> fzf_ctrl_t
+# map <c-r> fzf_ctrl_r
+map <f-1> ${{ & $env:lf -doc | & $env:lf_user_pager }}
+map <f-5> reload
+
+# History navigate
+map <c-o> jump-prev
+map <tab> jump-next  # <tab> == <c-i>
+map H     jump-prev
+map L     jump-next
+
+# Ripgrep
+map r
+map rg !{{rgf}}
+
+# Bookmarks
+map g. ${{exp .}}
+map gd cd ~/Downloads
+
+map gr cd ~/Desktop
+map gw ${{
+    $path = LfFormatPath $env:weiyun
+    lf -remote "send $env:id cd $path"
+    }}
+# Undo
+map u
+map uu :{{
+    unselect   # unset  $env:fx  $env:fs
+    clear      # clear  copy/cut buffer
+}}
+map uc clear
+map us unselect
+
+map V :{{ toggle ; down ; }}
+
+map c          # unmap
+map cc clear   # clear copy/cut buffer
+map c. !{{code .}}
+
+# tags
+map t
+map tt tag-toggle 
+
+# Clipboard win10 - shell-wait for user check
+map y    # unmap
+map p    # unmap
+map yy copy
+map pp paste
+# map yy %powershell -c D:\.local\win10\psh\clipboard.ps1 set $env:f
+
+# win clipboard manipulation
+map yww !{{ 
+    $files = LfFormatEnvFx $env:fx       # format path with backslash
+    yww @files                           # win copy file
+    lf -remote "send $env:id unselect"   # unselect
+    }} # TODO: clear selection
+
+map pww !{{pww}}    # win paste
+map pss !{{pss}}    # show win clipboard content
+
+# ========= cmd ============================
+# Linux like cmd. Install gow first
+cmd touch %touch
+cmd mkdir %mkdir
+cmd q quit
+
+# zlua
+map zb &{{LfZlua "-b"}}
+cmd z  &{{LfZlua "-r"}}  # Bug: must be one-line for receive args. -r should be quote as strings.
+# map z. ${{exp .}}
+map zd cd ~/Downloads
+map zr cd ~/Desktop
+
+cmd fzf_ctrl_t ${{
+    LfFzfCtrlT      # in func will unset user_zlua
+}}
+
+cmd exp ${{
+    exp
+}}
+
+cmd db !{{env >lflog; get-variable >>lflog; echo "args:"}}  # debug
+
+# open is trigger for file, no directory. Need "scoop install file" first.
+# map l open
+map l open
+
+# "cmd open" associate with map l and <right>
+cmd open !{{
+    $file = $env:f
+    $mimeType = file --mime-type -b $file
+    echo "$mimeType"
+    Switch -wildcard  ($mimeType) {
+        "text/*" { vim $file }
+        default  { explorer.exe $file }
+    }
+}}
+
+# cmd on-cd {{}}
+
+cmd on-cd &{{
+    # display git repository status in your prompt
+    # source /usr/share/git/completion/git-prompt.sh
+    # GIT_PS1_SHOWDIRTYSTATE=auto
+    # GIT_PS1_SHOWSTASHSTATE=auto
+    # GIT_PS1_SHOWUNTRACKEDFILES=auto
+    # GIT_PS1_SHOWUPSTREAM=auto
+    # git=$(__git_ps1 " (%s)") || true
+    # fmt="\033[32;1m%u@%h\033[0m:\033[34;1m%d\033[0m\033[1m%f owen on-cd \033[0m"
+    # lf -remote "send $id echo cding $pwd"
+}}

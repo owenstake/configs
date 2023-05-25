@@ -63,11 +63,12 @@ Function scoop-install {
 	# TLS - https://learn.microsoft.com/zh-cn/dotnet/framework/network-programming/tls
 	# [System.Net.ServicePointManager]::SecurityProtocol += [System.Net.SecurityProtocolType]::Tls12;
 	$scoopInstallDir="D:\owen\scoop"
-	
 	If (!(Test-CommandExists scoop)) {
 		# self-define for scoop
 		$env:SCOOP=$scoopInstallDir
 		[environment]::setEnvironmentVariable('SCOOP',$env:SCOOP,'User')
+        $env:scoopUiApps="$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
+		[environment]::setEnvironmentVariable('SCOOPUIAPPS',$env:scoopUiApps,'User')
 
 		# $env:SCOOP_GLOBAL='D:\apps'
 		# [environment]::setEnvironmentVariable('SCOOP_GLOBAL',$env:SCOOP_GLOBAL,'Machine')
@@ -117,9 +118,11 @@ Function scoop-install {
 			scoop bucket rm main
 			scoop bucket rm extras
 			scoop bucket rm versions
-			scoop bucket add main     https://gitee.com/scoop-bucket/main.git
-			scoop bucket add extras   https://gitee.com/scoop-bucket/extras.git
-			scoop bucket add versions https://gitee.com/scoop-bucket/versions.git
+			scoop bucket rm nerd-fonts
+			scoop bucket add main       https://gitee.com/scoop-bucket/main.git
+			scoop bucket add extras     https://gitee.com/scoop-bucket/extras.git
+			scoop bucket add versions   https://gitee.com/scoop-bucket/versions.git
+			scoop bucket add nerd-fonts https://gitee.com/scoop-bucket/nerd-fonts.git
 		}
 	}
 
@@ -132,8 +135,8 @@ Function scoop-install {
 	# CLI handy tool
 	$appstr = "
 		gow sudo vim-tux less bat tre-command recycle-bin file # CLI basic tool
-        lua fd ripgrep z.lua fzf  extras/pscolor               # CLI super tool
-		autohotkey ffmpeg  python nodejs-lts                   # CLI program envir
+        go lua fd ripgrep z.lua fzf  extras/pscolor               # CLI super tool
+		autohotkey1.1 ffmpeg  python nodejs-lts                # CLI program envir
 		snipaste ScreenToGif notepadplusplus                   # UI simple tool
 		# UI tool
 		foxit-reader v2rayN typora vscode draw.io googlechrome
@@ -143,6 +146,9 @@ Function scoop-install {
 	If ($WinVersion -gt 18362) {
 		$appstr += " windows-terminal"
 	}
+    # config
+    go env -w GOPROXY=https://goproxy.cn,direct
+
     # winget worked in winversion >= 16299
 	$appstr = $appstr -replace "#.*"
 	$apps = $appstr.trim() -split '\s+'

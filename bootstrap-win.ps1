@@ -72,6 +72,10 @@ Function EnvPathInsertAtHeadIfNoExists($item) {
     [Environment]::SetEnvironmentVariable('PATH', $Env:PATH, 'User')
 }
 
+Function ahk2exe($ahkFile, $exeFile) {
+    ahk2exe.exe /silent /in $ahkFile /out $exeFile /base "$env:scoop\apps\autohotkey1.1\current\Compiler\Unicode 64-bit.bin"
+}
+
 Function BootstrapWin() {
     New-Item-IfNoExists  D:\.local\win10\       Directory
     New-Item-IfNoExists  $env:LOCALAPPDATA\lf\  Directory
@@ -103,6 +107,16 @@ Function BootstrapWin() {
         } else {
             fmt_error "No found shuangpin.reg"
         }
+    }
+
+    fmt_info "Compiling"
+    # keyremap
+    if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
+        ahk2exe $file D:\.local\bin\keyremap.exe
+        # ahk2exe $file D:\.local\win10\ahk\keyremap.exe
+    }
+    if ($file = Get-ChildItem -Recurse "previewer.go") {
+        go build -o D:\.local\bin\previewer.exe $file 
     }
 }
 

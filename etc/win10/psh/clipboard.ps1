@@ -72,7 +72,6 @@ Function ShowClipboard {
     # get files from clipboard
     if ([System.Windows.Forms.Clipboard]::ContainsFileDropList()) {
         $fileDropList = [System.Windows.Forms.Clipboard]::GetFileDropList()
-
         foreach ($file in $fileDropList) {
             [void]$files.Add((Get-Item -Path $file).FullName)
         }

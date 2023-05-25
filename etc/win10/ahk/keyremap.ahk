@@ -245,9 +245,9 @@
             ; WinActiveToggle("explorer.exe", "C:\Windows\explorer.exe")
             return
     ; Foxit
-        Alt & f::
-            WinActiveToggle("FoxitPDFReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe")
-            return
+        ; Alt & f::
+        ;     WinActiveToggle("FoxitPDFReader.exe", "C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe")
+        ;     return
     ; Obsidian
         Alt & i::
             WinActiveToggle("Obsidian.exe", "C:\Users\owen\AppData\Local\Obsidian\Obsidian.exe")

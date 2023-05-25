@@ -81,6 +81,9 @@ function main() {
         powershell.exe -File '.\bootstrap-win.ps1'
     fi
 
+    # do compiler
+    # ahk
+
     # -- zsh config ---------------------------------------------------------
     try_config ~/.zshrc "source ~/.local/etc/zsh.conf"
 

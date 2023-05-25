@@ -1,9 +1,7 @@
-# Conditional source lib script
-If ($env:lf) {
-    . $env:LOCALAPPDATA\lf\lib.ps1
-}
-
 # ========== Lib for Script and Terminal ===========================
+# Env
+$env:WEIYUN = "D:\owen\weiyun"
+# Function
 Function exp($pathName=".") {
     $pathName = $pathName.Trim("`"")  #
     If ( !(Test-Path $pathName )) {
@@ -29,7 +27,28 @@ Function pwm() {
 }
 
 Function pss() {
-    return DoClipboard "show"
+    $files = DoClipboard "show"
+    If ($files) {
+        "PSH: $($files.count) items in clipboard"
+        Foreach($file in $files) {
+            "PSH:     $file"
+        }
+    } else {
+        "PSH: Nothing in clipboard"
+    }
+    return
+}
+
+Function ahk2exe($ahkFile, $exeFile) {
+    If(!$ahkFile) {
+        echo "ERR: No args"
+        return
+    }
+    if (!$exeFile) {
+        $file = Get-Item $ahkFile
+        $exeFile = $file.DirectoryName + '\' + $file.Basename + '.exe'
+    }
+    ahk2exe.exe /silent /in $ahkFile /out $exeFile /base "$env:scoop\apps\autohotkey1.1\current\Compiler\Unicode 64-bit.bin"
 }
 
 # [Powershell test for noninteractive mode - Stack Overflow](https://stackoverflow.com/questions/9738535/powershell-test-for-noninteractive-mode )
@@ -54,41 +73,40 @@ Function Test-CommandExists($cmd) {
     }
 }
 
-# Function Get-FileMimeType($file) {
-#     $mimeType = file --mime-type -b $file
-#     return $mimeType
-# }
-
-# Function LF-OpenFile($file) {
-#     $mimeType = Get-FileMimeType($file)
-#     Switch -wildcard  ($mimeType) {
-#         "text/*" { vim $file }
-#         default  { exp $file }
-#     }
-# }
-
-# for lf
-Function lfZlua($pattern) {
-    # init zlua first
-    If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
-        Invoke-Expression (& { (lua $env:scoop\apps\z.lua\current\z.lua --init powershell) -join "`n" })
+Function trash() {
+    # safety check
+    Foreach ($file in $args) {
+        If (!(Test-Path $file)) {
+            echo "No exists file => $file"
+            return $false
+        }
     }
-
-    If(!$pattern) {
-        lf -remote "send $env:id echo ZLUA: No args"
-        return
+    
+    echo "PSH: Remove $($args.count) items"
+    Foreach ($file in $args) {
+        echo "PSH:     Remove $file"
     }
-    $match = z -e "$pattern"
-    If ($match) {
-        $pathName = $match -replace "\\","\\"
-        lf -remote "send $env:id cd $pathName"
-        lf -remote "send $env:id echo ZLUA: cd to $pathName"
-    } else {
-        lf -remote "send $env:id echo ZLUA: No match for $pattern"
-    }
-    # lf -remote "send $env:id set user_zlua"
+    recycle-bin.exe @args
 }
 
+# Scoop
+Function ScoopAppsStart($app) {
+    Invoke-Item "$env:scoopUiApps\$app.lnk"
+}
+
+# Recommand win-key search first
+Function sapp($app) {
+    If (Test-Path "$env:scoopUiApps\$app.lnk") {
+        ScoopAppsStart "$app"
+        return
+    } else {
+        Get-ChildItem "$env:scoopUiApps" | Foreach {"""$_""" -replace "\.lnk",""} `
+            | fzf --ansi --reverse --height 60%   `
+            --bind 'enter:execute-silent(powershell -c ScoopAppsStart {})+abort'
+    }
+}
+
+# Ripgrep
 Function rgf($pattern) {
     If (!$pattern) {
         $pattern = Read-Host "Search"
@@ -105,33 +123,48 @@ Function rgf($pattern) {
         --bind 'enter:execute(vim {1} +{2})'
 }
 
+If (Test-Path ~\.zlua) {
+    Function zff() {
+        return cat ~\.zlua | Sort-Object { [double]($_ -split '\|')[1] } -Descending | Foreach { ($_ -split '\|')[0] }
+    }
+    Function zf($pattern) {
+        If ($pattern) {
+            cd (zff | & fzf --reverse --height 50% --query $pattern)
+        } else {
+            cd (zff | & fzf --reverse --height 50%)
+        }
+    }
+}
+
 # Env fzf
+# --bind 'ctrl-o:execute-silent(powershell -c Invoke-Item {})'
+# --preview '(bat --color=always {} || tre {} --directories) 2> nul'
+# Fzf is use cmd.exe as default shell if $env:shell or %SHELL% is not set.
 $env:FZF_CTRL_T_OPTS="
     --prompt 'All> '
     --border --reverse --ansi --height 60%
-    --preview '(bat --color=always {} || tre {} --directories) 2> nul'
-    --header 'CTRL-D: Directories / CTRL-F: Files / CTRL-O Open It / CTRL-Y: Copy Name'
+    --preview '(bat --color=always {} || cd {} && fd . --max-depth 1 --strip-cwd-prefix --color always) 2> nul'
+    --header 'CTRL-D: Directories / CTRL-F: Files / CTRL-T: Zlua / CTRL-S: Scoop UI Apps
+CTRL-O: Open It / CTRL-Y: Copy it / CTRL-I: Copy name'
     --bind 'ctrl-/:toggle-preview'
-    --bind 'ctrl-o:execute-silent(powershell -c Invoke-Item {})'
     --bind 'ctrl-d:change-prompt(Directories> )+reload(fd --type directory)'
     --bind 'ctrl-f:change-prompt(Files> )+reload(fd --type file )'
-    --bind 'ctrl-i:execute-silent(powershell -c yww set {})'
-    --bind 'ctrl-y:execute-silent(powershell -c echo {} | clip)'
-    "
-$env:FZF_CTRL_R_OPTS="
-    --header 'Press CTRL-Y to copy command into clipboard'
-    --reverse --height 60%
-    --preview 'echo {}' --preview-window up:3:hidden:wrap
-    --bind 'ctrl-/:toggle-preview'
-    --bind 'ctrl-y:execute-silent(powershell -c echo {} | clip)'
+    --bind 'ctrl-t:change-prompt(Zlua> )+reload(powershell -c zff)'
+    --bind 'ctrl-s:change-prompt(Scoop Ui App> )+reload(ls `"%scoopUiApps%\`")'
+    --bind 'ctrl-o:execute-silent(start {})'
+    --bind 'ctrl-i:execute-silent(powershell -c echo {} | clip)'
+    --bind 'ctrl-y:execute-silent(powershell -c yww set {})'
     "
 
-
-# Alias
-Set-Alias trash recycle-bin.exe
 # ---- end of lf script config ----
 # ========== End of Lib for script and terminal ===========================
 
+# Conditional source lib script
+If ($env:lf) {    # For lf
+    . $env:LOCALAPPDATA\lf\lib.ps1
+}
+
+# exit if we are in script.
 $isInter = IsInteractive
 If (!$isInter) {
     exit 2
@@ -150,6 +183,8 @@ If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lu
     Function zc($p) {z -c $p}
     Function zr {cd ~/Desktop }
     Function zd {cd ~/Downloads }
+    Function zw {cd $env:weiyun }
+
     # refine cd as linux bash
     del alias:cd -errorAction silentlyContinue
     Function cd($dir="~") {
@@ -230,15 +265,15 @@ Function bg() {Start-Process -NoNewWindow @args}
 # ls.exe
 If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
     del alias:ls -errorAction silentlyContinue
-    Function ls  {fd --max-depth 1 --strip-cwd-prefix --color always @args}
-    Function la  {ls --hidden @args}
-    Function ll  {ls -l @args}
-    Function lla {ls -l --hidden @args}
-
-    # Function ls  {ls.exe --color @args | echo }
-    # Function la  {ls -a @args}
+    # Function ls  {fd --max-depth 1 --strip-cwd-prefix --color always @args}
+    # Function la  {ls --hidden @args}
     # Function ll  {ls -l @args}
-    # Function lla {ls -l -a @args}
+    # Function lla {ls -l --hidden @args}
+
+    Function ls  {ls.exe -h --color @args | echo }
+    Function la  {ls -a @args}
+    Function ll  {ls -l @args}
+    Function lla {ls -l -a @args}
 
 }
 
@@ -265,9 +300,11 @@ If ( (Test-CommandExists fzf) -and (Test-AppExistsInScoopByCache "psfzf") ) {
 # 	Set-alias vim "${env:scoop}\shims\gvim.exe"
 # }
 
-If (Test-AppExistsInScoopByCache "autohotkey") {
-    exp D:\.local\win10\ahk\keyremap.ahk
+If (Test-Path "D:\.local\bin\keyremap.exe") {
+    # exp D:\.local\win10\ahk\keyremap.exe
+    D:\.local\bin\keyremap.exe
 }
+
 If (Test-AppExistsInScoopByCache("pscolor")) {
     # $env:PSCOLORS_HIDE_DOTFILE=$true
     Import-Module PSColor
