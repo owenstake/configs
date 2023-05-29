@@ -98,10 +98,11 @@ Function BootstrapWin() {
         EnvPathInsertAtHeadIfNoExists("$env:scoop\apps\global\current\bin")
     }
     # Registry setting
-    # Set 双拼
+    # 设置双拼
     $registryPath = "Registry::HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS\"
     $value = get-itemproperty -Path $registryPath -Name 'Enable double pinyin'
     If (!$value.'Enable Double Pinyin') {
+        fmt_info "设置双拼"
         if ($file = Get-ChildItem -Recurse "xiaohe-shuangpin.reg") {
             explorer.exe $file
         } else {
@@ -109,11 +110,12 @@ Function BootstrapWin() {
         }
     }
 
-    fmt_info "Compiling"
-    # keyremap
+    fmt_info "Compiling ahk and go"
     if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
         ahk2exe $file D:\.local\bin\keyremap.exe
-        # ahk2exe $file D:\.local\win10\ahk\keyremap.exe
+    }
+    if ($file = Get-ChildItem -Recurse "easymarker.ahk") {
+        ahk2exe $file D:\.local\bin\easymarker.exe
     }
     if ($file = Get-ChildItem -Recurse "previewer.go") {
         go build -o D:\.local\bin\previewer.exe $file 

@@ -99,6 +99,7 @@ endif
     " Commnentary
     Plug 'tpope/vim-commentary' " gcc
     autocmd FileType java,c,cpp set commentstring=//\ %s " comment style //
+    autocmd FileType autohotkey set commentstring=\;\ %s " comment style //
 
     " colorschemes {{{
         Plug 'flazz/vim-colorschemes'
@@ -300,7 +301,20 @@ endif
 " }}}
 
 " Basic Format Doc {{{
-    set clipboard=unnamedplus " clip interact with system
+
+if has('clipboard')
+    if has('win64') || has('win32')
+        set clipboard=unnamed     " windows. win no have + reg, use " reg instead
+    else
+        set clipboard=unnamedplus " linux. x11 use + reg. clip interact with system
+    endif
+    " if has('unnamedplus')  " When possible use + register for copy-paste
+    "     set clipboard=unnamed,unnamedplus
+    " else         " On mac and Windows, use * register for copy-paste. Do no have + reg
+    "     set clipboard=unnamed
+    " endif
+endif
+
     set hlsearch              " highlight search
     set number                " show line number
     set cc=80                 " set max charactors per line

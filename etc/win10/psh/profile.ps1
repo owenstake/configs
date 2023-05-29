@@ -89,21 +89,62 @@ Function trash() {
     recycle-bin.exe @args
 }
 
-# Scoop
-Function ScoopAppsStart($app) {
-    Invoke-Item "$env:scoopUiApps\$app.lnk"
+# Scoop - maybe used in autohotkey ahk
+Function GetScoopAppShortcut($app) {
+	If ($s = (scoop cat $app | ConvertFrom-json).shortcuts) {
+		return "$(scoop prefix $app)\$($s[0][0])"
+	}
+    return
+}
+
+Function ScoopAppStart($app) {
+    # Invoke-Item "$env:scoopUiApps\$app.lnk"
+	If ($s = GetScoopAppShortcut $app) {
+		exp "$s"
+	} else {
+		echo "No shortcut for $app to start"
+	}
+}
+
+# Match Order - app.exe
+# 1. app.exe in $env:path
+# 2. app.lnk in dir *Programs
+# 3. app.exe the app.lnk in dir *Programs
+# *program dir
+# 1. C:\ProgramData\Microsoft\Windows\Start Menu\Programs
+# 2. C:\Users\owen\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
+Function GetAppExe($appExe) {
+    # exe path
+    $appName = $appExe -Replace "\.exe",""
+    $lnks    = Get-ChildItem -R *.lnk -Path `
+                "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\",`
+                "$env:ALLUSERSPROFILE\Microsoft\Windows\Start Menu\Programs" 
+
+    $sh = New-Object -ComObject WScript.Shell
+    Foreach ($l in $lnks) {
+        If ($l.Basename -eq $appName) {
+            return  $l.FullName
+        }
+        $tp = $sh.CreateShortcut($l.FullName).TargetPath
+        # If (($tp) -and (Test-Path $tp)) {
+        If (($tp) -and (Test-Path $tp -PathType leaf)) {
+            # echo "$($l.FullName)"
+            # echo "$tp"
+            # echo $(Get-Item $tp).Name 
+            # echo $appName
+            if ($(Get-Item $tp).Basename -eq $appName) {
+                # echo $tp
+                return  $tp
+            }
+        }
+    }
+    write-error "no match in GetAppExe in powershell. app name is $appExe."
+    return
 }
 
 # Recommand win-key search first
 Function sapp($app) {
-    If (Test-Path "$env:scoopUiApps\$app.lnk") {
-        ScoopAppsStart "$app"
-        return
-    } else {
-        Get-ChildItem "$env:scoopUiApps" | Foreach {"""$_""" -replace "\.lnk",""} `
-            | fzf --ansi --reverse --height 60%   `
-            --bind 'enter:execute-silent(powershell -c ScoopAppsStart {})+abort'
-    }
+    ScoopAppStart $app
 }
 
 # Ripgrep
@@ -301,13 +342,13 @@ If ( (Test-CommandExists fzf) -and (Test-AppExistsInScoopByCache "psfzf") ) {
 # }
 
 If (Test-Path "D:\.local\bin\keyremap.exe") {
-    # exp D:\.local\win10\ahk\keyremap.exe
-    D:\.local\bin\keyremap.exe
+    exp D:\.local\win10\ahk\keyremap.ahk
+    # D:\.local\bin\keyremap.exe
 }
 
 If (Test-AppExistsInScoopByCache("pscolor")) {
     # $env:PSCOLORS_HIDE_DOTFILE=$true
-    Import-Module PSColor
+    Import-Module PSColor   # format ls result
 }
 
 $env:PAGER  = "bat"
