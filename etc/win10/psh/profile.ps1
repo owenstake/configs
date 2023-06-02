@@ -341,14 +341,14 @@ If ( (Test-CommandExists fzf) -and (Test-AppExistsInScoopByCache "psfzf") ) {
 # 	Set-alias vim "${env:scoop}\shims\gvim.exe"
 # }
 
-If (Test-Path "D:\.local\bin\keyremap.exe") {
-    exp D:\.local\win10\ahk\keyremap.ahk
-    # D:\.local\bin\keyremap.exe
-}
+# If (Test-Path "D:\.local\bin\keyremap.ahk") {
+exp D:\.local\win10\ahk\keyremap.ahk
+#     # D:\.local\bin\keyremap.exe
+# }
 
 If (Test-AppExistsInScoopByCache("pscolor")) {
     # $env:PSCOLORS_HIDE_DOTFILE=$true
-    Import-Module PSColor   # format ls result
+    Import-Module PSColor   # format Get-childitem/ls result
 }
 
 $env:PAGER  = "bat"

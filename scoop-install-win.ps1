@@ -21,6 +21,10 @@ $script:scoopAppstr = "
     "
 $script:bucketsStr = "main extras versions nerd-fonts"
 
+$script:psModulestr = "
+    ps2exe
+    "
+
 # function
 Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
@@ -194,11 +198,21 @@ Function winget-install() {
     }
 }
 
+Function psmodule-install {
+    $apps := FormatAppsStr $script:psModulestr
+    Foreach ($app in $apps) {
+        If (!(get-module $app)) {
+            install-module $app
+        }
+    }
+}
+
 Function main {
 	.\bootstrap-win.ps1
 	scoop-install
     chocolatey-install
     winget-install
+    psmodule-install
 }
 
 $time = Measure-Command { main }
