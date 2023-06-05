@@ -158,19 +158,19 @@ function main($WSLNAME,$WSLIP,$WINIP,$PshDir) {
     # wsl_add_hostname   $CLOUDHOST    cloudhost
     # wsl_add_hostname   $WSLPROXY     wslproxy
 
-    "--------------------- Schedule Tasks ----------------------------------"
-    Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
+    # "--------------------- Schedule Tasks ----------------------------------"
+    # Unregister-ScheduledTask -TaskName "owen-*" -Confirm:$false
 
-    "-- For All At logon --"
-    ExecPowershellScriptAtLogOn "owen-all-entry" $PshDir"EntryAtLogOn.ps1"
+#     "-- For All At logon --"
+#     ExecPowershellScriptAtLogOn "owen-all-entry" $PshDir"EntryAtLogOn.ps1"
 
-    # "-- for shadow copy everyday --"
-    # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
-    # $action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
-    # Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
+#     # "-- for shadow copy everyday --"
+#     # $trigger = New-ScheduledTaskTrigger -Daily -At 3am
+#     # $action  = New-ScheduledTaskAction -Execute 'wmic' -Argument 'shadowcopy call create Volume=c:\'
+#     # Register-ScheduledTask -Action $action -Trigger $trigger -RunLevel Highest -TaskName "owen-shadowcopy" 
 
-    "Show Tasks result"
-    Get-ScheduledTask "owen-*"
+#     "Show Tasks result"
+#     Get-ScheduledTask "owen-*"
 
     "-------------------- Pause util key press ------------------------"
     cmd /c pause

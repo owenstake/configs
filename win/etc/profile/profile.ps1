@@ -11,8 +11,8 @@ Function exp($pathName=".") {
 }
 
 Function DoClipboard() {
-    $file = Get-ChildItem $Env:OwenInstallDir -Recurse "clipboard.ps1"
-    powershell -noprofile -Command "D:\.local\win10\psh\clipboard.ps1" @args
+    $file = (Get-ChildItem $Env:OwenInstallDir -Recurse "clipboard.ps1").FullName
+    powershell -noprofile -Command $file @args
 }
 
 Function yww() {
@@ -341,10 +341,9 @@ If ( (Test-CommandExists fzf) -and (Test-AppExistsInScoopByCache "psfzf") ) {
 # 	Set-alias vim "${env:scoop}\shims\gvim.exe"
 # }
 
-# If (Test-Path "D:\.local\bin\keyremap.ahk") {
-exp D:\.local\win10\ahk\keyremap.ahk
-#     # D:\.local\bin\keyremap.exe
-# }
+If ($file = (Get-ChildItem $Env:OwenInstallDir -Recurse "keyremap.ahk").FullName) {
+    exp $file
+}
 
 If (Test-AppExistsInScoopByCache("pscolor")) {
     # $env:PSCOLORS_HIDE_DOTFILE=$true

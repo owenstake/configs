@@ -92,7 +92,7 @@ Function EnableStartupTask($exePath) {
     CreateShortCutToDir $exePath $initd
 }
 
-Function make() {
+Function MakeAll() {
     # Make
     fmt_info "Compiling ahk and go"
     if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
@@ -109,45 +109,59 @@ Function make() {
     # }
 }
 
-Function BootstrapWin() {
-    "This script config powershell environment. Dynamically config app config file"
-    "Set config file"
-    "Write hook to vim and powrshell profile"
-    "cp config file"
-    "cp app config file to destination"
-    "cp startup config file to destination"
+Function MakeClean() {
+    rm bin
+}
 
+Function MakeUninstall() {
+    rm $env:OwenInstallDir
+}
+
+Function MakeInstall() {
     # New-Item-IfNoExists  "$Env:OwenInstallDir"  "Directory"
-    "Env setup"
+    "--- Env setup ----"
     EnvSetup
 
-    "Deploy Config File"
+    "--- Deploy Config File ----"
     DeployConfigDir "etc/lf"      "$Env:OwenInstallDir/etc/lf"
     DeployConfigDir "../etc/vim"  "$Env:OwenInstallDir/etc/vim"
     DeployConfigDir "etc/profile" "$Env:OwenInstallDir/etc/profile"
 
-    "Write hook to vim and powrshell profile, because vim, profile can not be custom path"
+    "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"'  "utf8"          # vimrc must be utf8 for parsing
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
 
-    # "Deploy excutable file. psh, ahk"
-	# cp -r -Force etc\win10\*  D:\.local\win10\
-    "Make: compile"
-    make
+    "--- Deploy bin files ---"
+    DeployConfigDir "bin"  "$Env:OwenInstallDir/bin"
 
-    "Setup startup routine"
+    "--- Deploy bin files ---"
+    DeployConfigDir "scripts"  "$Env:OwenInstallDir/scripts"
+
+    "--- Setup Start Task ----"
+    # Add startup hook
     if ($file = Get-ChildItem -Recurse "owen-startup.cmd") {
         $DirStartUp = "$ENV:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup"
-        cp ($file).FullName $DirStartUp\ -Force   # add win10 startup hook. Real Startup script is EntryAtLogOn
+        cp $file $DirStartUp\ -Force   # add win10 startup hook. Real Startup script is EntryAtLogOn
+    } else {
+        "owen-startup.cmd is missed"
     }
 
-    "Setup Startup Task"
+    # Add startup task
     EnableStartupTask "$(GetAppExe 'qq')"
-    EnableStartupTask "$Env:OwenInstallDir/bin/keyremap.exe" 
-
-    "Deploy bin file"
-    DeployConfigDir "bin"  "$Env:OwenInstallDir/bin"
+    $file = (Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk).FullName
+    EnableStartupTask $file
 }
 
-BootstrapWin
+Function Main($action) {
+    Switch ($action) {
+    ""          { MakeAll }
+    "all"       { MakeAll }
+    "clean"     { MakeClean }
+    "install"   { MakeInstall }
+    "uninstall" { MakeUninstall }
+    default     {"Unknow action $action"}
+    }
+}
+
+Main $script:args[0]
 
