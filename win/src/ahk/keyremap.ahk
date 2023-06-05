@@ -53,7 +53,7 @@ global AppsConf :=
 
     "Everything.exe" : {"Shortcut" : "!+e"                                                                                             } ,
     "firefox.exe"    : {"Shortcut" : "!+f"                                                                                             } ,
-    "v2rayN.exe"     : {"Shortcut" : "!+n"                                                                                             } ,
+    "v2rayN.exe"     : {"Shortcut" : "!+v"                                                                                             } ,
     "firefox.exe"    : {"Shortcut" : "!+o" , "ExePath" : APPDATA . "\Microsoft\Windows\Start Menu\Programs\Scoop Apps\Tor Browser.lnk" } ,
     "kwmusic.exe"    : {"Shortcut" : "!+u"                                                                                             } ,
     "Excel.exe"      : {"Shortcut" : "!+x"                                                                                             }

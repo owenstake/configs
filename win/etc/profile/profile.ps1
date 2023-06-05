@@ -1,6 +1,6 @@
 # ========== Lib for Script and Terminal ===========================
 # Env
-$env:WEIYUN = "D:\owen\weiyun"
+
 # Function
 Function exp($pathName=".") {
     $pathName = $pathName.Trim("`"")  #
@@ -11,6 +11,7 @@ Function exp($pathName=".") {
 }
 
 Function DoClipboard() {
+    $file = Get-ChildItem $Env:OwenInstallDir -Recurse "clipboard.ps1"
     powershell -noprofile -Command "D:\.local\win10\psh\clipboard.ps1" @args
 }
 
@@ -300,8 +301,8 @@ Function gca {git commit -v -a @args}
 ## jobs function
 Function bg() {Start-Process -NoNewWindow @args}
 
-# del alias:rm -errorAction silentlyContinue
-# Function rm { @args }
+del alias:rm -errorAction silentlyContinue
+Function rm { Remove-Item -v @args }
 
 # ls.exe
 If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
@@ -315,7 +316,6 @@ If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
     Function la  {ls -a @args}
     Function ll  {ls -l @args}
     Function lla {ls -l -a @args}
-
 }
 
 # psfzf

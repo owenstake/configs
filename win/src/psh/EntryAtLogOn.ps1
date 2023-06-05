@@ -1,5 +1,5 @@
 
-$OwenLocalDir= 'D:\.local\win10'
+$OwenLocalDir    = 'D:\.local\win10'
 $DirScoopAppsDir = "$HOME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
 
 Function ExecFile($file) {

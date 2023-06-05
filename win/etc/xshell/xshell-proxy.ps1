@@ -50,45 +50,51 @@ Function Get-IniContentToString($InputObject) {
     # return $lines -join "`n"
 }
 
-Function Out-IniFile($InputObject, $FilePath) {
-    If (Test-Path $FilePath) {
-        $outFile = Get-Item -Path $Filepath
-    } else {
-        $outFile = New-Item -ItemType file -Path $Filepath
-    }
-    foreach ($i in $InputObject.keys) {
-        if (!($($InputObject[$i].GetType().Name) -eq "Hashtable")) {
-            #No Sections
-            Add-Content -Path $outFile -Value "$i=$($InputObject[$i])"
-        } else {
-            #Sections
-            Add-Content -Path $outFile -Value "[$i]"
-            Foreach ($j in ($InputObject[$i].keys | Sort-Object))
-            {
-                if ($j -match "^Comment[\d]+") {
-                    Add-Content -Path $outFile -Value "$($InputObject[$i][$j])"
-                } else {
-                    Add-Content -Path $outFile -Value "$j=$($InputObject[$i][$j])"
-                }
-
+# [powershell - Create Hashtable from JSON - Stack Overflow](https://stackoverflow.com/questions/40495248/create-hashtable-from-json )
+[CmdletBinding]
+Function Get-FromJson {
+    param(
+        [Parameter(Mandatory=$true, Position=1)]
+        [string]$Path
+    )
+    Function Get-Value {
+        param( $value )
+        $result = $null
+        if ( $value -is [System.Management.Automation.PSCustomObject] ) {
+            Write-Verbose "Get-Value: value is PSCustomObject"
+            $result = @{}
+            $value.psobject.properties | ForEach-Object { 
+                $result[$_.Name] = Get-Value -value $_.Value 
             }
-            Add-Content -Path $outFile -Value ""
+        } elseif ($value -is [System.Object[]]) {
+            $list = New-Object System.Collections.ArrayList
+            Write-Verbose "Get-Value: value is Array"
+            $value | ForEach-Object {
+                $list.Add((Get-Value -value $_)) | Out-Null
+            }
+            $result = $list
+        } else {
+            Write-Verbose "Get-Value: value is type: $($value.GetType())"
+            $result = $value
         }
+        return $result
     }
-}
 
-Function AddItemsXshell($ConfigFile, $targetLine, $items) {
-    AddItemXshell $ConfigFile $targetLine $item
+    if (Test-Path $Path) {
+        $json = Get-Content $Path -Raw
+    } else {
+        $json = '{}'
+    }
+    $hashtable = Get-Value -value (ConvertFrom-Json $json)
+    return $hashtable
 }
 
 ####### Config info ####################
-$mapServerIpToDynamicTunnelPort = @{
-    "10.12.44.3"   = @{"Port" = "10820" ; "Location" = "广州南方基地" }
-    "10.246.1.100" = @{"Port" = "10830" ; "Location" = "贵州"         }
-    }
+$mapServerIpToDynamicTunnelPort = Get-FromJson ".\proxy.json"
 
 Write-Output "====== Map serverIp to port ==================="
 $mapServerIpToDynamicTunnelPort | ConvertTo-Json
+# $mapServerIpToDynamicTunnelPort["10.12.44.3"]
 
 ######## Var define ###################
 $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"

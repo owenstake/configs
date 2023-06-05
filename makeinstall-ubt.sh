@@ -46,8 +46,8 @@ function main() {
     rsync -r etc/ranger   ~/.config/
     rsync -r etc/newsboat ~/.config/
     rsync -r etc/fzf      ~/.config/
-    ln -sf ~/.local/etc/vim/vim8.vimrc ~/.vimrc
-    ln -sf ~/.local/etc/vim/vim8.vimrc ~/.vimrc
+    ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
+    ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
 
     ### Force echo to zsh tmux config file
     if [[ $1 = "f" ]]; then

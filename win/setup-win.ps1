@@ -2,6 +2,8 @@
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
 
+# depend on nothing
+
 # Configure String
 $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
 $script:wingetAppstr = "
@@ -17,15 +19,16 @@ $script:scoopAppstr = "
     foxit-reader xray v2rayN vscode draw.io googlechrome      # UI super tool
     qq wechat foxit-reader mobaxterm foxmail SarasaGothic-SC
 	zotero tor-browser firefox typora obsidian scoop-completion
+    vcredist2022                                              # Need by v2ray, windows-terminal
     $(If ($WinVersion -gt 18362) { "windows-terminal oh-my-posh" } else { "cmder" })
     "
 $script:bucketsStr = "main extras versions nerd-fonts"
 
-$script:psModulestr = "
+$script:psModuleAppstr = "
     ps2exe
     "
 
-# function
+# Function
 Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
 }
@@ -43,6 +46,10 @@ Function Test-CommandExists {
     } else {
         return $false
     }
+}
+
+Function Test-ScoopApp($app) {
+    return scoop list | Select-String "$app"
 }
 
 Function GetAppsInstalledInScoop {
@@ -65,6 +72,10 @@ Function GetAppsInstalledInWinget {
     return ,$wingetJson.Sources[0].Packages.PackageIdentifier
 }
 
+Function GetAppsInstalledInPsModule {
+    return ,(Get-Module).name
+}
+
 Function Test-AppExistsInChoco($app) {
     $retArr = choco list --localonly $app
     return [int](($retArr[-1]).split()[0]) -ne 0
@@ -77,7 +88,7 @@ Function FormatAppsStr($appstr) {
 }
 
 Function GetAppsNeedInstall($installer) {
-    $appStr = get-variable -scope Script -name "${installer}Appstr" -valueonly # i.e. scoopAppstr
+    $appStr = Get-Variable -scope Script -name "${installer}Appstr" -ValueOnly # i.e. scoopAppstr
     $appsRequired    = FormatAppsStr $appStr
     $appsInstalled   = & "GetAppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
     $appsNeedInstall = $appsRequired | where {$appsInstalled -NotContains $_}
@@ -99,7 +110,22 @@ Function GetAppsNeedInstall($installer) {
     return ,$appsNeedInstall
 }
 
-Function scoop-install {
+Function EnvPathInsertAtHeadIfNoExists($item) {
+    If (!(Test-Path $item)) {
+        Write-Error "Args is invalid. $item"
+        return
+    }
+    $paths = $env:path -split ";"
+    Foreach($p in $paths) {
+        If ($p -eq "$item") {
+            return
+        }
+    }
+    $env:path = $item + ";" + $env:path
+    [Environment]::SetEnvironmentVariable('PATH', $Env:PATH, 'User')
+}
+
+Function Scoop-install {
     fmt_info "SCOOP: Start"
 	$scoopInstallDir="D:\owen\scoop"
 	# fix ssl in tyy win10 server 2016 - 
@@ -117,6 +143,13 @@ Function scoop-install {
 		# Install scoop for user. https://gitee.com/glsnames/scoop-installer
 		Set-ExecutionPolicy RemoteSigned -scope CurrentUser
 		iwr -useb scoop.201704.xyz | iex	
+        # Restore apps from exist install dir.
+        If (Test-Path -pathtype Container $scoopInstallDir) {
+            $prompt = "Do you want to restore scoop apps from $scoopInstallDir ? [y]/n"
+            If (!(read-host -Prompt "$prompt") -eq "n") {
+                scoop reset *
+            }
+        }
 	}
 	fmt_info "SCOOP: Installing Apps in $scoopInstallDir"
     # git install first for scoop
@@ -124,8 +157,12 @@ Function scoop-install {
 		scoop install git
 	}
 	if (!(Test-CommandExists git)) {
-        fmt_error "SCOOP: Git installation fail"
+        fmt_error "SCOOP: Git installation fail. Stop this script"
         return -1
+    } else {
+        fmt_info "SCOOP: Git config"
+        git config --global --add safe.directory '*'
+        git config --global core.autocrlf false
     }
     # Bucket update. Require git installed.
     $buckets = FormatAppsStr $script:bucketsStr
@@ -137,21 +174,25 @@ Function scoop-install {
         }
     }
     # Install old version App
-    If (!(Test-AppExistsInScoop psfzf)) {
+    if (!(Test-ScoopApp("psfzf"))) {
         scoop install psfzf@2.4.0
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
     # Install Apps
-    If ($apps = GetAppsNeedInstall("SCOOP")) {
+    If ($apps = GetAppsNeedInstall "SCOOP" ) {
         scoop install $apps
     }
 
-    # config Apps
+    # Config Apps
     go env -w GOPROXY=https://goproxy.cn,direct
+    If (Test-Path "$env:scoop\apps\global\current\bin") {
+        EnvPathInsertAtHeadIfNoExists("$Env:SCOOP\apps\global\current\bin")
+    }
+
     return
 }
 
-Function chocolatey-install() {
+Function Chocolatey-install() {
     fmt_info "CHOCO: Install Apps"
     If ($WinVersion -ge 17763) {
         fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
@@ -175,7 +216,7 @@ Function chocolatey-install() {
     }
 }
 
-Function winget-install() {
+Function Winget-install() {
     fmt_info "WINGET: Start"
     If ($WinVersion -lt 17763) {
         fmt_warn "WINGET: requires windows system at least WindowsServer2019(17763)."
@@ -191,28 +232,62 @@ Function winget-install() {
     # Env
     $env:WINGET="D:\owen\winget"
     [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
-    $apps = GetAppsNeedInstall("WINGET")
+    $apps = GetAppsNeedInstall "WINGET" 
     # Iterate install. winget has no batch install interface 2023.05.25
     Foreach ($app in $apps) {
         winget install --id="$app" -e --no-upgrade -l "$env:WINGET"
     }
 }
 
-Function psmodule-install {
-    $apps := FormatAppsStr $script:psModulestr
+Function Psmodule-Install {
+    Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
+    $apps = GetAppsNeedInstall "psModule" 
     Foreach ($app in $apps) {
         If (!(get-module $app)) {
-            install-module $app
+            Install-Module -Name $app -Scope CurrentUser  # reverse ops: uninstall-module
+        }
+    }
+}
+
+Function Shuangpin() {
+    # Registry setting
+    # 设置双拼
+    $registryPath = "Registry::HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS\"
+    $value = get-itemproperty -Path $registryPath -Name 'Enable double pinyin'
+    If (!$value.'Enable Double Pinyin') {
+        fmt_info "设置双拼"
+
+# $regFile = @"
+# Windows Registry Editor Version 5.00
+# [HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS]
+# "Enable Double Pinyin"=dword:00000001
+# "DoublePinyinScheme"=dword:0000000a
+# "UserDefinedDoublePinyinScheme0"="小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt"
+# "@
+
+#         $tmpFile = New-TemporaryFile
+#         $regFile | Out-File $tmpFile
+#         explorer.exe $file
+#         Remove-Item $tmpFile
+
+        if ($file = Get-ChildItem -Recurse "xiaohe-shuangpin.reg") {
+            explorer.exe $file
+        } else {
+            fmt_error "No found shuangpin.reg"
         }
     }
 }
 
 Function main {
-	.\bootstrap-win.ps1
-	scoop-install
-    chocolatey-install
-    winget-install
-    psmodule-install
+	# .\bootstrap-win.ps1
+    "This script just install app and config system"
+	Scoop-install
+    Chocolatey-install
+    Winget-install
+    Psmodule-install
+    Shuangpin
+    New-Item ~/.root -Force
+    "app config: vim, lf, "
 }
 
 $time = Measure-Command { main }
