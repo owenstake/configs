@@ -65,15 +65,6 @@ function main() {
         fmt_info "We are in wsl~~~"
         # wsl system configs
         sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
-        # v2ray
-        cp ~/.local/etc/pac.txt /mnt/c/MY_SOFTWARE/v2rayN-windows-64/v2rayN-Core-64bit/pac.txt
-
-        # typora config
-        cp ~/.local/etc/typora/owen-auto-number.css /mnt/c/Users/$WinUserName/AppData/Roaming/Typora/themes/owen-auto-number.css 
-        TYPORA_CSS_REF='@import "owen-auto-number.css";    /* owen config */'
-        TYPORA_THEME_FILE="/mnt/c/Users/$WinUserName/AppData/Roaming/Typora/themes/github.css"
-        sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
-        sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
         # cp to 
         mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10

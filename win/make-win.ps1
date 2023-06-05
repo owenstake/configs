@@ -30,22 +30,22 @@ Function Mkdir-P($dir) {
     New-Item-IfNoExists $dir "Directory"
 }
 
-Function AddHookToConfigFile($file, $msg, $commentMark="#", $encoding="unicode" ) {
+Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unicode" ) {
     $MarkLine="$commentMark -- Owen configed -----"
-    New-Item-IfNoExists $file
-    if (!(Select-String -Pattern "$MarkLine" -Path "$file")) {
-        fmt_info "owen $file is configing"
+    New-Item-IfNoExists $filePath
+    if (!(Select-String -Pattern "$MarkLine" -Path "$filePath")) {
+        fmt_info "owen $filePath is configing"
         $rawText = "
             $MarkLine
-            # -- Owen $file config -----
+            # -- Owen $filePath config -----
             $msg
-            # -- end Owen $file config -----
+            # -- end Owen $filePath config -----
         "
         # remove leading space and replace comment mark if need
         $text = ($rawText -replace "\n\s+","`n" -replace "\n#","`n$commentMark").Trim()
-        $text | out-file -Append -Encoding $encoding $file     # _vimrc will be utf8 format
+        $text | out-file -Append -Encoding $encoding $filePath     # _vimrc will be utf8 format
     } else {
-        fmt_info "owen $file is configed already"
+        fmt_info "owen $filePath is configed already"
     }
 }
 
@@ -58,7 +58,7 @@ Function Test-AppExistsInScoop($appName) {
     }
 }
 
-Function CreateShortCut($SourceFilePath,$ShortcutPath) {
+Function CreateShortCut([string]$SourceFilePath,$ShortcutPath) {
     # $SourceFilePath       = ( Get-Item -Path "$SourceFilePath" ).FullName
     # $SourceFileName       = ( Get-Item -Path "$SourceFilePath" ).BaseName
     # $ShortcutPath         = "$ShortcutDir\$SourceFileName.lnk"
@@ -70,8 +70,8 @@ Function CreateShortCut($SourceFilePath,$ShortcutPath) {
     $shortcut.Save()
 }
 
-Function CreateShortCutToDir($sourceFilePath,$shortcutDir) {
-    $basename     = (Get-item $sourceFilePath).name
+Function CreateShortCutToDir($sourceFile,$shortcutDir) {
+    $basename     = $sourceFile.name
     $shortcutPath = "$ShortcutDir/${basename}.lnk"
     CreateShortCut $sourceFilePath $shortcutPath
 }
@@ -123,13 +123,27 @@ Function MakeInstall() {
     EnvSetup
 
     "--- Deploy Config File ----"
+    DeployConfigDir "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
     DeployConfigDir "etc/lf"      "$Env:OwenInstallDir/etc/lf"
-    DeployConfigDir "../etc/vim"  "$Env:OwenInstallDir/etc/vim"
     DeployConfigDir "etc/profile" "$Env:OwenInstallDir/etc/profile"
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"'  "utf8"          # vimrc must be utf8 for parsing
+    # AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
+
+    # # v2ray
+    # $file = Get-ChildItem $env:OwenInstallDir -Recurse "pac.txt"
+    # cp $file "D:\owen\scoop\apps\v2rayN\current\guiConfigs\pac.txt"
+
+    # # typora config
+    # $file = Get-ChildItem $env:OwenInstallDir -Recurse "owen-auto-number"
+    # cp $file $Env:APPDATA/Typora/themes/owen-auto-number.css 
+    # $TYPORA_CSS_REF = '@import "owen-auto-number.css";    /* owen config */'
+    # $TYPORA_THEME_FILE = "$Env:APPDATA/Typora/themes/github.css"
+    # AddHookToConfigFile "$TYPORA_THEME_FILE" "$TYPORA_CSS_REF"
+    # sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
+    # sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
     "--- Deploy bin files ---"
     DeployConfigDir "bin"  "$Env:OwenInstallDir/bin"
@@ -148,7 +162,7 @@ Function MakeInstall() {
 
     # Add startup task
     EnableStartupTask "$(GetAppExe 'qq')"
-    $file = (Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk).FullName
+    $file = Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk
     EnableStartupTask $file
 }
 

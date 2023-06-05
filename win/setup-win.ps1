@@ -282,7 +282,7 @@ Function main {
 	# .\bootstrap-win.ps1
     "This script just install app and config system"
 	Scoop-install
-    Chocolatey-install
+    # Chocolatey-install
     Winget-install
     Psmodule-install
     Shuangpin
