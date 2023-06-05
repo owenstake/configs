@@ -1,13 +1,13 @@
-#!/usr/bin/zsh
+#!/usr/bin/bash
 #
 export WinUserName=$(echo $PATH | sed 's#.*/mnt/c/Users/\([^/]*\)/.*#\1#')
 export WinUserHome=/mnt/c/Users/${WinUserName}
 export WinUserDownloads=${WinUserHome}/Downloads
 export WinUserDesktop=${WinUserHome}/Desktop
-export WinUserWeiyun="/mnt/c/Weiyun/Personal"
-export WinUserWeiyunNote="/mnt/c/Weiyun/Personal/my_note"
+export WinUserWeiyun="/mnt/c/Weiyun/Personal"              # used in ranger
+export WinUserWeiyunNote="/mnt/c/Weiyun/Personal/my_note"  # used in ranger
 
-function try_config() {
+function AddHookToConfigFile() {
     local file=$1
     local msg=$2
     MarkLine="# owen configed" 
@@ -46,8 +46,8 @@ function main() {
     rsync -r etc/ranger   ~/.config/
     rsync -r etc/newsboat ~/.config/
     rsync -r etc/fzf      ~/.config/
-    ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
-    ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
+    rsync -r ../common/etc/vim      ~/.config/
+    # ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
 
     ### Force echo to zsh tmux config file
     if [[ $1 = "f" ]]; then
@@ -60,26 +60,19 @@ function main() {
         _owen_force_update=
     fi
 
-    # WSL config. cp pac to win10. ubt do not need it, because we use proxychain to manual control.
+    # WSL config.
     if uname -r | grep -qi "microsof"; then
         fmt_info "We are in wsl~~~"
-        # wsl system configs
+        # WSL system configs
         sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
-
-        # cp to 
         mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
-
-        powershell.exe -File '.\bootstrap-win.ps1'
+        powershell -c "../win/make-win.ps1"
     fi
 
-    # do compiler
-    # ahk
-
-    # -- zsh config ---------------------------------------------------------
-    try_config ~/.zshrc "source ~/.local/etc/zsh.conf"
-
-    # -- tmux config ---------------------------------------------------------
-    try_config ~/.tmux.conf "source ~/.local/etc/tmux.conf"
+    fmt_info "-- Deploy hooks to config file ---------"
+    AddHookToConfigFile ~/.zshrc "source ~/.local/etc/zsh.conf"
+    AddHookToConfigFile ~/.tmux.conf "source ~/.local/etc/tmux.conf"
+    AddHookToConfigFile ~/.vimrc "source ~/.local/etc/vim/vimrc"
 }
 
 main $@
