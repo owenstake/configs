@@ -126,11 +126,9 @@ Function AddRule($xml, $proxyId, $proxyIp, $name) {
     </Rule>
 "@
     $newRuleNode = $xml.ImportNode($newRuleNode.Rule,$true)
-    # $xml.SelectSingleNode('/ProxifierProfile/RuleList').appendchild($newRuleNode) | Out-Null
     $xml.SelectSingleNode('/ProxifierProfile/RuleList').appendchild($newRuleNode) | Out-Null
     $ruleList = $xml.SelectSingleNode('/ProxifierProfile/RuleList')
     $ruleList.InsertAfter($newRuleNode, $ruleList.FirstChild) | Out-Null
-    # $xml.ProxifierProfile.RuleList.AppendChild($newRuleNode) > $null
 }
 
 Function UpdateProxifier($config) {
@@ -141,15 +139,14 @@ Function UpdateProxifier($config) {
     $port      = $config["Port"]
     $proxyip   = $config["proxyIp"]
     $proxyinfo = $config["ProxyInfo"]
-    echo "$id" "$port" "$proxyip" "$proxyinfo"
-    AddProxy $xml  "$id"  "$port" 
-    AddRule  $xml  "$id"  "$proxyIp"  "$proxyInfo"
+    AddProxy  $xml  "$id"  "$port" 
+    AddRule   $xml  "$id"  "$proxyIp"  "$proxyInfo"
     $xml.Save($proxifierProfileFile)
 
     & "$Env:SCOOP/apps/proxifier/current/Proxifier.exe" $proxifierProfileFile silent-load
 }
 
-Function UpdateXshell($config, $configFile) {
+Function UpdateXshell($config, $XshellconfigFile) {
     $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
     $iniNeedItems = @{
         'CONNECTION:SSH' = @{
@@ -169,10 +166,10 @@ Function UpdateXshell($config, $configFile) {
 
     "===== Variable Print ======================"
     Write-Output "Script Args are $script:args" 
-    Write-Output "Xshell ConfigFile is $configFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
+    Write-Output "Xshell ConfigFile is $XshellconfigFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
 
     "===== Parse Xshell Ini file ======================"
-    $ini = Get-IniContent $configFile
+    $ini = Get-IniContent $XshellconfigFile
 
     "===== Modify Xshell Ini content ======================"
     $iniNeedItems.GetEnumerator() | ForEach-Object {
@@ -183,36 +180,46 @@ Function UpdateXshell($config, $configFile) {
     }
 
     "===== Write to Ini file ======================"
-    Get-IniContentToString $ini | Set-Content $configFile
+    Get-IniContentToString $ini | Set-Content $XshellconfigFile
 
     "===== Start Xshell ============="
-    & "$XshellExe" "$configFile"
+    & "$XshellExe" "$XshellconfigFile"
 
 }
 
 Function Main() {
     " ---- Get Config info ------------"
-    $configs   = Get-FromJson ".\proxy.json"
-    $XshellExe = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
+    If (Test-Path "./proxy.json") {
+        $configsFile = ".\proxy.json"
+    } else if (Test-Path "$env:OwenInstallDir/etc/common/proxy.json") {
+        $configsFile = "$env:OwenInstallDir/etc/common/proxy.json"
+    } else {
+        Write-Error "No found proxy.json. Exiting"
+        exit
+    }
+    "Found proxy.json in $configsFile"
+    # $configsFile = "$env:OwenInstallDir/etc/common"
+    $configs     = Get-FromJson "$configsFile"
+    $XshellExe   = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
 
-    "====== Map serverIp to port ==================="
-    $configs | ConvertTo-Json
+    # "====== Map serverIp to port ==================="
+    # $configs | ConvertTo-Json
 
     # ---- Var define -------------
-    $ConfigFile = $script:args[0]
-    $serverIp   = $ConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
+    $XshellConfigFile = $script:args[0]
+    $serverIp   = $XshellConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
 
     If (!($curConfig = $configs[$serverIp]) -or 
             !($dynamicTunnelPort = $curConfig["Port"])) {
         Write-Error "No dynamic port for $serverIp. Just Run Xshell"
         # Read-Host -Prompt "Press {enter} to continue"
         cmd /c pause
-        & "$XshellExe" "$ConfigFile"
+        & "$XshellExe" "$XshellConfigFile"
         exit
     }
 
     "===== Start Xshell ============="
-    UpdateXshell $curConfig $ConfigFile
+    UpdateXshell $curConfig $XshellConfigFile
 
     "===== Start Proxifier ============="
     UpdateProxifier $curConfig

@@ -59,14 +59,10 @@ Function Test-AppExistsInScoop($appName) {
 }
 
 Function CreateShortCut([string]$SourceFilePath,$ShortcutPath) {
-    # $SourceFilePath       = ( Get-Item -Path "$SourceFilePath" ).FullName
-    # $SourceFileName       = ( Get-Item -Path "$SourceFilePath" ).BaseName
-    # $ShortcutPath         = "$ShortcutDir\$SourceFileName.lnk"
     $WScriptObj           = New-Object -ComObject ("WScript.Shell")
     $shortcut             = $WscriptObj.CreateShortcut($ShortcutPath)
     $shortcut.TargetPath  = $SourceFilePath
     $shortcut.WindowStyle = 1
-    # $ShortCut.Hotkey      = "CTRL+SHIFT+T";
     $shortcut.Save()
 }
 
@@ -77,7 +73,7 @@ Function CreateShortCutToDir($sourceFilePath,$shortcutDir) {
 }
 
 Function ahk2exe($ahkFile, $exeFile) {
-    ahk2exe.exe /silent /in $ahkFile /out $exeFile /base "$env:scoop\apps\autohotkey1.1\current\Compiler\Unicode 64-bit.bin"
+    ahk2exe.exe /in $ahkFile /out $exeFile /base "$env:scoop\apps\autohotkey1.1\current\Compiler\Unicode 64-bit.bin"
 }
 
 Function DeployConfigDir($srcDir, $dstDir) {
@@ -95,26 +91,26 @@ Function EnableStartupTask($exePath) {
 Function MakeAll() {
     # Make
     fmt_info "Compiling ahk and go"
-    if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
-        ahk2exe $file bin\keyremap.exe
-    }
-    if ($file = Get-ChildItem -Recurse "easymarker.ahk") {
-        ahk2exe $file bin\easymarker.exe
-    }
     if ($file = Get-ChildItem -Recurse "previewer.go") {  # preview for lf
-        go build -o bin\previewer.exe $file 
+        go build -o "bin/$($file.basename).exe" "$file"
     }
-    # if ($file = Get-ChildItem -Recurse "owen-startup.ps1") {
-    #     ps2exe $file "bin\owen-startup.exe"
-    # }
+    if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
+        ahk2exe "$file" "bin\$($file.basename).exe"   # must be backslash for ahk2exe
+    }
+    if ($file = Get-ChildItem -Recurse "easy-marker.ahk") {
+        ahk2exe "$file" "bin\$($file.basename).exe"   # must be backslash for ahk2exe
+    }
+    if ($file = Get-ChildItem -Recurse "xshell-proxy.ps1") {
+        ps2exe -inputFile "$file" -outputFile "bin/$($file.basename).exe"
+    }
 }
 
 Function MakeClean() {
-    rm bin
+    Remove-Item bin -r -force
 }
 
 Function MakeUninstall() {
-    rm $env:OwenInstallDir
+    Remove-Item $env:OwenInstallDir
 }
 
 Function MakeInstall() {
@@ -123,13 +119,13 @@ Function MakeInstall() {
     EnvSetup
 
     "--- Deploy Config File ----"
-    DeployConfigDir "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
-    DeployConfigDir "etc/lf"      "$Env:OwenInstallDir/etc/lf"
-    DeployConfigDir "etc/profile" "$Env:OwenInstallDir/etc/profile"
+    DeployConfigDir  "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
+    DeployConfigDir  "etc/lf"             "$Env:OwenInstallDir/etc/lf"
+    DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"
+    DeployConfigDir  "etc/common"         "$Env:OwenInstallDir/etc/common"
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"'  "utf8"          # vimrc must be utf8 for parsing
-    # AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
 
     # # v2ray

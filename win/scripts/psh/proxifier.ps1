@@ -90,26 +90,24 @@ Function Get-FromJson {
     return $hashtable
 }
 
-# $file = "D:\owen\Weiyun\Personal\tyy\code\configs\win\etc\xshell\proxifier.ppx"
-$proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
-$xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
-
-$configs = Get-FromJson ".\proxy.json"
-Foreach ($c in $configs.GetEnumerator()) {
-    # echo asdf $c.value.Proxyip
-    $id        = $c.value.Port
-    $port      = $c.value.Port
-    $proxyip   = $c.value.proxyIp
-    $proxyinfo = $c.value.ProxyInfo
-    AddProxy $xml  "$id"  "$port" 
-    AddRule  $xml  "$id"  "$proxyIp"  "$proxyInfo"
-    # AddRule  $xml  "102"  "10.50.209.*"  "nanfangjidi-manager-in-guizhou"
+Function UpdateProxifierProfile() {
+    $proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
+    $xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
+    $configs = Get-FromJson ".\proxy.json"
+    Foreach ($c in $configs.GetEnumerator()) {
+        # echo asdf $c.value.Proxyip
+        $id        = $c.value.Port
+        $port      = $c.value.Port
+        $proxyip   = $c.value.proxyIp
+        $proxyinfo = $c.value.ProxyInfo
+        AddProxy $xml  "$id"  "$port" 
+        AddRule  $xml  "$id"  "$proxyIp"  "$proxyInfo"
+    }
+    $xml.Save( $proxifierProfileFile )
+    & $(GetAppExe proxifier) $proxifierProfileFile silent-load
 }
 
-# $xmlPath = 'D:\owen\weiyun\Personal\tyy\code\configs\win\etc\xshell\test.xml'
-$xml.Save( $proxifierProfileFile )
-
-& $(GetAppExe proxifier) $proxifierProfileFile silent-load
+UpdateProxifierProfile
 
 # FileConvert $xmlPath
 
