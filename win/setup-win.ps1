@@ -19,6 +19,7 @@ $script:scoopAppstr = "
     foxit-reader xray v2rayN vscode draw.io googlechrome      # UI super tool
     qq wechat foxit-reader mobaxterm foxmail SarasaGothic-SC
 	zotero tor-browser firefox typora obsidian scoop-completion
+    proxifier                                                 # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C
     vcredist2022                                              # Need by v2ray, windows-terminal
     $(If ($WinVersion -gt 18362) { "windows-terminal oh-my-posh" } else { "cmder" })
     "
@@ -192,29 +193,29 @@ Function Scoop-install {
     return
 }
 
-Function Chocolatey-install() {
-    fmt_info "CHOCO: Install Apps"
-    If ($WinVersion -ge 17763) {
-        fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
-        return
-    }
-    # Install chocolatey
-    If (!(Test-CommandExists choco)) {
-        # need proxy and admin priviledge
-        Start-Process powershell -verb runas -ArgumentList "
-            -Command `"
-            Set-ExecutionPolicy Bypass -Scope Process -Force;
-            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-            iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'));
-            cmd /c pause
-            "
-    }
-    $chocoAppstr = ""
-	fmt_info "CHOCO: Install $($apps.count)apps as follows.`n$apps"
-    If ($apps = FormatAppsStr $chocoAppstr) {
-        sudo choco install $apps
-    }
-}
+# Function Chocolatey-install() {
+#     fmt_info "CHOCO: Install Apps"
+#     If ($WinVersion -ge 17763) {
+#         fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
+#         return
+#     }
+#     # Install chocolatey
+#     If (!(Test-CommandExists choco)) {
+#         # need proxy and admin priviledge
+#         Start-Process powershell -verb runas -ArgumentList "
+#             -Command `"
+#             Set-ExecutionPolicy Bypass -Scope Process -Force;
+#             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+#             iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'));
+#             cmd /c pause
+#             "
+#     }
+#     $chocoAppstr = ""
+# 	fmt_info "CHOCO: Install $($apps.count)apps as follows.`n$apps"
+#     If ($apps = FormatAppsStr $chocoAppstr) {
+#         sudo choco install $apps
+#     }
+# }
 
 Function Winget-install() {
     fmt_info "WINGET: Start"

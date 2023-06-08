@@ -70,9 +70,9 @@ Function CreateShortCut([string]$SourceFilePath,$ShortcutPath) {
     $shortcut.Save()
 }
 
-Function CreateShortCutToDir($sourceFile,$shortcutDir) {
-    $basename     = $sourceFile.name
-    $shortcutPath = "$ShortcutDir/${basename}.lnk"
+Function CreateShortCutToDir($sourceFilePath,$shortcutDir) {
+    $baseName     = $(Get-Item $sourceFilePath).Name
+    $shortcutPath = "$ShortcutDir/${baseName}.lnk"
     CreateShortCut $sourceFilePath $shortcutPath
 }
 
@@ -163,7 +163,7 @@ Function MakeInstall() {
     # Add startup task
     EnableStartupTask "$(GetAppExe 'qq')"
     $file = Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk
-    EnableStartupTask $file
+    EnableStartupTask $file.FullName
 }
 
 Function Main($action) {

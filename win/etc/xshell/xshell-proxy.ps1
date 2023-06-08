@@ -81,7 +81,7 @@ Function Get-FromJson {
     }
 
     if (Test-Path $Path) {
-        $json = Get-Content $Path -Raw
+        $json = Get-Content $Path -Raw -Encoding utf8   # "-Encoding utf8" is important for chinease char
     } else {
         $json = '{}'
     }
@@ -89,68 +89,73 @@ Function Get-FromJson {
     return $hashtable
 }
 
-####### Config info ####################
-$mapServerIpToDynamicTunnelPort = Get-FromJson ".\proxy.json"
+Function Main() {
+    # ---- Config info ------------
+    $mapServerIpToDynamicTunnelPort = Get-FromJson ".\proxy.json"
 
-Write-Output "====== Map serverIp to port ==================="
-$mapServerIpToDynamicTunnelPort | ConvertTo-Json
-# $mapServerIpToDynamicTunnelPort["10.12.44.3"]
+    Write-Output "====== Map serverIp to port ==================="
+    $mapServerIpToDynamicTunnelPort | ConvertTo-Json
+    # $mapServerIpToDynamicTunnelPort["10.12.44.3"]
 
-######## Var define ###################
-$XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
-$ConfigFile = $script:args[0]
-$serverIp   = $ConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
+    # ---- Var define -------------
+    $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
+    $ConfigFile = $script:args[0]
+    $serverIp   = $ConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
 
-If (!($mapServerIpToDynamicTunnelPort[$serverIp]) -or 
-        !($dynamicTunnelPort = $mapServerIpToDynamicTunnelPort[$serverIp]["Port"])) {
-    Write-Error "No dynamic port for $serverIp. Just Run Xshell"
-    Read-Host -Prompt "Press {enter} to continue"
+    If (!($mapServerIpToDynamicTunnelPort[$serverIp]) -or 
+            !($dynamicTunnelPort = $mapServerIpToDynamicTunnelPort[$serverIp]["Port"])) {
+        Write-Error "No dynamic port for $serverIp. Just Run Xshell"
+        Read-Host -Prompt "Press {enter} to continue"
+        & "$XshellExe" "$ConfigFile"
+        exit
+    }
+
+    $iniNeedItems = @{
+        'CONNECTION:SSH' = @{
+            'FwdReq_0_LocalOnly'   = 0                     
+            'FwdReq_0_Incoming'    = 2                     
+            'FwdReq_0_Port'        = "$dynamicTunnelPort"  
+            'FwdReq_0_HostPort'    = 0                     
+            'FwdReqCount'          = 1                    
+            # 'FwdReq_0_Host'        = $null                 
+            # 'FwdReq_0_Description' = $null                 
+            # 'FwdReq_0_Source'      = $null                 
+            }
+        'CONNECTION:AUTHENTICATION' = @{
+            'ExpectSend_Expect_0' = "~]$"
+            'ExpectSend_Send_0'   = "TMOUT=0"
+            'ExpectSend_Count'    = 1
+            'UseExpectSend'       = 1
+            }
+        }
+
+    "===== Variable Print ======================"
+    Write-Output "Script Args are $script:args" 
+    Write-Output "Xshell ConfigFile is $ConfigFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
+
+    "===== Parse Xshell Ini file ======================"
+    $ini = Get-IniContent $ConfigFile
+
+    "===== Modify Xshell Ini content ======================"
+    $iniNeedItems.GetEnumerator() | ForEach-Object {
+        $section = $_.Key
+        $_.Value.GetEnumerator() | ForEach-Object {
+            $ini[$section][$_.Key] = $_.Value
+        }
+    }
+
+    "===== Write to Ini file ======================"
+    Get-IniContentToString $ini | Set-Content $ConfigFile
+
+    "===== Checking final config in xsh ====>"
+    Read-Host -Prompt "Press {enter} key to continue"
+
+    "===== Start Xshell ============="
     & "$XshellExe" "$ConfigFile"
-    exit
+    "===== Start Proxifier ============="
+
+
 }
 
-$iniNeedItems = @{
-    'CONNECTION:SSH' = @{
-        'FwdReq_0_LocalOnly'   = 0                     
-        'FwdReq_0_Incoming'    = 2                     
-        'FwdReq_0_Port'        = "$dynamicTunnelPort"  
-        'FwdReq_0_HostPort'    = 0                     
-        'FwdReqCount'          = 1                    
-        # 'FwdReq_0_Host'        = $null                 
-        # 'FwdReq_0_Description' = $null                 
-        # 'FwdReq_0_Source'      = $null                 
-        }
-    'CONNECTION:AUTHENTICATION' = @{
-        'ExpectSend_Expect_0' = "~]$"
-        'ExpectSend_Send_0'   = "TMOUT=0"
-        'ExpectSend_Count'    = 1
-        'UseExpectSend'       = 1
-        }
-    }
-
-"===== Variable Print ======================"
-Write-Output "Script Args are $script:args" 
-Write-Output "Xshell ConfigFile is $ConfigFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
-
-"===== Parse Ini file ======================"
-$ini = Get-IniContent $ConfigFile
-
-"===== Modify Ini content ======================"
-$iniNeedItems.GetEnumerator() | ForEach-Object {
-    $section = $_.Key
-    $_.Value.GetEnumerator() | ForEach-Object {
-        $ini[$section][$_.Key] = $_.Value
-    }
-}
-
-"===== Write to Ini file ======================"
-Get-IniContentToString $ini | Set-Content $ConfigFile
-
-"===== Checking final config in xsh ====>"
-# Wait key pressed
-Read-Host -Prompt "Press {enter} key to continue"
-
-# Start xshell
-"===== Start Xshell ============="
-& "$XshellExe" "$ConfigFile"
+Main
 

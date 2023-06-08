@@ -216,7 +216,7 @@ If (!$isInter) {
 # ========== Terminal Configure ====================================
 # ==================================================================
 $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
-$scoopInfo = scoop export | ConvertFrom-Json
+$scoopInfo  = scoop export | ConvertFrom-Json
 
 # zlua init
 If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lua) ) {
@@ -291,7 +291,10 @@ Set-Alias wrp RealPath
 # basic function
 Function vic { vim ~\_vimrc }
 Function psc { vim $profile }
-
+# wt
+Function wt   { wtg }
+Function wtq  { $( curl "wttr.in/~quangang+quanzhou?m" ).Content | Out-Host -Paging }
+Function wtg  { $( curl "wttr.in/~haizhu+guangzhou?m" ).Content | Out-Host -Paging }
 ## git function
 Function ga  {git add @args}
 Function gd  {git diff @args}
