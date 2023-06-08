@@ -89,27 +89,68 @@ Function Get-FromJson {
     return $hashtable
 }
 
-Function Main() {
-    # ---- Config info ------------
-    $mapServerIpToDynamicTunnelPort = Get-FromJson ".\proxy.json"
-
-    Write-Output "====== Map serverIp to port ==================="
-    $mapServerIpToDynamicTunnelPort | ConvertTo-Json
-    # $mapServerIpToDynamicTunnelPort["10.12.44.3"]
-
-    # ---- Var define -------------
-    $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
-    $ConfigFile = $script:args[0]
-    $serverIp   = $ConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
-
-    If (!($mapServerIpToDynamicTunnelPort[$serverIp]) -or 
-            !($dynamicTunnelPort = $mapServerIpToDynamicTunnelPort[$serverIp]["Port"])) {
-        Write-Error "No dynamic port for $serverIp. Just Run Xshell"
-        Read-Host -Prompt "Press {enter} to continue"
-        & "$XshellExe" "$ConfigFile"
-        exit
+Function AddProxy($xml, $proxyId, $port) {
+    # echo "$proxyId"  "$port" 
+    # duplicat node detect
+    Foreach ($n in $xml.ProxifierProfile.ProxyList.ChildNodes) {
+        if ($proxyId -eq $n.id) {
+            echo "Remove duplicate proxy id $proxyid"
+            $n.ParentNode.RemoveChild($n) > $null
+        }
     }
 
+    $newProxyNode = [xml]@"
+    <Proxy id="$proxyId" type="SOCKS5">
+      <Options>48</Options>
+      <Port>$port</Port>
+      <Address>127.0.0.1</Address>
+    </Proxy>
+"@
+    $newProxyNode = $xml.ImportNode($newProxyNode.Proxy,$true)
+    $xml.SelectSingleNode('/ProxifierProfile/ProxyList').appendchild($newProxyNode) | Out-Null
+    # $xml.ProxifierProfile.ProxyList.AppendChild($newProxyNode) > $null
+}
+
+Function AddRule($xml, $proxyId, $proxyIp, $name) {
+    Foreach ($n in $xml.ProxifierProfile.RuleList.ChildNodes) {
+        if ($proxyId -eq $n.action.innerXml) {
+            echo "Remove duplicate proxy rule id $proxyid"
+            $n.ParentNode.RemoveChild($n) > $null
+        }
+    }
+    $newRuleNode = [xml]@"
+    <Rule enabled="true">
+      <Action type="Proxy">$proxyId</Action>
+      <Targets>$proxyIp</Targets>
+      <Name>$name</Name>
+    </Rule>
+"@
+    $newRuleNode = $xml.ImportNode($newRuleNode.Rule,$true)
+    # $xml.SelectSingleNode('/ProxifierProfile/RuleList').appendchild($newRuleNode) | Out-Null
+    $xml.SelectSingleNode('/ProxifierProfile/RuleList').appendchild($newRuleNode) | Out-Null
+    $ruleList = $xml.SelectSingleNode('/ProxifierProfile/RuleList')
+    $ruleList.InsertAfter($newRuleNode, $ruleList.FirstChild) | Out-Null
+    # $xml.ProxifierProfile.RuleList.AppendChild($newRuleNode) > $null
+}
+
+Function UpdateProxifier($config) {
+    $proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
+    $xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
+
+    $id        = $config["Port"]
+    $port      = $config["Port"]
+    $proxyip   = $config["proxyIp"]
+    $proxyinfo = $config["ProxyInfo"]
+    echo "$id" "$port" "$proxyip" "$proxyinfo"
+    AddProxy $xml  "$id"  "$port" 
+    AddRule  $xml  "$id"  "$proxyIp"  "$proxyInfo"
+    $xml.Save($proxifierProfileFile)
+
+    & "$Env:SCOOP/apps/proxifier/current/Proxifier.exe" $proxifierProfileFile silent-load
+}
+
+Function UpdateXshell($config, $configFile) {
+    $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
     $iniNeedItems = @{
         'CONNECTION:SSH' = @{
             'FwdReq_0_LocalOnly'   = 0                     
@@ -117,24 +158,21 @@ Function Main() {
             'FwdReq_0_Port'        = "$dynamicTunnelPort"  
             'FwdReq_0_HostPort'    = 0                     
             'FwdReqCount'          = 1                    
-            # 'FwdReq_0_Host'        = $null                 
-            # 'FwdReq_0_Description' = $null                 
-            # 'FwdReq_0_Source'      = $null                 
-            }
+        }
         'CONNECTION:AUTHENTICATION' = @{
             'ExpectSend_Expect_0' = "~]$"
             'ExpectSend_Send_0'   = "TMOUT=0"
             'ExpectSend_Count'    = 1
             'UseExpectSend'       = 1
-            }
         }
+    }
 
     "===== Variable Print ======================"
     Write-Output "Script Args are $script:args" 
-    Write-Output "Xshell ConfigFile is $ConfigFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
+    Write-Output "Xshell ConfigFile is $configFile `nserverIp is $serverIp `ndynamicTunnelPort is $dynamicTunnelPort"
 
     "===== Parse Xshell Ini file ======================"
-    $ini = Get-IniContent $ConfigFile
+    $ini = Get-IniContent $configFile
 
     "===== Modify Xshell Ini content ======================"
     $iniNeedItems.GetEnumerator() | ForEach-Object {
@@ -145,16 +183,40 @@ Function Main() {
     }
 
     "===== Write to Ini file ======================"
-    Get-IniContentToString $ini | Set-Content $ConfigFile
-
-    "===== Checking final config in xsh ====>"
-    Read-Host -Prompt "Press {enter} key to continue"
+    Get-IniContentToString $ini | Set-Content $configFile
 
     "===== Start Xshell ============="
-    & "$XshellExe" "$ConfigFile"
+    & "$XshellExe" "$configFile"
+
+}
+
+Function Main() {
+    " ---- Get Config info ------------"
+    $configs   = Get-FromJson ".\proxy.json"
+    $XshellExe = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
+
+    "====== Map serverIp to port ==================="
+    $configs | ConvertTo-Json
+
+    # ---- Var define -------------
+    $ConfigFile = $script:args[0]
+    $serverIp   = $ConfigFile -replace ".*\((\d.*)\)\.xsh","`$1"  # get serverIp from file name
+
+    If (!($curConfig = $configs[$serverIp]) -or 
+            !($dynamicTunnelPort = $curConfig["Port"])) {
+        Write-Error "No dynamic port for $serverIp. Just Run Xshell"
+        # Read-Host -Prompt "Press {enter} to continue"
+        cmd /c pause
+        & "$XshellExe" "$ConfigFile"
+        exit
+    }
+
+    "===== Start Xshell ============="
+    UpdateXshell $curConfig $ConfigFile
+
     "===== Start Proxifier ============="
-
-
+    UpdateProxifier $curConfig
+    cmd /c pause
 }
 
 Main

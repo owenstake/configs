@@ -94,12 +94,6 @@ Function Get-FromJson {
 $proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
 $xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
 
-# $xml.OuterXml
-# AddProxy $xml  "102"  "10830" 
-# AddRule  $xml  "102"  "10.50.209.*"  "nanfangjidi-manager-in-guizhou"
-# AddProxy $xml  "103"  "10831" 
-# AddRule  $xml  "103"  "10.51.209.*"  "nanfangjidi-manager-in-guizhou1"
-
 $configs = Get-FromJson ".\proxy.json"
 Foreach ($c in $configs.GetEnumerator()) {
     # echo asdf $c.value.Proxyip
@@ -113,8 +107,7 @@ Foreach ($c in $configs.GetEnumerator()) {
 }
 
 # $xmlPath = 'D:\owen\weiyun\Personal\tyy\code\configs\win\etc\xshell\test.xml'
-$xmlPath = $proxifierProfileFile
-$xml.Save( $xmlPath )
+$xml.Save( $proxifierProfileFile )
 
 & $(GetAppExe proxifier) $proxifierProfileFile silent-load
 
