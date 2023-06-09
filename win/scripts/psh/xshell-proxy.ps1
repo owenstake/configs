@@ -191,7 +191,7 @@ Function Main() {
     " ---- Get Config info ------------"
     If (Test-Path "./proxy.json") {
         $configsFile = ".\proxy.json"
-    } else if (Test-Path "$env:OwenInstallDir/etc/common/proxy.json") {
+    } elseif (Test-Path "$env:OwenInstallDir/etc/common/proxy.json") {
         $configsFile = "$env:OwenInstallDir/etc/common/proxy.json"
     } else {
         Write-Error "No found proxy.json. Exiting"
