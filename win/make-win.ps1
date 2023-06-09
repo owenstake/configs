@@ -82,7 +82,8 @@ Function DeployConfigDir($srcDir, $dstDir) {
 	cp -r -Force $srcDIr/* "$dstDir"
 }
 
-Function EnableStartupTask($exePath) {
+Function AddStartupTask($exePath) {
+    "Add Startup Task $exePath"
     $initd = "$Env:OwenInstallDir/etc/init.d"
     Mkdir-P $initd
     CreateShortCutToDir $exePath $initd
@@ -157,9 +158,10 @@ Function MakeInstall() {
     }
 
     # Add startup task
-    EnableStartupTask "$(GetAppExe 'qq')"
+    AddStartupTask "$(GetAppExe 'qq')"
+    AddStartupTask "$(GetAppExe 'proxifier')"
     $file = Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk
-    EnableStartupTask $file.FullName
+    AddStartupTask $file.FullName
 }
 
 Function Main($action) {

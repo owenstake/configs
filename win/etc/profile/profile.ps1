@@ -143,6 +143,10 @@ Function GetAppExe($appExe) {
     return
 }
 
+Function StartApp($app) {
+    Explorer.exe $(GetAppExe $app)
+}
+
 # Recommand win-key search first
 Function sapp($app) {
     ScoopAppStart $app
@@ -296,10 +300,12 @@ Function wt   { wtg }
 Function wtq  { $( curl "wttr.in/~quangang+quanzhou?m" ).Content | Out-Host -Paging }
 Function wtg  { $( curl "wttr.in/~haizhu+guangzhou?m" ).Content | Out-Host -Paging }
 ## git function
-Function ga  {git add @args}
-Function gd  {git diff @args}
-Function gst {git status}
+Function ga  {git add          @args}
+Function gd  {git diff         @args}
+Function gst {git status       @args}
 Function gca {git commit -v -a @args}
+del alias:glg -errorAction silentlyContinue
+Function glg {git log --stat   @args}
 
 ## jobs function
 Function bg() {Start-Process -NoNewWindow @args}

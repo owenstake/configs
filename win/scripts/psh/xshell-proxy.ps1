@@ -143,7 +143,7 @@ Function UpdateProxifier($config) {
     AddRule   $xml  "$id"  "$proxyIp"  "$proxyInfo"
     $xml.Save($proxifierProfileFile)
 
-    & "$Env:SCOOP/apps/proxifier/current/Proxifier.exe" $proxifierProfileFile silent-load
+    & $(GetAppExe 'proxifier') $proxifierProfileFile silent-load
 }
 
 Function UpdateXshell($config, $XshellconfigFile) {
@@ -157,10 +157,10 @@ Function UpdateXshell($config, $XshellconfigFile) {
             'FwdReqCount'          = 1                    
         }
         'CONNECTION:AUTHENTICATION' = @{
-            'ExpectSend_Expect_0' = "~]$"
-            'ExpectSend_Send_0'   = "TMOUT=0"
-            'ExpectSend_Count'    = 1
-            'UseExpectSend'       = 1
+            'ExpectSend_Expect_0'   = "~]$"
+            'ExpectSend_Send_0'     = "TMOUT=0"
+            'ExpectSend_Count'      = 1
+            'UseExpectSend'         = 1
         }
     }
 
