@@ -243,8 +243,6 @@ If ( (Test-CommandExists lua) -and (Test-Path $env:scoop\apps\z.lua\current\z.lu
 }
 
 # Basic setting
-set-PSReadLineOption -EditMode Emacs
-
 Function fmt_info { Write-Host @args -BackgroundColor DarkCyan }
 Function fmt_warn { Write-Host @args -ForegroundColor Yellow -BackgroundColor DarkGreen }
 Function fmt_error { Write-Host @args -BackgroundColor DarkRed }
@@ -327,7 +325,25 @@ If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
     Function lla {ls -l -a @args}
 }
 
-# psfzf
+# --- PSreadline -----
+Import-Module PSReadLine
+set-PSReadLineOption -EditMode Emacs
+# Shows navigable menu of all options when hitting Tab
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+
+# Autocompletion for arrow keys
+Set-PSReadlineKeyHandler -Key Ctrl+p -Function HistorySearchBackward
+Set-PSReadlineKeyHandler -Key Ctrl+n -Function HistorySearchForward
+
+Set-PSReadLineKeyHandler -chord ',' -Function AcceptSuggestion # raw ',' is alt+,
+
+# Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
+# Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# auto suggestions
+Set-PSReadLineOption -PredictionSource History
+
+# --- psfzf -----
 If ( (Test-CommandExists fzf) -and (Test-AppExistsInScoopByCache "psfzf") ) {
     Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
     Set-PSFzfOption -EnableAliasFuzzyGitStatus  # fgs
