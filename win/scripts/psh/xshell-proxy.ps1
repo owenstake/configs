@@ -144,7 +144,6 @@ Function UpdateProxifier($config) {
     $xml.Save($proxifierProfileFile)
 
     & "$Env:SCOOP/apps/proxifier/current/Proxifier.exe" $proxifierProfileFile silent-load
-    # & $(GetAppExe 'proxifier') $proxifierProfileFile silent-load  # exe do not have profile
 }
 
 Function UpdateXshell($config, $XshellconfigFile) {

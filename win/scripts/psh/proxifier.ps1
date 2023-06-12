@@ -104,7 +104,7 @@ Function UpdateProxifierProfile() {
         AddRule  $xml  "$id"  "$proxyIp"  "$proxyInfo"
     }
     $xml.Save( $proxifierProfileFile )
-    & $(GetAppExe proxifier) $proxifierProfileFile silent-load
+    & $(Get-AppExe proxifier) $proxifierProfileFile silent-load
 }
 
 UpdateProxifierProfile

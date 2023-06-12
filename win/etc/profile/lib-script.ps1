@@ -98,7 +98,7 @@ Function Trash() {
 # *program dir
 # 1. C:\ProgramData\Microsoft\Windows\Start Menu\Programs
 # 2. C:\Users\owen\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
-Function GetAppExe($appExe) {
+Function Get-AppExe($appExe) {
     # exe path
     $appName = $appExe -Replace "\.exe",""
     $lnks    = Get-ChildItem -R *.lnk -Path `
@@ -118,12 +118,12 @@ Function GetAppExe($appExe) {
             }
         }
     }
-    write-error "no match in GetAppExe in powershell. app name is $appExe."
+    write-error "no match in Get-AppExe in powershell. app name is $appExe."
     return
 }
 
 Function Start-App($app) {
-    Explorer.exe $(GetAppExe $app)
+    Explorer.exe $(Get-AppExe $app)
 }
 
 # Ripgrep

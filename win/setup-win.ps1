@@ -35,7 +35,7 @@ Function Test-ScoopApp($app) {
     return scoop list | Select-String "$app"
 }
 
-Function GetAppsInstalledInScoop {
+Function Get-AppsInstalledInScoop {
     return ,(scoop export | ConvertFrom-Json).apps.name
 }
 
@@ -45,7 +45,7 @@ Function GetAppsInstalledInScoop {
 #     return ,$chocoApps
 # }
 
-Function GetAppsInstalledInWinget {
+Function Get-AppsInstalledInWinget {
     $wingetApps = @()
     # scoop export | ConvertFrom-Json | Foreach { $chocoApps += $_.name }
     $tmpFile = New-TemporaryFile
@@ -55,7 +55,7 @@ Function GetAppsInstalledInWinget {
     return ,$wingetJson.Sources[0].Packages.PackageIdentifier
 }
 
-Function GetAppsInstalledInPsModule {
+Function Get-AppsInstalledInPsModule {
     return ,(Get-Module).name
 }
 
@@ -70,10 +70,10 @@ Function FormatAppsStr($appstr) {
     return ,$apps
 }
 
-Function GetAppsNeedInstall($installer) {
+Function Get-AppsNeedInstall($installer) {
     $appStr = Get-Variable -scope Script -name "${installer}Appstr" -ValueOnly # i.e. scoopAppstr
     $appsRequired    = FormatAppsStr $appStr
-    $appsInstalled   = & "GetAppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
+    $appsInstalled   = & "Get-AppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
     $appsNeedInstall = $appsRequired | where {$appsInstalled -NotContains $_}
     $appsInstalledButNotrequired = $appsInstalled | where {$appsRequired -NotContains $_}
     # Apps required
@@ -147,7 +147,7 @@ Function Scoop-install {
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
     # Install Apps
-    If ($apps = GetAppsNeedInstall "SCOOP" ) {
+    If ($apps = Get-AppsNeedInstall "SCOOP" ) {
         scoop install $apps
     }
 
@@ -176,7 +176,7 @@ Function Winget-install() {
     # Env
     $env:WINGET="D:\owen\winget"
     [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
-    $apps = GetAppsNeedInstall "WINGET" 
+    $apps = Get-AppsNeedInstall "WINGET" 
     # Iterate install. winget has no batch install interface 2023.05.25
     Foreach ($app in $apps) {
         winget install --id="$app" -e --no-upgrade -l "$env:WINGET"
@@ -185,7 +185,7 @@ Function Winget-install() {
 
 Function Psmodule-Install {
     Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-    $apps = GetAppsNeedInstall "psModule" 
+    $apps = Get-AppsNeedInstall "psModule" 
     Foreach ($app in $apps) {
         If (!(get-module $app)) {
             Install-Module -Name $app -Scope CurrentUser  # reverse ops: uninstall-module

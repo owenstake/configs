@@ -1,17 +1,17 @@
 
 # --- scoop -------
 # $scoopInfo  = scoop export | ConvertFrom-Json
-Function Update-ScoopInfoCache {
-    $scoopInfo = scoop export | ConvertFrom-Json
-}
+# Function Update-ScoopInfoCache {
+#     $scoopInfo = scoop export | ConvertFrom-Json
+# }
 
-Function Test-AppExistsInScoopByCache($appName) {
-    If ($scoopInfo.apps | where-object -FilterScript {$PSitem -match "$appName"}) {
-        return $true
-    } else {
-        return $false
-    }
-}
+# Function Test-AppExistsInScoopByCache($appName) {
+#     If ($scoopInfo.apps | where-object -FilterScript {$PSitem -match "$appName"}) {
+#         return $true
+#     } else {
+#         return $false
+#     }
+# }
 
 # --- Alias -----------------------
 Function RealPath() {
@@ -120,3 +120,4 @@ If ( Get-Module -ListAvailable "pscolor" ) {
 
 # Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
 # $env:FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+#

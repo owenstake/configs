@@ -108,8 +108,8 @@ Function MakeInstall() {
     }
 
     # Add startup task
-    AddStartupTask "$(GetAppExe 'qq')"
-    AddStartupTask "$(GetAppExe 'proxifier')"
+    AddStartupTask "$(Get-AppExe 'qq')"
+    AddStartupTask "$(Get-AppExe 'proxifier')"
     $file = Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk
     AddStartupTask $file.FullName
 }
