@@ -1,3 +1,4 @@
+. ./lib.ps1
 # https://zhuanlan.zhihu.com/p/594363658
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
@@ -8,7 +9,8 @@
 $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
 $script:wingetAppstr = "
     Sogou.SogouInput  Tencent.WeiyunSync  Baidu.BaiduNetdisk
-    Thunder.Xmp       Tencent.QQMusic
+    Thunder.Xmp       
+    # Tencent.QQMusic
     "
 $script:scoopAppstr = "
     gow sudo vim-tux less bat tre-command recycle-bin file    # CLI basic tool
@@ -26,28 +28,8 @@ $script:scoopAppstr = "
 $script:bucketsStr = "main extras versions nerd-fonts"
 
 $script:psModuleAppstr = "
-    ps2exe
+    ps2exe PSReadLine
     "
-
-# Function
-Function fmt_info {
-	Write-Host $args -BackgroundColor DarkCyan
-}
-Function fmt_warn {
-    Write-Host $args -ForegroundColor Yellow -BackgroundColor DarkGreen
-}
-Function fmt_error {
-	Write-Host $args -BackgroundColor DarkRed
-}
-
-Function Test-CommandExists {
-	Param ($command)
-    If (Get-Command $command -ErrorAction SilentlyContinue) {
-        return $true
-    } else {
-        return $false
-    }
-}
 
 Function Test-ScoopApp($app) {
     return scoop list | Select-String "$app"
@@ -57,11 +39,11 @@ Function GetAppsInstalledInScoop {
     return ,(scoop export | ConvertFrom-Json).apps.name
 }
 
-Function GetAppsInstalledInChoco {
-    $chocoApps = @()
-    # scoop export | ConvertFrom-Json | Foreach { $chocoApps += $_.name }
-    return ,$chocoApps
-}
+# Function GetAppsInstalledInChoco {
+#     $chocoApps = @()
+#     # scoop export | ConvertFrom-Json | Foreach { $chocoApps += $_.name }
+#     return ,$chocoApps
+# }
 
 Function GetAppsInstalledInWinget {
     $wingetApps = @()
@@ -77,10 +59,10 @@ Function GetAppsInstalledInPsModule {
     return ,(Get-Module).name
 }
 
-Function Test-AppExistsInChoco($app) {
-    $retArr = choco list --localonly $app
-    return [int](($retArr[-1]).split()[0]) -ne 0
-}
+# Function Test-AppExistsInChoco($app) {
+#     $retArr = choco list --localonly $app
+#     return [int](($retArr[-1]).split()[0]) -ne 0
+# }
 
 Function FormatAppsStr($appstr) {
 	$appstr = $appstr -replace "#.*"
@@ -109,21 +91,6 @@ Function GetAppsNeedInstall($installer) {
     fmt_warn "${installer}: Install $($appsNeedInstall.count) apps as follows."
     fmt_warn "${installer}: $($appsNeedInstall -join ' ')"
     return ,$appsNeedInstall
-}
-
-Function EnvPathInsertAtHeadIfNoExists($item) {
-    If (!(Test-Path $item)) {
-        Write-Error "Args is invalid. $item"
-        return
-    }
-    $paths = $env:path -split ";"
-    Foreach($p in $paths) {
-        If ($p -eq "$item") {
-            return
-        }
-    }
-    $env:path = $item + ";" + $env:path
-    [Environment]::SetEnvironmentVariable('PATH', $Env:PATH, 'User')
 }
 
 Function Scoop-install {
@@ -193,30 +160,6 @@ Function Scoop-install {
     return
 }
 
-# Function Chocolatey-install() {
-#     fmt_info "CHOCO: Install Apps"
-#     If ($WinVersion -ge 17763) {
-#         fmt_warn "Use Winget instead of choco since Win Version $WinVersion >= 17763)  (WindSowsServer2019)"
-#         return
-#     }
-#     # Install chocolatey
-#     If (!(Test-CommandExists choco)) {
-#         # need proxy and admin priviledge
-#         Start-Process powershell -verb runas -ArgumentList "
-#             -Command `"
-#             Set-ExecutionPolicy Bypass -Scope Process -Force;
-#             [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-#             iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'));
-#             cmd /c pause
-#             "
-#     }
-#     $chocoAppstr = ""
-# 	fmt_info "CHOCO: Install $($apps.count)apps as follows.`n$apps"
-#     If ($apps = FormatAppsStr $chocoAppstr) {
-#         sudo choco install $apps
-#     }
-# }
-
 Function Winget-install() {
     fmt_info "WINGET: Start"
     If ($WinVersion -lt 17763) {
@@ -250,27 +193,13 @@ Function Psmodule-Install {
     }
 }
 
-Function Shuangpin() {
+Function Set-Shuangpin() {
     # Registry setting
     # 设置双拼
     $registryPath = "Registry::HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS\"
     $value = get-itemproperty -Path $registryPath -Name 'Enable double pinyin'
     If (!$value.'Enable Double Pinyin') {
         fmt_info "设置双拼"
-
-# $regFile = @"
-# Windows Registry Editor Version 5.00
-# [HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS]
-# "Enable Double Pinyin"=dword:00000001
-# "DoublePinyinScheme"=dword:0000000a
-# "UserDefinedDoublePinyinScheme0"="小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt"
-# "@
-
-#         $tmpFile = New-TemporaryFile
-#         $regFile | Out-File $tmpFile
-#         explorer.exe $file
-#         Remove-Item $tmpFile
-
         if ($file = Get-ChildItem -Recurse "xiaohe-shuangpin.reg") {
             explorer.exe $file
         } else {
@@ -279,14 +208,25 @@ Function Shuangpin() {
     }
 }
 
+Function kuwo-app-install() {
+    wget https://down.kuwo.cn/mbox/kwmusic_web_1.exe -outfile kw.exe
+    ./kw.exe
+    rm ./kw.exe
+}
+
+Function custom-install() {
+    # kuwo-app-install
+}
+
 Function main {
 	# .\bootstrap-win.ps1
     "This script just install app and config system"
 	Scoop-install
     # Chocolatey-install
     Winget-install
+    custom-install
     Psmodule-install
-    Shuangpin
+    Set-Shuangpin
     New-Item ~/.root -Force
     "app config: vim, lf, "
 }

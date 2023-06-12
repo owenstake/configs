@@ -1,33 +1,9 @@
+. ./lib.ps1
 
 Function EnvSetup() {
-    $Env:OwenInstallDir = "D:\.local"
-    [Environment]::SetEnvironmentVariable('OwenInstallDir', $Env:OwenInstallDir, 'User')
-    $ENV:LF_CONFIG_HOME = "$Env:OwenInstallDir\etc\lf"
-    [Environment]::SetEnvironmentVariable('LF_CONFIG_HOME', $Env:LF_CONFIG_HOME, 'User')
-    $Env:WEIYUN = "D:\owen\weiyun"
-    [Environment]::SetEnvironmentVariable('WEIYUN', $Env:WEIYUN, 'User')
-}
-
-Function fmt_info {
-	Write-Host $args -BackgroundColor DarkCyan
-}
-
-Function fmt_warn {
-    Write-Host $args -ForegroundColor Yellow -BackgroundColor DarkGreen
-}
-
-Function fmt_error {
-	Write-Host $args -BackgroundColor DarkRed
-}
-
-Function New-Item-IfNoExists($path,$type="File") {
-	if ( !(Test-Path -Path $path) ) {
-		New-Item -Path $path -ItemType $type -Force | Out-Null
-	}
-}
-
-Function Mkdir-P($dir) {
-    New-Item-IfNoExists $dir "Directory"
+    SetEnvVar "OwenInstallDir" "D:\.local"
+    SetEnvVar "LF_CONFIG_HOME" "$Env:OwenInstallDir\etc\lf"
+    SetEnvVar "WEIYUN"         "D:\owen\weiyun"
 }
 
 Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unicode" ) {
@@ -47,33 +23,6 @@ Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unico
     } else {
         fmt_info "owen $filePath is configed already"
     }
-}
-
-Function Test-AppExistsInScoop($appName) {
-    $scoopInfo = scoop export | ConvertFrom-Json
-    If ($scoopInfo.apps | where-object -FilterScript {$PSitem -match "$appName"}) {
-        return $true
-    } else {
-        return $false
-    }
-}
-
-Function CreateShortCut([string]$SourceFilePath,$ShortcutPath) {
-    $WScriptObj           = New-Object -ComObject ("WScript.Shell")
-    $shortcut             = $WscriptObj.CreateShortcut($ShortcutPath)
-    $shortcut.TargetPath  = $SourceFilePath
-    $shortcut.WindowStyle = 1
-    $shortcut.Save()
-}
-
-Function CreateShortCutToDir($sourceFilePath,$shortcutDir) {
-    $baseName     = $(Get-Item $sourceFilePath).Name
-    $shortcutPath = "$ShortcutDir/${baseName}.lnk"
-    CreateShortCut $sourceFilePath $shortcutPath
-}
-
-Function ahk2exe($ahkFile, $exeFile) {
-    ahk2exe.exe /in $ahkFile /out $exeFile /base "$env:scoop\apps\autohotkey1.1\current\Compiler\Unicode 64-bit.bin"
 }
 
 Function DeployConfigDir($srcDir, $dstDir) {
@@ -121,7 +70,8 @@ Function MakeInstall() {
 
     "--- Deploy Config File ----"
     DeployConfigDir  "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
-    DeployConfigDir  "etc/lf"             "$Env:OwenInstallDir/etc/lf"
+    DeployConfigDir  "etc/lf"             "$Env:LF_CONFIG_HOME"
+    DeployConfigDir  "etc/lf"             "$Env:LOCALAPPDATA/lf"
     DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"
     DeployConfigDir  "etc/common"         "$Env:OwenInstallDir/etc/common"
 
