@@ -75,7 +75,7 @@ Function Test-CommandExists($cmd) {
     }
 }
 
-Function Trash() {
+Function Trash() {   # used in lfrc
     # safety check
     Foreach ($file in $args) {
         If (!(Test-Path $file)) {
@@ -84,11 +84,20 @@ Function Trash() {
         }
     }
     
-    echo "PSH: Remove $($args.count) items"
+    echo "PSH: Remove $($args.count) items to Recycle-bin"
     Foreach ($file in $args) {
         echo "PSH:     Remove $file"
     }
     recycle-bin.exe @args
+}
+
+Function Extract($filename) {
+    echo "$filename"
+    If (!($file = Get-Item $filename)) {
+        return -1
+    }
+    $basename = $file.basename
+    & 7z x $filename -o"${basename}"
 }
 
 # Match Order - app.exe

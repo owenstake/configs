@@ -19,7 +19,6 @@ sougou input method default language should be English.
 
 ## table
 
-
 | asdfasdf    | sdfdasf     |
 | ----------: | :---------: |
 | test        | hello       |

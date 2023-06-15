@@ -3,7 +3,8 @@
 #NoEnv
 #MenuMaskKey vkE8
 
-#Include %A_ScriptDir%
+; #Include %A_ScriptDir%\lib
+#include %A_LineFile%\..\lib\functionStr.ahk
 #include *i %A_LineFile%\..\custom.ahk
 
 SendMode Input
@@ -12,6 +13,15 @@ SendMode Input
 global APPDATA, ProgramData
 EnvGet, APPDATA, APPDATA
 EnvGet, ProgramData, ProgramData
+EnvGet, WEIYUN, WEIYUN
+
+global mynote
+loop files, %WEIYUN%\*, DR
+{
+    If (A_LoopFileName = "my_note") {
+        mynote := A_LoopFileFullPath
+    }
+}
 
 ; Reverse "hjkl "for move.
 ; Reverse "fb" for terminal move.
@@ -37,7 +47,7 @@ global AppsConf :=
 	"hh.exe"              :  {"Shortcut" : "!a" , "ExePath" : "C:\Windows\hh.exe"                                            } ,
     "chrome.exe"          :  {"Shortcut" : "!c" , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"                          } ,
     "Draw.io.exe"         :  {"Shortcut" : "!g"                                                                              } ,
-    "Explorer.exe"        :  {"Shortcut" : "!e" , "Match": "ahk_class CabinetWClass", "ExePath" : "C:\Windows\explorer.exe", "DefaultControl" : "DirectUIHWND2" ,  "KeyMapInNoramalMode" : "ExplorerKeymapInNornalMode" } ,
+    "Explorer.exe"        :  {"Shortcut" : "!e" , "Match": "ahk_class CabinetWClass", "ExePath" : "C:\Windows\explorer.exe", "DefaultControl" : "DirectUIHWND" ,  "KeyMapInNoramalMode" : "ExplorerKeymapInNornalMode" } ,
     "obsidian.exe"        :  {"Shortcut" : "!i"                                                                              } ,
     "mobaxterm.exe"       :  {"Shortcut" : "!m"                                                                              } ,
     "WindowsTerminal.exe" :  {"Shortcut" : "!n"                                                                              } ,
@@ -60,20 +70,26 @@ global AppsConf :=
     }
     )
 
+        ; "h" : "!{Left}"    ,
+        ; "y"  : "{Alt}rb1"   ,
 global FoxitKeymapInNornalMode :=
 	( Join
     {
     "MoveKey" : { 
-        "j"  : "{Down}"     ,
-        "k"  : "{Up}"       ,
-        "u"  : "{PgUp}"     ,
-        "d"  : "{PgDn}"     ,
-        "+j" : "^+{Tab}"    ,
-        "+k" : "^{Tab}"     ,
-        "+h" : "!{Left}"    ,
-        "+l" : "!{Right}"   ,
-        "l"  : "{Alt}re1f"  ,
-        "o"  : "{Alt}re1a"  ,
+        "j"  : "{Down}"    ,
+        "k"  : "{Up}"      ,
+        "u"  : "{PgUp}"    ,
+        "d"  : "{PgDn}"    ,
+        "+j" : "^+{Tab}"   ,
+        "+k" : "^{Tab}"    ,
+        "+h" : "!{Left}"   ,
+        "+l" : "!{Right}"  ,
+        "l"  : "{Alt}re1f" ,
+        "o"  : "{Alt}re1a" ,
+        "p"  : "{Alt}re1f" ,
+        "w"  : "^u"        ,
+        "s"  : "+s"        ,
+        "y"  : "+h"        ,
         "q"  : "{Esc}"
         } ,
     "EditKey" : {
@@ -95,15 +111,24 @@ global ExplorerKeymapInNornalMode :=
     {
         "MoveKey" :
         { 
-        "j"     : "{Down}"   ,
-        "k"     : "{Up}"     ,
-        "h"     : "!{Up}"    ,
-        "l"     : "{Enter}"  ,
-        "+h"    : "!{Left}"  ,
-        "+l"    : "!{Right}" ,
-        "g"     : "{Home}"   ,
-        "+G"    : "{End}"    ,
-        "y & p" : "{Alt}hcp"
+        "j"     : "{Down}"                            ,
+        "k"     : "{Up}"                              ,
+        "h"     : "!{Up}"                             ,
+        "l"     : "{Enter}"                           ,
+        "+h"    : "!{Left}"                           ,
+        "+l"    : "!{Right}"                          ,
+        "g"     : "{Home}"                            ,
+        "+G"    : "{End}"                             ,
+        "+A"    : "{Alt}hr"                           ,
+        "+D"    : "{Alt}hd{Enter 2}"                  ,
+        "+Z"    : "{Alt}sc"                           ,
+        "+X"    : "ExtractFile()"                     ,
+        "y & p" : "{Alt}hcp"                          ,
+        "z & d" : "ExplorerNavigate(""~\Downloads"")" ,
+        "z & h" : "ExplorerNavigate(""~\"")"          ,
+        "z & n" : "ExplorerNavigate(""" mynote """)"  ,
+        "z & r" : "ExplorerNavigate(""~\Desktop"")"   ,
+        "z & w" : "ExplorerNavigate(""" WEIYUN """)"
         } 
     }
     )
@@ -121,6 +146,37 @@ ExecWinCmd(cmd, Byref stdout) {
 	stdout := Trim(stdout, " `r`n")
 	stderr := exec.StdErr.ReadAll()
     return stderr
+}
+
+GetExplorerSelectedItem() {
+    hwnd := WinExist("A")
+    for Window in ComObjCreate("Shell.Application").Windows {
+        if (window.hwnd==hwnd) {
+          Selection := Window.Document.SelectedItems
+          for Items in Selection
+              Path_to_Selection := Items.path
+        }
+    }
+    return Path_to_Selection
+}
+
+ExplorerNavigate(FullPath) {
+    EnvGet,USERPROFILE,USERPROFILE
+    FullPath     := RegExReplace(FullPath,"^~", USERPROFILE)
+	explorerHwnd := WinActive("ahk_class CabinetWClass")
+	For pExp in ComObjCreate("Shell.Application").Windows
+	{
+		if (pExp.hwnd = explorerHwnd) {	; matching window found
+			pExp.Navigate("file:///" FullPath)
+			return
+		}
+	}
+}
+
+ExtractFile() {
+    FullFileName := GetExplorerSelectedItem()
+    SplitPath, FullFileName, name, dir, ext, name_no_ext, drive
+    run, 7z x ""%FullFileName%"" -o""%dir%\%name_no_ext%""
 }
 
 GetActiveExplorerPath()
@@ -298,7 +354,7 @@ PlayAltKeySequence(seq) {
     while (curPos<=len) {
         remainSeq := substr(seq,curPos,len)
         If (RegExMatch(remainSeq, "iP)^\D\d*", matchObjLen)) {
-            sleep 50
+            sleep 400
             send % substr(remainSeq, 1, matchObjLen)
             ; msgbox % remainSeq " " matchObjLen
             curPos += matchObjLen
@@ -318,6 +374,11 @@ KeyMapHandler() {
     key        := A_ThisHotkey
     ; move keymap
     If (str := map["MoveKey"][key]) {
+        zFuncCallPattern := "^(\w+)\((.*)\)$"
+        If (IsFuncCallStr(str)) {
+            ret := ParseFuncAndEval(str)
+            return ret
+        }
         If (InStr(str, "{alt}")) { ; long alt key sequence, need slow down for no missing
             PlayAltKeySequence(str)
             ; send % substr(str,1,8)

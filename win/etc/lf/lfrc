@@ -34,8 +34,9 @@ map i  ${{& $env:lf_user_pager  $env:f}}
 map e  ${{& $env:lf_user_editor $env:f}}
 map E  ${{& $env:lf_user_open   $env:f}}
 map w  ${{& $env:lf_shell }}  # TODO: unset $env:lf ?
+map X  !{{ $files = LfFormatEnvFx $env:f; Extract @files }}
 # trash Need recycle-bin installed. "@files" will unpack files array
-map D  !{{ $files = LfFormatEnvFx $env:fx; trash @files }}
+map D  !{{ $files = LfFormatEnvFx $env:fx; Trash @files }}
 map <c-t> fzf_ctrl_t
 # map <c-r> fzf_ctrl_r
 map <f-1> ${{ & $env:lf -doc | & $env:lf_user_pager }}

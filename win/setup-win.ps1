@@ -56,7 +56,7 @@ Function Get-AppsInstalledInWinget {
 }
 
 Function Get-AppsInstalledInPsModule {
-    return ,(Get-Module).name
+    return ,(Get-Module -ListAvailable).name
 }
 
 # Function Test-AppExistsInChoco($app) {
@@ -186,6 +186,7 @@ Function Winget-install() {
 Function Psmodule-Install {
     Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
     $apps = Get-AppsNeedInstall "psModule" 
+    Install-Module -Name "PSreadline" -Scope CurrentUser -RequiredVersion 2.1.0   # reverse ops: uninstall-module
     Foreach ($app in $apps) {
         If (!(get-module $app)) {
             Install-Module -Name $app -Scope CurrentUser  # reverse ops: uninstall-module
