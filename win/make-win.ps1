@@ -1,3 +1,7 @@
+
+Set-Location $pscommandpath/..
+
+# . $pscommandpath/../lib.ps1
 . ./lib.ps1
 
 Function EnvSetup() {

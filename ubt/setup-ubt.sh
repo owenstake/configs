@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/bash
+source lib.sh
 set -e   # exit bash script when cmd fail
 
 # keep track of the last executed command
@@ -11,32 +12,25 @@ command_exists() {
     command -v "$@" >/dev/null 2>&1
 }
 
-fmt_info() {
-    printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
-}
-
-fmt_error() {
-    printf '%sERRO: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
-}
+# fmt_info() {
+#     printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+# }
+# fmt_error() {
+#     printf '%sERRO: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+# }
 
 git_clone() {
     # local url=$1
     git clone --depth 1 $@
 }
 
-setup_color() {
-    FMT_RED=$(printf '\033[31m')
-    FMT_GREEN=$(printf '\033[32m')
-    FMT_YELLOW=$(printf '\033[33m')
-    FMT_BLUE=$(printf '\033[34m')
-    FMT_BOLD=$(printf '\033[1m')
-    FMT_RESET=$(printf '\033[0m')
-}
+# TestProxy() {
+# }
 
 main() {
     setup_color
     # start install
-    fmt_info "start install ..."
+    fmt_info "Start install ..."
 
     oldDir=$PWD
     buildDir=$(mktemp -d)
@@ -93,9 +87,12 @@ main() {
 
     # check network proxy
     if curl -s www.google.com --connect-timeout 3 > /dev/null; then
-        fmt_info Proxy ok.
+        fmt_info "Proxy ok."
     else
-        fmt_error Proxy fail. Please check win10 v2ray is ok for 10809.
+        fmt_error "Proxy fail. Please check win10 v2ray is ok for 10809."
+        fmt_error "1. win v2ray is ok for 10809 ?"
+        fmt_error "2. win firewall is opened for wsl ?. If not, do the following command in powershell."
+        fmt_error 'sudo Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)".'
         return
     fi
 
@@ -187,7 +184,7 @@ main() {
         # rm lazygit lazygit.tar.gz # clean
     fi
 
-    fmt_info "finish install"
+    fmt_info "Finish install"
 
     # vim plug. auto trigger install
 
@@ -199,5 +196,5 @@ main() {
 
 time main "$@"
 
-fmt_info "time elasped is showed above ^"
+fmt_info "Time elasped is showed above."
 

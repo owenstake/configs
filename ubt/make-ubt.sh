@@ -1,5 +1,6 @@
 #!/usr/bin/bash
-#
+source lib.sh
+
 export WinUserName=$(echo $PATH | sed 's#.*/mnt/c/Users/\([^/]*\)/.*#\1#')
 export WinUserHome=/mnt/c/Users/${WinUserName}
 export WinUserDownloads=${WinUserHome}/Downloads
@@ -10,43 +11,52 @@ export WinUserWeiyunNote="/mnt/c/Weiyun/Personal/my_note"  # used in ranger
 function AddHookToConfigFile() {
     local file=$1
     local msg=$2
-    MarkLine="# owen configed" 
+    local commentMarker=${3:-"#"}
+    local MarkLine="$commentMarker owen configed" 
+    local line="${msg} ${MarkLine}"
     if ! grep -q "$MarkLine" $file ; then
         fmt_info "owen $file is configing"
-        echo "$MarkLine"                      >> $file
-        echo "# -- owen $file config -- "     >> $file
-        echo "$msg"                           >> $file
-        echo "# -- end owen $file config -- " >> $file
+        echo "$line" >> $file
+        # echo "# -- owen $file config -- "     >> $file
+        # echo "$msg"                           >> $file
+        # echo "# -- end owen $file config -- " >> $file
     else
-        fmt_info "owen $file is configed already"
+        fmt_info "update owen config in $file"
+        sed -i "s@.*$MarkLine.*@$line@" $file
     fi
 }
 
-# log function {{{
-FMT_RED=$(printf '\033[31m')
-FMT_GREEN=$(printf '\033[32m')
-FMT_YELLOW=$(printf '\033[33m')
-FMT_BLUE=$(printf '\033[34m')
-FMT_BOLD=$(printf '\033[1m')
-FMT_RESET=$(printf '\033[0m')
-
-function fmt_info() {
-    printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+function DeployConfigDir() {
+    local srcDir=$1
+    local dstDir=$2
+    mkdir -p $dstDir
+    rsync -r $srcDir/* $dstDir
+    fmt_info "DeployConfigDir $srcDir to $dstDir"
 }
 
-function fmt_error() {
-    printf '%sERRO: [%s] %s%s\n' "${FMT_RED}${FMT_BOLD}" "$funcstack[2] $@" "$*" "$FMT_RESET"  1>&2
-}
-# }}}
-
-function main() {
+function MakeInstall() {
     ## override config
-    mkdir -p ~/.local $$ mkdir -p ~/.config
-    rsync -r etc          ~/.local/
-    rsync -r etc/ranger   ~/.config/
-    rsync -r etc/newsboat ~/.config/
-    rsync -r etc/fzf      ~/.config/
-    rsync -r ../common/etc/vim      ~/.config/
+    # mkdir -p ~/.local $$ mkdir -p ~/.config
+    DeployConfigDir   etc/ranger     ~/.config/ranger/
+    DeployConfigDir   etc/newsboat   ~/.config/newsboat/
+    DeployConfigDir   etc/fzf        ~/.config/fzf/
+
+    # local config
+    # DeployConfigDir   ../common/etc/vim ~/.config/vim
+    DeployConfigDir   ../common/etc/vim   ~/.local/etc/vim/
+    DeployConfigDir   etc/tmux            ~/.local/etc/tmux/
+    DeployConfigDir   etc/zsh             ~/.local/etc/zsh/
+
+    # AddHookToConfigFile   ~/.zshrc       "source   ~/.local/etc/zsh.conf"
+    # AddHookToConfigFile   ~/.tmux.conf   "source   ~/.local/etc/tmux.conf"
+    # AddHookToConfigFile   ~/.vimrc       "source   ~/.local/etc/vim/vimrc"
+
+
+    # rsync -r etc          ~/.local/
+    # rsync -r etc/ranger   ~/.config/
+    # rsync -r etc/newsboat ~/.config/
+    # rsync -r etc/fzf      ~/.config/
+    # rsync -r ../common/etc/vim      ~/.config/
     # ln -sf ~/.local/etc/vim/vimrc ~/.vimrc
 
     ### Force echo to zsh tmux config file
@@ -64,17 +74,35 @@ function main() {
     if uname -r | grep -qi "microsof"; then
         fmt_info "We are in wsl~~~"
         # WSL system configs
-        sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
-        mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
-        powershell -c "../win/make-win.ps1"
+        # sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
+        # mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
+
+        # fmt_info 'Install to windows by "../win/make-win.ps1 install"'
+        # powershell.exe -c "../win/make-win.ps1 install"
     fi
 
     fmt_info "-- Deploy hooks to config file ---------"
-    AddHookToConfigFile ~/.zshrc "source ~/.local/etc/zsh.conf"
-    AddHookToConfigFile ~/.tmux.conf "source ~/.local/etc/tmux.conf"
-    AddHookToConfigFile ~/.vimrc "source ~/.local/etc/vim/vimrc"
+    AddHookToConfigFile   ~/.zshrc       "source ~/.local/etc/zsh/zsh.conf"
+    AddHookToConfigFile   ~/.tmux.conf   "source ~/.local/etc/tmux/tmux.conf"
+    AddHookToConfigFile   ~/.vimrc       "source ~/.local/etc/vim/vimrc"   '"'
 }
 
-main $@
-
+action=${1:-"install"}
+case $action in  
+    install)  
+        echo "Installing ~~"  
+        MakeInstall
+        ;;  
+    uninstall)  
+        echo "Uninstalling ~~"  
+        ;;  
+    clean)  
+        echo "Cleaning ~~"
+        ;;
+    all)  
+        echo "Cleaning ~~"
+        ;;
+    *)
+        echo "unknown action $1"
+esac
 
