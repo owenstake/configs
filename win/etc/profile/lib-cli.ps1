@@ -31,12 +31,15 @@ Function wt   { wtg }
 Function wtq  { $( curl "wttr.in/~quangang+quanzhou?m" ).Content | Out-Host -Paging }
 Function wtg  { $( curl "wttr.in/~haizhu+guangzhou?m" ).Content | Out-Host -Paging }
 ## git function
-Function ga  {git add          @args}
-Function gd  {git diff         @args}
-Function gst {git status       @args}
-Function gca {git commit -v -a @args}
+del alias:gc  -errorAction silentlyContinue
 del alias:glg -errorAction silentlyContinue
-Function glg {git log --stat   @args}
+Function ga   {git add                  @args}
+Function gd   {git diff                 @args}
+Function gst  {git status               @args}
+Function gc   {git commit               @args}
+Function gca  {git commit -v -a         @args}
+Function glg  {git log --stat           @args}
+Function grbi {git rebase --interactive @args}
 
 ## jobs function
 Function bg() {Start-Process -NoNewWindow @args}
