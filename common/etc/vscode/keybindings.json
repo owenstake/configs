@@ -1,0 +1,218 @@
+// 将键绑定放在此文件中以�?�盖默�?�值auto[]
+[
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.action.toggleMaximizedPanel"
+    },
+    {
+        "key": "ctrl+k b",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+b",
+        "command": "-workbench.action.toggleSidebarVisibility"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "-workbench.action.terminal.focusFind",
+        "when": "terminalFindFocused || terminalFocus"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "workbench.action.quickOpen",
+        "when": "!terminalFocus && !vim.active"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "-workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "-workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "-workbench.action.terminal.focusFind",
+        "when": "terminalFindFocused && terminalProcessSupported || terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+shift+n",
+        "command": "workbench.action.files.newUntitledFile",
+    },
+    // {
+    //     "key": "ctrl+n",
+    //     "command": "-workbench.action.files.newUntitledFile"
+    // },
+    {
+        "key": "ctrl+n",
+        "command": "workbench.action.quickOpenSelectNext"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "workbench.action.quickOpenSelectPrevious"
+    },
+    {
+        "key": "ctrl+shift+f",
+        "command": "-workbench.action.findInFiles"
+    },
+    {
+        "key": "ctrl+shift+f",
+        "command": "workbench.view.search"
+    },
+    {
+        "key": "ctrl+shift+f",
+        "command": "-workbench.view.search",
+        "when": "!searchViewletVisible"
+    },
+    {
+        "key": "shift+alt+h",
+        "command": "editor.action.smartSelect.shrink",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+l",
+        "command": "editor.action.smartSelect.expand",
+        "when": "editorTextFocus"
+    },
+    // for auto complete in insert mode
+    {
+        "key": "ctrl+n",
+        "command": "selectNextSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
+    },
+    {
+        "key": "ctrl+p",
+        "command": "selectPrevSuggestion",
+        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus",
+    },
+    {
+        "key": "ctrl+k ctrl+e",
+        "command": "workbench.view.explorer"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "workbench.action.quickOpenView",
+        "when": "!terminalFocus"
+    },
+    // so we can use space to go to, because enter is too hard
+    // {
+    //     "key": "space",
+    //     "command": "revealReference",
+    //     "when": "listFocus && referenceSearchVisible && !inputFocus"
+    // },
+
+    // {
+    //     "key": "l",
+    //     "command": "list.toggleExpand",
+    //     "when": "listFocus && !inputFocus"
+    // },
+    {
+        "key": "ctrl+n",
+        "command": "list.focusDown",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+p",
+        "command": "list.focusUp",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "list.focusDown",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "list.focusUp",
+        "when": "listFocus && !inputFocus"
+    },
+    {
+        "key": "ctrl+v",
+        "command": "-workbench.action.terminal.paste",
+        "when": "terminalFocus && terminalProcessSupported"
+    },
+    {
+        "key": "ctrl+l ctrl+f",
+        "command": "-workbench.view.extension.l13Diff"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "-notebook.centerActiveCell",
+        "when": "notebookEditorFocused"
+    },
+    {
+        "key": "ctrl+l ctrl+l",
+        "command": "-l13Diff.show"
+    },
+    {
+        "key": "ctrl+shift+l",
+        "command": "-addCursorsAtSearchResults",
+        "when": "fileMatchOrMatchFocus && searchViewletVisible"
+    },
+    {
+        "key": "ctrl+l ctrl+o",
+        "command": "-l13Diff.showOutput"
+    },
+    {
+        "key": "ctrl+q",
+        "command": "-workbench.action.quickOpenView"
+    },
+    {
+        "key": "ctrl+l ctrl+t",
+        "command": "leetcode.testSolution"
+    },
+    {
+        "key": "ctrl+l ctrl+s",
+        "command": "leetcode.submitSolution"
+    },
+    {
+        "key": "ctrl+l ctrl+i",
+        "command": "leetcode.signin"
+    },
+    {
+        "key": "ctrl+l ctrl+p",
+        "command": "leetcode.searchProblem"
+    },
+    {
+        "key": "ctrl+l ctrl+o",
+        "command": "leetcode.previewProblem"
+    },
+    {
+        "key": "ctrl+l ctrl+v",
+        "command": "leetcode.showSolution"
+    },
+    // {
+    //     "key": "space",
+    //     "command": "revealReference",
+    //     "when": "listFocus && referenceSearchVisible && !inputFocus"
+    // },
+
+    // it is buggy!! in vim !!   so we can just c-j c-j instead.
+    // {
+    //     "key": "escape",
+    //     "command": "workbench.action.focusFirstEditorGroup",
+    //     "when": "!editorFocus || !editorTextFocus || !vim.active || !terminalFocus",
+    // },
+    // {
+    //     "key": "ctrl+p",
+    //     "command": "cursorUp",
+    //     "when": "!editorTextFocus || !vim.active"
+    // },
+    // {
+    //     "key": "ctrl+p",
+    //     // "key": "up",
+    //     "command": "workbench.statusBar.focusPrevious",
+    //     "when": "statusBarFocused"
+    // },
+]

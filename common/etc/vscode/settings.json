@@ -1,0 +1,564 @@
+
+{
+    "workbench.colorTheme": "Gruvbox Dark (Hard)",
+    "C_Cpp.updateChannel": "Insiders",
+    "files.associations": {
+        "*.h": "c",
+        "*.vim": "vimrc"
+    },
+    "extensions.ignoreRecommendations": false,
+    
+    "sync.gist": "206e5515d5a38249ef1190b47d9cc993",
+
+    // vscodevim setting
+    "vim.leader": "<space>",
+    "vim.handleKeys": {
+        "<C-a>": true,
+        "<C-c>": true,
+        "<C-x>": true,
+        "<C-f>": false,
+        "<C-h>": false,
+        "<C-s>": false,
+        "<C-k>": false,
+        "<C-z>": false,
+        "<C-y>": false,
+        "<C-t>": false,
+        "<C-j>": false,
+        "<C-b>": false,
+    },
+
+    "vim.insertModeKeyBindingsNonRecursive": [
+        // Esc keymap
+        // {
+        //     "before": ["j", "j"],
+        //     "after": ["<Esc>"],
+        // },
+        // {
+        //     "before": ["k", "k"],
+        //     "after": ["<Esc>"],
+        // },
+        {
+            "before": ["j", "k"],
+            "after": ["<Esc>"],
+        },
+        // {
+        //     "before": ["k", "j"],
+        //     "after": ["<Esc>"],
+        // },
+    ],
+
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["g", "p"],
+            "after": ["g", "r"],
+        },
+        {
+            "before": ["*"],
+            "after": ["*", "N"],
+        },
+        {
+            "before": ["#"],
+            "after": ["#", "N"],
+        },
+        {
+            "before": ["g","I"],
+            "commands": ["workbench.action.navigateToLastEditLocation"],
+            // "after": ["i"],
+        },
+
+        // Search
+        // {
+        //     "before": ["/"],
+        //     "commands": ["actions.find"],
+        // },
+
+        // move arround
+        {
+            "before": ["]","c"],
+            "commands": ["editor.action.dirtydiff.next"],
+        },
+        {
+            "before": ["[","c"],
+            "commands": ["editor.action.dirtydiff.previous"],
+        },
+        {
+            "before": ["]","g"],
+            "commands": ["editor.action.marker.nextInFiles"],
+        },
+        {
+            "before": ["[","g"],
+            "commands": ["editor.action.marker.prevInFiles"],
+        },
+        {
+            "before": ["]","s"],
+            "commands": ["editor.action.nextMatchFindAction"],
+            // "after": ["l","h"],
+        },
+        {
+            "before": ["[","s"],
+            "commands": ["editor.action.previousMatchFindAction"],
+            // "after": ["l","h"],
+        },
+        {
+            "before": ["[","b"],
+            "commands": ["workbench.action.previousEditor"],
+        },
+        {
+            "before": ["]","b"],
+            "commands": ["workbench.action.nextEditor"],
+        },
+        // leetcode
+        {
+            "before": ["<leader>","l", "s"],
+            "commands": ["leetcode.submitSolution"],
+        },
+        {
+            "before": ["<leader>","l", "t"],
+            "commands": ["leetcode.testSolution"],
+        },
+
+        // ================================================================
+        // copy from chenbin
+        // https://github.com/redguardtoo/vscode-setup/blob/master/settings.json
+        {
+            "before": ["<leader>","v", "v"],
+            "commands": ["workbench.action.openView"],
+        },
+        {
+            "before": ["<leader>","b", "b"],
+            "commands": ["workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup"],
+        },
+        {
+
+            "before": ["<leader>","s", "s"],
+            "commands": ["actions.find"],
+        },
+        {
+            "before": ["<leader>","q", "q"],
+            "commands": ["workbench.action.findInFiles"],
+        },
+        {
+            "before": ["<leader", "a", "a"],
+            "commands": ["editor.action.clipboardAction"],
+        },
+        {
+        // "before": ["<leader>","f", "p"],
+            "before": ["<leader>","y", "p"],
+            "commands": ["workbench.action.files.copyPathOfActiveFile"],
+        },
+        {
+        // "before": ["<leader>","f", "n"],
+            "before": ["<leader>","y", "n"],
+            "commands": ["copyRelativeFilePath"],
+        },
+        // I use c-j
+        // {
+            // "before": ["<leader>","t", "p"],
+            // "commands": ["workbench.action.togglePanel"],
+        // },
+        // I use c-s-p
+        {
+            "before": ["<leader>","x", "m"],
+            "commands": ["workbench.action.showCommands"],
+        },
+        {
+            "before": ["<leader>","c", "i"],
+            "commands": ["editor.action.commentLine"],
+        },
+        {
+            "before": ["<leader>","x", "x"],
+            "commands": ["editor.action.smartSelect.expand"],
+        },
+        {
+            "before": ["<leader>","z", "z"],
+            "commands": ["editor.action.smartSelect.shrink"],
+        },
+        {
+            "before": ["<leader>","t", "a"],
+            "commands": ["workbench.action.toggleActivityBarVisibility"],
+        },
+        {
+            "before": ["<leader>","t", "b"],
+            "commands": ["workbench.action.toggleSidebarVisibility"],
+        },
+        {
+            "before": ["<leader>","x", "s"],
+            "commands": ["workbench.action.files.save"],
+        },
+        // {
+        //     "before": ["%"],
+        //     "commands": ["extension.matchitJumpItems"],
+        // },
+        {
+            "before": ["<leader>","s", "i"],
+            "commands": ["extension.matchitSelectItems"],
+        },
+        {
+            "before": ["<leader>","d", "i"],
+            "commands": ["extension.matchitDeleteItems"],
+        },
+        {
+            "before": ["<leader>","x", "d"],
+            "commands": ["workbench.action.files.openFolder"],
+        },
+        {
+            "before": ["<leader>","x", "f"],
+            "commands": ["workbench.action.files.openFile"],
+        },
+        {
+            "before": ["<leader>", "x", "k"],
+            "commands": ["workbench.action.closeActiveEditor"],
+        },
+        {
+            "before": ["<leader>","r", "r"],
+            "commands": ["workbench.action.openRecent"],
+        },
+        {
+            "before": ["<leader>","k", "k"],
+            "commands": ["workbench.action.quickOpen"],
+        },
+        {
+            "before": ["<leader>","i", "i"],
+            "commands": ["workbench.action.gotoSymbol"],
+        },
+        {
+            "before": ["<leader>","x", "1"],
+            "commands": ["workbench.action.editorLayoutSingle"],
+        },
+        // I use :vsp
+        {
+            "before": ["<leader>","x", "3"],
+            "commands": ["workbench.action.splitEditorRight"],
+        },
+        // I use :sp
+        {
+            "before": ["<leader>","x", "2"],
+            "commands": ["workbench.action.splitEditorDown"],
+        },
+        {
+            "before": ["<leader>","x", "4"],
+            "commands": ["workbench.action.editorLayoutTwoByTwoGrid"],
+        },
+        {
+            "before": ["<leader>","x", "0"],
+            "commands": ["workbench.action.closeGroup"],
+        },
+        // useless. I use c-j
+        // {
+        // "before": ["<leader>","x", "z"],
+        // "commands": ["workbench.action.terminal.focus"],
+        // },
+        {
+            "before": ["<leader>","f", "f"],
+            "commands": ["workbench.action.toggleZenMode"],
+        },
+        // == end of chenbin =============================================
+
+        // navigation
+        {
+            "before": ["-"],
+            "after": ["_"],
+        },
+        {
+            "before": ["g", "r"],
+            "commands": ["editor.action.goToReferences"]  
+        },
+        {
+            "before": ["%"],
+            "commands": ["editor.action.jumpToBracket"],
+        },
+        // {
+        //     "before": [":"],
+        //     "commands": [
+        //         "workbench.action.showCommands",
+        //     ],
+        // },
+
+        // file operation
+        {
+            "before": ["<leader>", "q"],
+            "commands": ["workbench.action.closeActiveEditor"],
+        },
+        {
+            "before": ["Z", "Z"],
+            "commands": [":wq"],
+        },
+        {
+            "before": ["Z", "Q"],
+            "commands": [":q!"],
+        },
+        {
+            "before":["<C-n>"],
+            "after":["<S-o>"],
+        },
+        // {
+        //     "before": ["<leader>", "j"],
+        //     "after":["J"],
+        // },
+        // {
+        //     "before": ["J"],
+        //     "commands": ["workbench.action.previousEditor"],
+        // },
+        {
+            "before": ["K"],
+            "commands": ["workbench.action.nextEditor"],
+        },
+        {
+            "before": ["q", "q"],
+            "commands": ["workbench.action.closeActiveEditor"],
+        },
+        {
+            "before": ["Q"],
+            "commands": ["workbench.action.reopenClosedEditor"],
+        },
+        {
+            "before": ["<leader>", "p"],
+            "commands": ["workbench.action.quickOpen"],
+        },
+
+        // bookmark extension keymap settings
+        {
+            "before": ["<leader>", "b", "m"],
+            "commands": ["bookmarks.toggle"],
+        },
+        {
+            "before": ["<leader>", "b", "l"],
+            "commands": ["bookmarks.listFromAllFiles"],
+        },
+
+    ],
+
+    "vim.operatorPendingModeKeyBindingsNonRecursive": [],
+
+    "vim.visualModeKeyBindingsNonRecursive": [
+        // ======== special for visual mode ==============
+        {
+            "before": ["g", "c", "c"],
+            "commands": ["editor.action.commentLine"]  
+        },
+        {
+            "before": ["g", "d"],
+            "commands": ["editor.action.revealDefinition"]  
+        },
+
+        // Search in visual select area
+        {
+            "before": ["]","s"],
+            "commands": ["editor.action.nextMatchFindAction"],
+            // "after": ["l","h"],
+        },
+        {
+            "before": ["[","s"],
+            "commands": ["editor.action.previousMatchFindAction"],
+            // "after": ["l","h"],
+        },
+
+        // same as normal mode. Just copy from normal mode
+        {   // we use s-a-l
+            "before": ["<leader>","x", "x"],
+            "commands": ["editor.action.smartSelect.expand"],
+        },
+        {   // we use s-a-h
+            "before": ["<leader>","z", "z"],
+            "commands": ["editor.action.smartSelect.shrink"],
+        },
+        {
+            "before": ["<leader>","s", "s"],
+            // "commands": ["actions.find"],
+            "commands": ["actions.find", "toggleFindInSelection"],
+        },
+        {
+            "before": ["<leader>","q", "q"],
+            "commands": ["workbench.action.findInFiles"],
+        },
+        {
+            "before": ["g", "r"],
+            "commands": ["editor.action.goToReferences"]  
+        },
+        {
+            "before": ["J"],
+            "commands": ["workbench.action.previousEditor"],
+        },
+        {
+            "before": ["K"],
+            "commands": ["workbench.action.nextEditor"],
+        },
+    ],
+
+    // vscodevim config
+    "vim.useSystemClipboard": true,
+    "workbench.editor.enablePreview": false,
+    // "vim.enableNeovim": true,
+    // "vim.neovimPath": "C:\\MY_SOFTWARE\\nvim-win64\\Neovim\\bin\\nvim.exe",
+    "http.proxySupport": "off",
+    "todo-tree.tree.showScanModeButton": false,
+    "vim.statusBarColors.normal": ["#8FBCBB", "#434C5E"],
+    "vim.statusBarColors.insert": "#BF616A",
+    "vim.statusBarColors.visual": "#B48EAD",
+    "vim.statusBarColors.visualline": "#B48EAD",
+    "vim.statusBarColors.visualblock": "#A3BE8C",
+    "vim.statusBarColors.replace": "#D08770",
+    "vim.statusBarColors.commandlineinprogress": "#007ACC",
+    "vim.statusBarColors.searchinprogressmode": "#007ACC",
+    "vim.statusBarColors.easymotionmode": "#007ACC",
+    "vim.statusBarColors.easymotioninputmode": "#007ACC",
+    "vim.statusBarColors.surroundinputmode": "#007ACC",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#8FBCBB",
+        "statusBar.noFolderBackground": "#8FBCBB",
+        "statusBar.debuggingBackground": "#8FBCBB",
+        "statusBar.foreground": "#434C5E"
+    },
+    "vim.searchHighlightColor": "#8FBCBB",
+    "color-highlight.markerType": "dot-before",
+
+    "vim.cursorStylePerMode.normal": "block-outline",
+    "vim.cursorStylePerMode.insert": "line-thin",
+    "vim.cursorStylePerMode.visual": "block-outline",
+    "vim.cursorStylePerMode.visualblock": "block-outline",
+    "vim.cursorStylePerMode.visualline": "block-outline",
+
+    "zenMode.hideStatusBar": false,
+    "zenMode.hideTabs": false,
+    
+    // "vim.autoSwitchInputMethod.enable": true,
+    // "vim.autoSwitchInputMethod.defaultIM": "2052",
+    // "vim.autoSwitchInputMethod.obtainIMCmd": "C:\\MY_SOFTWARE\\im-select.exe",
+    // "vim.autoSwitchInputMethod.switchIMCmd": "C:\\MY_SOFTWARE\\im-select.exe {im}",
+
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\wsl.exe",
+
+    // for compile c/c++ project
+    "launch":{
+        // 使用 IntelliSense 了解相关属性�? 
+        // �????停以查看现有属性的描述�????
+        // 欲了解更多信�????，�?��?�问: https://go.microsoft.com/fwlink/?linkid=830387
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "cygwin64_launch",
+                "type": "cppdbg",
+                "request": "launch",
+                "args": [],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "environment": [],
+                // "avoidWindowsConsoleRedirection": true,
+                // "internalConsoleOptions": "openOnSessionStart",
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "�???? gdb �????用整齐打�????",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                // cross-platform
+                "windows": {
+                    "externalConsole": true,
+                    "preLaunchTask": "cygwin64_task",
+                    "miDebuggerPath": "C:\\cygwin64\\bin\\gdb.exe",
+                    "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                },
+                "linux": {
+                    "externalConsole": false,
+                    "preLaunchTask": "ubt_task",
+                    "miDebuggerPath": "/usr/bin/gdb",
+                    "program": "${fileDirname}/${fileBasenameNoExtension}",
+                },
+            },
+            {
+                "name": "ubt_launch",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "args": [],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "environment": [],
+                "externalConsole": true,
+                // "avoidWindowsConsoleRedirection": true,
+                // "internalConsoleOptions": "openOnSessionStart",
+                "MIMode": "gdb",
+                "miDebuggerPath": "C:\\cygwin64\\bin\\gdb.exe",
+                "setupCommands": [
+                    {
+                        "description": "�???? gdb �????用整齐打�????",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                // "windows": {
+                //     "externalConsole": false
+                // },
+                "preLaunchTask": "ubt_task"
+            }
+        ],
+    },
+
+    "editor.detectIndentation": false,
+    "editor.renderControlCharacters": true,
+    "editor.renderWhitespace": "all",
+    "vim.vimrc.path": "d:\\owen\\scoop\\apps\\vscode\\current\\.vimrc",
+    "vim.vimrc.enable": true,
+    "editor.minimap.enabled": false,
+    "diffEditor.maxComputationTime": 0,
+
+    "remote.SSH.remotePlatform": {
+        "172.30.23.79": "linux"
+    },
+    "remote.SSH.useLocalServer": false,
+    "workbench.startupEditor": "newUntitledFile",
+
+    // terminal setting
+    // https://glitchbone.github.io/vscode-base16-term/#/apathy
+    "workbench.colorCustomizations": {
+        "terminal.background":"#031A16",
+        "terminal.foreground":"#81B5AC",
+        "terminalCursor.background":"#81B5AC",
+        "terminalCursor.foreground":"#81B5AC",
+        "terminal.ansiBlack":"#031A16",
+        "terminal.ansiBlue":"#96883E",
+        "terminal.ansiBrightBlack":"#2B685E",
+        "terminal.ansiBrightBlue":"#96883E",
+        "terminal.ansiBrightCyan":"#963E4C",
+        "terminal.ansiBrightGreen":"#883E96",
+        "terminal.ansiBrightMagenta":"#4C963E",
+        "terminal.ansiBrightRed":"#3E9688",
+        "terminal.ansiBrightWhite":"#D2E7E4",
+        "terminal.ansiBrightYellow":"#3E4C96",
+        "terminal.ansiCyan":"#963E4C",
+        "terminal.ansiGreen":"#883E96",
+        "terminal.ansiMagenta":"#4C963E",
+        "terminal.ansiRed":"#3E9688",
+        "terminal.ansiWhite":"#81B5AC",
+        "terminal.ansiYellow":"#3E4C96"
+    },
+    "vim.easymotion": true,
+    "workbench.iconTheme": "Monokai Pro Icons",
+    "files.exclude": {
+        "**/.ccls-cache": true,
+        "**/*.patch": true,
+        "**/*.diff": true,
+    },
+    "vim.foldfix": true,
+    "vim.visualstar": true,
+    "vim.hlsearch": true,
+    "workbench.activityBar.visible": true,
+    "vim.replaceWithRegister": true,
+    "leetcode.endpoint": "leetcode-cn",
+    "leetcode.workspaceFolder": "/mnt/c/Weiyun/Personal/my_code/leetcode",
+    "leetcode.defaultLanguage": "cpp",
+    "leetcode.hint.commandShortcut": false,
+    "leetcode.hint.configWebviewMarkdown": false,
+    "leetcode.useWsl": true,
+    "workbench.editorAssociations": {
+        "*.png": "hediet.vscode-drawio",
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
+    "leetcode.hint.setDefaultLanguage": false,
+    "leetcode.hint.commentDescription": false,
+    "hediet.vscode-drawio.local-storage": "eyIuZHJhd2lvLWNvbmZpZyI6IntcImxhbmd1YWdlXCI6XCJcIixcImN1c3RvbUZvbnRzXCI6W10sXCJsaWJyYXJpZXNcIjpcImdlbmVyYWw7Zmxvd2NoYXJ0XCIsXCJjdXN0b21MaWJyYXJpZXNcIjpbXCJMLnNjcmF0Y2hwYWRcIl0sXCJwbHVnaW5zXCI6W10sXCJyZWNlbnRDb2xvcnNcIjpbXSxcImZvcm1hdFdpZHRoXCI6XCIyNDBcIixcImNyZWF0ZVRhcmdldFwiOmZhbHNlLFwicGFnZUZvcm1hdFwiOntcInhcIjowLFwieVwiOjAsXCJ3aWR0aFwiOjgyNyxcImhlaWdodFwiOjExNjl9LFwic2VhcmNoXCI6dHJ1ZSxcInNob3dTdGFydFNjcmVlblwiOnRydWUsXCJncmlkQ29sb3JcIjpcIiNkMGQwZDBcIixcImRhcmtHcmlkQ29sb3JcIjpcIiM2ZTZlNmVcIixcImF1dG9zYXZlXCI6dHJ1ZSxcInJlc2l6ZUltYWdlc1wiOm51bGwsXCJvcGVuQ291bnRlclwiOjAsXCJ2ZXJzaW9uXCI6MTgsXCJ1bml0XCI6MSxcImlzUnVsZXJPblwiOmZhbHNlLFwidWlcIjpcIlwifSJ9",
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.insertSpaces": false,
+}
