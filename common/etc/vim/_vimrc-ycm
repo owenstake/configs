@@ -1,0 +1,136 @@
+let mapleader = "\<space>"
+" source ~/.local/etc/vim/vimrc " owen configed
+call plug#begin()
+    " general setting {{{
+        Plug 'mhinz/vim-startify'   " The fancy start screen for Vim
+        Plug 'vim-scripts/ReplaceWithRegister'
+        Plug 'dhruvasagar/vim-zoom'
+        Plug 'mbbill/undotree'
+        Plug 'Valloric/YouCompleteMe'
+    "}}}
+
+    " markdown{{{
+        Plug 'godlygeek/tabular' " must before vim-markdown
+        Plug 'plasticboy/vim-markdown'
+        Plug 'mzlogin/vim-markdown-toc'
+
+        " HOST CHOME is best for markdown preview in WSL
+        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+    "}}}
+
+    " vim-easy-align - Shorthand notation; fetches https://github.com/junegunn/vim-easy-align{{{
+        Plug 'junegunn/vim-easy-align'
+    "}}}
+
+    " On-demand loading
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+
+    Plug 'easymotion/vim-easymotion' " for motion <Leader><Leader>w
+    Plug 'rhysd/accelerated-jk'
+    nmap j <Plug>(accelerated_jk_gj)
+    nmap k <Plug>(accelerated_jk_gk)
+
+    " {{{ basic trick
+        Plug 'vim-airline/vim-airline'
+        Plug 'tpope/vim-unimpaired' " ]b ]c ]n ]l
+        Plug 'nelstrom/vim-visual-star-search' " "*"
+        Plug 'tpope/vim-repeat'  " dot for repeat more common
+        Plug 'tpope/vim-surround' " ysw
+        Plug 'andymass/vim-matchup'  " %
+        Plug 'tpope/vim-abolish'  " :%S/{man,dog}/{dog,man}/g
+        Plug 'tpope/vim-fugitive' " Gblame
+        Plug 'airblade/vim-gitgutter' " Git Diff Show Sign +~-
+
+        " vim-textobj-user
+        Plug 'kana/vim-textobj-user'
+        Plug 'kana/vim-textobj-indent'      " vii
+        Plug 'kana/vim-textobj-syntax'
+        Plug 'kana/vim-textobj-function',  " vif
+            \ { 'for':['c', 'cpp', 'vim', 'java'] }
+        Plug 'sgur/vim-textobj-parameter'   " vi,
+
+        " Enhanced C syntax
+        Plug 'justinmk/vim-syntax-extra'
+        Plug 'octol/vim-cpp-enhanced-highlight'
+    " }}}
+
+    " syntax check
+    Plug 'neomake/neomake'
+    " Plug 'dense-analysis/ale'
+
+    " Commnentary
+    Plug 'tpope/vim-commentary' " gcc
+    autocmd FileType java,c,cpp set commentstring=//\ %s " comment style //
+    autocmd FileType autohotkey set commentstring=\;\ %s " comment style //
+
+    " colorschemes {{{
+        Plug 'flazz/vim-colorschemes'
+        Plug 'vim-scripts/ScrollColors'
+        Plug 'morhetz/gruvbox'
+        Plug 'crusoexia/vim-monokai'   " default now
+        Plug 'altercation/vim-colors-solarized'
+    " }}}
+
+    " show num convert
+    Plug 'glts/vim-magnum'
+    Plug 'glts/vim-radical' " gA decimal:"crd" hex:"crx" octal:"cro" binary:"crb"
+
+
+    " snippets {{{
+        Plug 'honza/vim-snippets' " massive common snippets
+    " }}}
+
+    Plug 'dhruvasagar/vim-table-mode'
+    Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
+    Plug 'kshenoy/vim-signature' " bookmarker
+    Plug 'vim-latex/vim-latex'
+    " Plug 'lyokha/vim-xkbswitch'
+    " let g:XkbSwitchEnabled =0
+
+    " Initialize plugin system
+call plug#end()
+
+inoremap jk <esc>
+
+
+"默认配置文件路径"
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+"打开vim时不再询问是否加载ycm_extra_conf.py配置"
+let g:ycm_confirm_extra_conf=0
+set completeopt=longest,menu
+"python解释器路径"
+let g:ycm_path_to_python_interpreter='D:\owen\scoop\apps\python\current\python.EXE'
+"是否开启语义补全"
+let g:ycm_seed_identifiers_with_syntax=1
+"是否在注释中也开启补全"
+let g:ycm_complete_in_comments=1
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+"开始补全的字符数"
+let g:ycm_min_num_of_chars_for_completion=2
+"补全后自动关机预览窗口"
+let g:ycm_autoclose_preview_window_after_completion=1
+" 禁止缓存匹配项,每次都重新生成匹配项"
+let g:ycm_cache_omnifunc=0
+"字符串中也开启补全"
+let g:ycm_complete_in_strings = 1
+"离开插入模式后自动关闭预览窗口"
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+"上下左右键行为"
+inoremap <expr> <Down>     pumvisible() ? '\<C-n>' : '\<Down>'
+inoremap <expr> <Up>       pumvisible() ? '\<C-p>' : '\<Up>'
+inoremap <expr> <PageDown> pumvisible() ? '\<PageDown>\<C-p>\<C-n>' : '\<PageDown>'
+inoremap <expr> <PageUp>   pumvisible() ? '\<PageUp>\<C-p>\<C-n>' : '\<PageUp>'
+
+nnoremap <leader>jo :YcmCompleter GoTo<CR> "跳转
+nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> "跳转到定义或声明
+nnoremap <leader>jf :YcmCompleter GoToDefinition<CR>  "跳转到定义
+nnoremap <leader>jl :YcmCompleter GoToDeclaration<CR> "跳转到声明
+nnoremap <leader>jt :YcmCompleter GetType<CR> "get类型
+
+nnoremap :js :YcmCompleter GoToSymbol 
+
+nmap <leader>ji :YcmCompleter GoToInclude<CR>   "跳转到include、声明或定义
+nmap <leader>jm :YcmCompleter GoToImprecise<CR> "跳转到实现
+nmap <leader>jr :YcmCompleter GoToReferences<CR> "跳转到引用
+
