@@ -1,6 +1,6 @@
 Set-Location $pscommandpath/..
 
-. $PSCommandPath/lib.ps1
+. ./lib.ps1
 # https://zhuanlan.zhihu.com/p/594363658
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
@@ -204,9 +204,9 @@ Function Set-Shuangpin() {
     # Registry setting
     # 设置双拼
     $registryPath = "Registry::HKEY_CURRENT_USER\SOFTWARE\Microsoft\InputMethod\Settings\CHS\"
-    $value = get-itemproperty -Path $registryPath -Name 'Enable double pinyin'
-    If (!$value.'Enable Double Pinyin') {
-        fmt_info "设置双拼"
+    $value = Get-Itemproperty -Path $registryPath -Name 'Enable double pinyin' -errorAction silentlyContinue
+    If ((!$value) -Or (!$value.'Enable Double Pinyin')) {
+        fmt_info "Set shuangpin"
         if ($file = Get-ChildItem -Recurse "xiaohe-shuangpin.reg") {
             explorer.exe $file
         } else {

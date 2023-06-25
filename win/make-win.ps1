@@ -30,11 +30,15 @@ Function DeployConfigDir($srcDir, $dstDir) {
 	cp -r -Force $srcDIr/* "$dstDir"
 }
 
-Function AddStartupTask($exePath) {
-    "Add Startup Task $exePath"
+Function AddStartupTask($filePath) {
+    If (!(Get-Item $filePath -errorAction silentlyContinue)) {
+        fmt_error "AddStartupTask() fail, $filePath do not exists"
+        return
+    }
+    "Add Startup Task $filePath"
     $initd = "$Env:OwenInstallDir/etc/init.d"
     Mkdir-P $initd
-    CreateShortCutToDir $exePath $initd
+    CreateShortCutToDir $filePath $initd
 }
 
 Function MakeAll() {
@@ -107,9 +111,11 @@ Function MakeInstall() {
     }
 
     # Add startup task
+    if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
+        . $file  # contain Get-AppExe
+    }
     AddStartupTask "$(Get-AppExe 'qq')"
     AddStartupTask "$(Get-AppExe 'proxifier')"
-    $file = Get-ChildItem "$Env:OwenInstallDir" -Recurse keyremap.ahk
     AddStartupTask $file.FullName
 }
 

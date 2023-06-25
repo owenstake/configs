@@ -55,32 +55,26 @@ GetActiveExplorerPath()
 
 GetAppPath(app) {
     global APPDATA,ProgramData
-	AppSearchPath := 
-		( Join
-			[   
-			ProgramData . "\Microsoft\Windows\Start Menu\Programs\*.lnk" ,
-			APPDATA . "\Microsoft\Windows\Start Menu\Programs\*.lnk"
-			]
-		)
+	AppSearchPath := [   ProgramData . "\Microsoft\Windows\Start Menu\Programs\*.lnk"
+			, APPDATA . "\Microsoft\Windows\Start Menu\Programs\*.lnk" ]
+
 	Loop , % AppSearchPath.Length()
 	{
 		p := AppSearchPath[A_Index]
 		Loop Files, %p%, R  ; Recurse into subfolders.
 		{
-			; get target
-			FileGetShortcut, %A_LoopFileFullPath%, OutTarget
-			; filename compare
-			basename1 := StrReplace(A_LoopFileName, ".lnk") ; remove ext
-			If (basename1 = app) {
-				return A_LoopFileFullPath
+            lnkFile := A_LoopFileFullPath
+			; Get targetFile From LnkFile
+			FileGetShortcut, %lnkFile%, targetFile
+			; LnkFile compare
+            SplitPath, lnkFile,,,, basenameInLnk
+			If (basenameInLnk = app) {
+				return lnkFile
 			}
-			; target compare
-			basename2 := RegExReplace(OutTarget, ".*\\(\w+)\.exe", "$1")
-			; basename2 := StrReplace(OutTarget, ".exe") ; remove ext
-			; MsgBox % A_LoopFileFullPath "`n" A_LoopFileName "`n" OutTarget "`n" basename1 "`n" basename2
-			If (basename2 = app) {
-				; Msgbox % "Matched! " . OutTarget
-				return OutTarget
+			; targetFile compare
+            SplitPath, targetFile,,,, basenameInOutTarget
+			If (basenameInOutTarget = app) {
+				return targetFile
 			}
 		}
 	}
