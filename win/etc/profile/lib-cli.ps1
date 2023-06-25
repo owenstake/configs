@@ -23,6 +23,23 @@ del alias:rp -Force
 Set-Alias rp RealPath
 Set-Alias wrp RealPath
 
+# refine cd as linux bash
+del alias:cd -errorAction silentlyContinue
+$global:oldpwd = $global:pwd
+$global:test = 'gogo'
+Function cd($dir="~") {
+    $tmpPath = $global:pwd
+    If ($dir -eq "-") {
+        cd $global:oldpwd
+    } else {
+        Set-Location "$dir"
+    }
+    If ($global:pwd -ne $tmpPath) {
+        # cd success
+        $global:oldpwd = $tmpPath
+    }
+}
+
 # basic function
 Function vic { vim ~\_vimrc }
 Function psc { vim $profile }
@@ -71,13 +88,13 @@ If ( (Test-CommandExists "lua") -and (Test-Path $env:scoop\apps\z.lua\current\z.
     Function zd {cd ~/Downloads }
     Function zw {cd $env:weiyun }
 
-    # refine cd as linux bash
-    del alias:cd -errorAction silentlyContinue
-    Function cd($dir="~") {
-        If ($dir -eq "-") {
-            z -
-        } else {
-            Set-Location "$dir"
+    del alias:z -errorAction silentlyContinue
+    Function z() {
+        $tmpPath = $global:pwd
+        _zlua @args
+        If ($global:pwd -ne $tmpPath) {
+            # cd success
+            $global:oldpwd = $tmpPath
         }
     }
 }

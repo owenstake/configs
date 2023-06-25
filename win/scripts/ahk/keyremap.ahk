@@ -221,7 +221,8 @@ GetAppPath(app) {
 			; MsgBox % A_LoopFileFullPath "`n" A_LoopFileName "`n" OutTarget "`n" basename1 "`n" basename2
 			If (basename2 = app) {
 				; Msgbox % "Matched! " . OutTarget
-				return OutTarget
+				; return OutTarget
+				return A_LoopFileFullPath  ; return lnk file path
 			}
 		}
 	}
