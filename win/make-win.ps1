@@ -11,21 +11,16 @@ Function EnvSetup() {
 }
 
 Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unicode" ) {
-    $MarkLine="$commentMark -- Owen configed -----"
+    $MarkLine="$commentMark owen configed"
+    $sourceLine="${msg} ${MarkLine}"
     New-Item-IfNoExists $filePath
     if (!(Select-String -Pattern "$MarkLine" -Path "$filePath")) {
         fmt_info "owen $filePath is configing"
-        $rawText = "
-            $MarkLine
-            # -- Owen $filePath config -----
-            $msg
-            # -- end Owen $filePath config -----
-        "
-        # remove leading space and replace comment mark if need
-        $text = ($rawText -replace "\n\s+","`n" -replace "\n#","`n$commentMark").Trim()
-        $text | out-file -Append -Encoding $encoding $filePath     # _vimrc will be utf8 format
+        $sourceLine | Out-File -Append -Encoding $encoding $filePath  # _vimrc will be utf8 format
     } else {
-        fmt_info "owen $filePath is configed already"
+        fmt_info "update owen config in $filePath"
+        $newText = Get-Content $filePath | Foreach { $_ -replace ".*$MarkLine","$sourceLine" } 
+	$newText | Out-File -Encoding $encoding $filePath
     }
 }
 
