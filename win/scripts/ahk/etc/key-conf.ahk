@@ -86,6 +86,7 @@ global ExplorerKeymapInNornalMode := { "MoveKey" : { "j" : {"Action":"{Down}", "
         ,"+D"    : {"Action":"{Alt}hd{Enter 2}"                  , "help":"Delete to recycle-bin" }
         ,"+Z"    : {"Action":"{Alt}sc"                           , "help":"Zip"                   }
         ,"+X"    : {"Action":"ExtractFile()"                     , "help":"Extract file"          }
+        ,"y"     : {"Action":"{Alt}hco"                          , "help":"Copy file"             }
         ,"y & p" : {"Action":"{Alt}hcp"                          , "help":"Copy file path"        }
         ,"z & d" : {"Action":"ExplorerNavigate(""~\Downloads"")" , "help":"Go to Downloads"       }
         ,"z & h" : {"Action":"ExplorerNavigate(""~\"")"          , "help":"Go to Home"            }

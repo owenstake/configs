@@ -112,7 +112,7 @@ Function MakeInstall() {
 
     # Add startup task
     if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
-        . $file  # contain Get-AppExe
+        . $file.Fullname  # contain Get-AppExe
     }
     AddStartupTask "$(Get-AppExe 'qq')"
     AddStartupTask "$(Get-AppExe 'proxifier')"
