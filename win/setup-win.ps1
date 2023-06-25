@@ -1,4 +1,6 @@
-. ./lib.ps1
+Set-Location $pscommandpath/..
+
+. $PSCommandPath/lib.ps1
 # https://zhuanlan.zhihu.com/p/594363658
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
@@ -102,10 +104,11 @@ Function Scoop-install {
     # Env setting
 	If (!(Test-CommandExists scoop)) {
         fmt_info "SCOOP: Installing scoop first"
-		$env:SCOOP=$scoopInstallDir
-		[environment]::setEnvironmentVariable('SCOOP',$env:SCOOP,'User')
-        $env:scoopUiApps="$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
-		[environment]::setEnvironmentVariable('SCOOPUIAPPS',$env:scoopUiApps,'User')
+        SetEnvVar
+        SetEnvVar "SCOOP"       "$scoopInstallDir"
+        SetEnvVar "scoopUiApps" "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
+        # $env:scoopUiApps="$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
+		# [environment]::setEnvironmentVariable('SCOOPUIAPPS',$env:scoopUiApps,'User')
 		# $env:SCOOP_GLOBAL='D:\apps'
 		# [environment]::setEnvironmentVariable('SCOOP_GLOBAL',$env:SCOOP_GLOBAL,'Machine')
 		# Install scoop for user. https://gitee.com/glsnames/scoop-installer
@@ -174,8 +177,10 @@ Function Winget-install() {
         scoop install winget wingetUI
     }
     # Env
-    $env:WINGET="D:\owen\winget"
-    [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
+    
+    SetEnvVar "WINGET" "D:\owen\winget"
+    # $env:WINGET="D:\owen\winget"
+    # [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
     $apps = Get-AppsNeedInstall "WINGET" 
     # Iterate install. winget has no batch install interface 2023.05.25
     Foreach ($app in $apps) {
