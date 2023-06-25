@@ -20,7 +20,7 @@ Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unico
     } else {
         fmt_info "update owen config in $filePath"
         $newText = Get-Content $filePath | Foreach { $_ -replace ".*$MarkLine","$sourceLine" } 
-	$newText | Out-File -Encoding $encoding $filePath
+        $newText | Out-File -Encoding $encoding $filePath
     }
 }
 
