@@ -134,6 +134,7 @@ Function Scoop-install {
         fmt_info "SCOOP: Git config"
         git config --global --add safe.directory '*'
         git config --global core.autocrlf false
+        git config --global core.whitespace cr-at-eol
     }
     # Bucket update. Require git installed.
     $buckets = FormatAppsStr $script:bucketsStr
