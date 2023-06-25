@@ -115,10 +115,6 @@ DoKeyToApp() {
             Send !{Esc}
         } else {
             WinActivate, %match%  ; Command syntax
-            If (conf["DefaultControl"]) {
-                ; ctrl := conf["DefaultControl"]
-                ; Controlclick, %ctrl%, A
-            }
         }
     } else {
         if (conf["ExePath"]) {
@@ -183,12 +179,7 @@ LongPressedSpeedUp(targetKey) {
 CtrlMHandler() {
     WinGet, appExe, ProcessName, A    ; get current window ahk_exe
     ctrl := AppsConf[appExe]["DefaultControl"]
-    ; ControlGetPos, x, y, w, h, %ctrl%, A
-    ; x := x+1
-    ; y := y+1
-    ; MouseClick, left, %x%, %y%
     Controlclick, %ctrl%, A
-    ; Controlclick, , A
 }
 
 ; AnyKeyWait() { 
