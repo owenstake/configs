@@ -224,9 +224,9 @@ Function main {
     "This script just install app and config system"
 	Scoop-install
     # Chocolatey-install
+    Psmodule-install
     Winget-install
     custom-install
-    Psmodule-install
     Set-Shuangpin
     New-Item ~/.root -Force
     "app config: vim, lf, "
