@@ -4,6 +4,10 @@ Set-Location $pscommandpath/..
 # . $pscommandpath/../lib.ps1
 . ./lib.ps1
 
+if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
+    . $file.Fullname  # contain Get-AppExe
+}
+
 Function EnvSetup() {
     SetEnvVar "OwenInstallDir" "D:\.local"
     SetEnvVar "LF_CONFIG_HOME" "$Env:OwenInstallDir\etc\lf"
@@ -111,12 +115,11 @@ Function MakeInstall() {
     }
 
     # Add startup task
-    if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
-        . $file.Fullname  # contain Get-AppExe
-    }
     AddStartupTask "$(Get-AppExe 'qq')"
     AddStartupTask "$(Get-AppExe 'proxifier')"
-    AddStartupTask $file.FullName
+    if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "keyremap.ahk") {
+	AddStartupTask $file.FullName
+    }
 }
 
 Function Main($action) {
