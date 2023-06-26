@@ -39,7 +39,7 @@ global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"}
     ,"typora.exe"          : {"Shortcut" : "!t"                                                                              } 
     ,"code.exe"            : {"Shortcut" : "!v"                                                                              } 
     ,"word.exe"            : {"Shortcut" : "!w"                                                                              } 
-    ,"xshell.exe"          : {"Shortcut" : "!x"  , "KeyMapInNoramalMode" : "XshellKeymapInNormalMode"                        } 
+    ,"xshell.exe"          : {"Shortcut" : "!x"                                                                              }
     ,"zotero.exe"          : {"Shortcut" : "!z"                                                                              } 
     ,"msedge.exe"          : {"Shortcut" : "!+c" , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"                         } 
     ,"Everything.exe"      : {"Shortcut" : "!+e"                                                                             } 
@@ -94,5 +94,5 @@ global ExplorerKeymapInNornalMode := { "MoveKey" : { "j" : {"Action":"{Down}", "
         ,"z & r" : {"Action":"ExplorerNavigate(""~\Desktop"")"   , "help":"Go to Desktop"         }
         ,"z & w" : {"Action":"ExplorerNavigate(""" WEIYUN """)"  , "help":"Go to Weiyun"          } } }
 
-global XshellKeymapInNormalMode := { "MoveKey" : { "^+r up" : "{alt}fr" } }
+; global XshellKeymapInNormalMode := { "MoveKey" : { "^+r up" : "{alt}fr" } }
 

@@ -192,9 +192,11 @@ Function Main() {
     If (Test-Path "./proxy.json") {
         $configsFile = ".\proxy.json"
     } elseif ($file = Get-ChildItem -Recurse "proxy.json" -Path $env:OwenInstallDir) {
-        $configsFile = $file
+        $configsFile = $file.FullName
     } else {
         Write-Error "No found proxy.json. Exiting"
+        Write-Error "OwenInstallDir is $env:OwenInstallDir"
+        Write-Error "file is $file"
         cmd /c pause
         exit
     }

@@ -12,7 +12,7 @@ set user_editor vim
 set user_open   explorer
 
 set preview   true
-set previewer D:\\.local\\bin\\previewer.exe     # golang exe. source code file previewer.go
+set previewer D:\\.dotfiles\\bin\\previewer.exe     # golang exe. source code file previewer.go
 
 set mouse   true
 set icons   true

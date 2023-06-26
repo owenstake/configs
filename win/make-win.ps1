@@ -4,7 +4,7 @@ Set-Location $pscommandpath/..
 # . $pscommandpath/../lib.ps1
 . ./lib.ps1
 
-if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
+if ($file = Get-ChildItem . -Recurse "lib-script.ps1") {
     . $file.Fullname  # contain Get-AppExe
 }
 
@@ -117,8 +117,9 @@ Function MakeInstall() {
     # Add startup task
     AddStartupTask "$(Get-AppExe 'qq')"
     AddStartupTask "$(Get-AppExe 'proxifier')"
+    AddStartupTask "$(Get-AppExe 'V2rayN')"
     if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "keyremap.ahk") {
-	AddStartupTask $file.FullName
+        AddStartupTask $file.FullName
     }
 }
 
