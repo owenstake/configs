@@ -12,6 +12,8 @@ loop files, %WEIYUN%\*, DR
     }
 }
 
+torbrowserPath := APPDATA . "\Microsoft\Windows\Start Menu\Programs\Scoop Apps\Tor Browser.lnk" 
+
 ; Reverse "hjkl "for move.
 ; Reverse "fb" for terminal move.
 ; Remain usable key "agy"
@@ -25,29 +27,39 @@ global KeySendMap := { "!j"  : "{Down}"
     , "!+k" : "^{Tab}"  }
 
 ; global HotkeyAppMap :=
-global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"}
-    ,"chrome.exe"          : {"Shortcut" : "!c" , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"                          } 
-    ,"Draw.io.exe"         : {"Shortcut" : "!g"                                                                              } 
-    ,"Explorer.exe"        : {"Shortcut" : "!e" , "Match": "ahk_class CabinetWClass", "ExePath" : "C:\Windows\explorer.exe", "DefaultControl" : "DirectUIHWND" ,  "KeyMapInNoramalMode" : "ExplorerKeymapInNornalMode" } 
-    ,"obsidian.exe"        : {"Shortcut" : "!i"                                                                              } 
-    ,"mobaxterm.exe"       : {"Shortcut" : "!m"                                                                              } 
-    ,"WindowsTerminal.exe" : {"Shortcut" : "!n"                                                                              } 
-    ,"powerpoint.exe"      : {"Shortcut" : "!p"                                                                              } 
-    ,"qq.exe"              : {"Shortcut" : "!q"                                                                              } 
-    ,"wechat.exe"          : {"Shortcut" : "!r"                                                                              } 
-    ,"FoxitPDFReader.exe"  : {"Shortcut" : "!s"  , "DefaultControl" : "FoxitDocWnd1" , "KeyMapInNoramalMode" : "FoxitKeymapInNornalMode" } 
-    ,"typora.exe"          : {"Shortcut" : "!t"                                                                              } 
-    ,"code.exe"            : {"Shortcut" : "!v"                                                                              } 
-    ,"word.exe"            : {"Shortcut" : "!w"                                                                              } 
-    ,"xshell.exe"          : {"Shortcut" : "!x"                                                                              }
-    ,"zotero.exe"          : {"Shortcut" : "!z"                                                                              } 
-    ,"msedge.exe"          : {"Shortcut" : "!+c" , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"                         } 
-    ,"Everything.exe"      : {"Shortcut" : "!+e"                                                                             } 
-    ,"firefox.exe"         : {"Shortcut" : "!+f"                                                                             } 
-    ,"v2rayN.exe"          : {"Shortcut" : "!+v"                                                                             } 
-    ,"firefox.exe"         : {"Shortcut" : "!+o" , "ExePath" : APPDATA . "\Microsoft\Windows\Start Menu\Programs\Scoop Apps\Tor Browser.lnk" } 
-    ,"kwmusic.exe"         : {"Shortcut" : "!+u"                                                                             } 
-    ,"Excel.exe"           : {"Shortcut" : "!+x"  } }
+global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"       }
+    ,"chrome.exe"          : {"Shortcut" : "!c"
+                            , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"    }
+    ,"Draw.io.exe"         : {"Shortcut" : "!g"                                    }
+    ,"Explorer.exe"        : {"Shortcut" : "!e"
+                            , "Match"               : "ahk_class CabinetWClass"
+                            , "ExePath"             : "C:\Windows\explorer.exe"
+                            , "DefaultControl"      : "DirectUIHWND"
+                            , "KeyMapInNoramalMode" : "ExplorerKeymapInNornalMode" }
+    ,"obsidian.exe"        : {"Shortcut" : "!i"                                    }
+    ,"mobaxterm.exe"       : {"Shortcut" : "!m"                                    }
+    ,"WindowsTerminal.exe" : {"Shortcut" : "!n"                                    }
+    ,"powerpoint.exe"      : {"Shortcut" : "!p"                                    }
+    ,"qq.exe"              : {"Shortcut" : "!q"                                    }
+    ,"wechat.exe"          : {"Shortcut" : "!r"                                    }
+    ,"FoxitPDFReader.exe"  : {"Shortcut" : "!s"
+                            , "DefaultControl" : "FoxitDocWnd1"
+                            , "KeyMapInNoramalMode" : "FoxitKeymapInNornalMode"    }
+    ,"typora.exe"          : {"Shortcut" : "!t"                                    }
+    ,"code.exe"            : {"Shortcut" : "!v"                                    }
+    ,"word.exe"            : {"Shortcut" : "!w"                                    }
+    ,"xshell.exe"          : {"Shortcut" : "!x"                                    }
+    ,"zotero.exe"          : {"Shortcut" : "!z"                                    }
+    ,"msedge.exe"          : {"Shortcut" : "!+c"
+                            , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"    }
+    ,"Everything.exe"      : {"Shortcut" : "!+e"                                   }
+    ,"firefox.exe"         : {"Shortcut" : "!+f"                                   }
+    ,"firefox.exe"         : {"Shortcut" : "!+o" 
+                            , "ExePath" : torbrowserPath                           }
+    ,"secUI.exe"           : {"Shortcut" : "!+s"                                   }
+    ,"kwmusic.exe"         : {"Shortcut" : "!+u"                                   }
+    ,"v2rayN.exe"          : {"Shortcut" : "!+v"                                   }
+    ,"Excel.exe"           : {"Shortcut" : "!+x"                                   } }
 
 global FoxitKeymapInNornalMode := { "EditKey" : { "t"  : {"Action":"{Alt}rd2", "help":"Text box"} }
     , "MoveKey" : { "j"  : {"Action":"{Down}"    , "help":""  }
