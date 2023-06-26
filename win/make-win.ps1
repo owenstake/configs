@@ -9,7 +9,7 @@ if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "lib-script.ps1") {
 }
 
 Function EnvSetup() {
-    SetEnvVar "OwenInstallDir" "D:\.local"
+    SetEnvVar "OwenInstallDir" "D:\.dotfiles"
     SetEnvVar "LF_CONFIG_HOME" "$Env:OwenInstallDir\etc\lf"
     SetEnvVar "WEIYUN"         "D:\owen\weiyun"
 }
