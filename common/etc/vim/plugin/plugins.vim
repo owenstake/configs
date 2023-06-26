@@ -1,6 +1,4 @@
-"
-" Before plugin load {{{
-" if no vim-plug, then download
+" Auto Download vim-plug if no vim-plug exists.
 if has('win64') || has('win32')
     if empty(glob('~/vimfiles/autoload/plug.vim'))
         !powershell.exe -Command 
@@ -14,7 +12,6 @@ else
       autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 endif
-" }}}
 
 " Plugins load {{{
 call plug#begin()
@@ -30,7 +27,7 @@ call plug#begin()
     Plug 'plasticboy/vim-markdown'
     Plug 'mzlogin/vim-markdown-toc'
 
-    " HOST CHOME is best for markdown preview in WSL
+    " HOST Browser is best for markdown preview in WSL
     Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 "}}}
 
@@ -38,16 +35,16 @@ call plug#begin()
     Plug 'junegunn/vim-easy-align'
 "}}}
 
-" On-demand loading
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+    " On-demand loading
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'easymotion/vim-easymotion' " for motion <Leader><Leader>w
-Plug 'rhysd/accelerated-jk'
-nmap j <Plug>(accelerated_jk_gj)
-nmap k <Plug>(accelerated_jk_gk)
+    Plug 'easymotion/vim-easymotion' " for motion <Leader><Leader>w
+    Plug 'rhysd/accelerated-jk'
+    nmap j <Plug>(accelerated_jk_gj)
+    nmap k <Plug>(accelerated_jk_gk)
 
 " {{{ basic trick
     Plug 'vim-airline/vim-airline'
@@ -117,11 +114,11 @@ Plug 'glts/vim-radical' " gA decimal:"crd" hex:"crx" octal:"cro" binary:"crb"
     Plug 'honza/vim-snippets' " massive common snippets
 " }}}
 
-Plug 'dhruvasagar/vim-table-mode'
+Plug 'dhruvasagar/vim-table-mode'  " <Leader>tm  for  :TableModeToggle
 Plug 'owenstake/md-img-paste.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'dkarter/bullets.vim'  " <leader>x for checkbox
-Plug 'kshenoy/vim-signature' " bookmarker
+Plug 'dkarter/bullets.vim'         " <leader>x for checkbox
+Plug 'kshenoy/vim-signature'       " bookmarker
 Plug 'vim-latex/vim-latex'
 " Plug 'lyokha/vim-xkbswitch'
 " let g:XkbSwitchEnabled =0
@@ -134,7 +131,8 @@ call plug#end()
 source <sfile>:p/../fzf.vim
 source <sfile>:p/../git.vim
 source <sfile>:p/../coc.vim
-source <sfile>:p/../preview.vim
+source <sfile>:p/../vim-preview.vim
 source <sfile>:p/../leaderf.vim
 source <sfile>:p/../gtags.vim
+source <sfile>:p/../table.vim
 

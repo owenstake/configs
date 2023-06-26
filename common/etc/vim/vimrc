@@ -2,6 +2,8 @@
 
 source <sfile>:p/../basic/basic.vim
 source <sfile>:p/../basic/keymap.vim
+source <sfile>:p/../basic/autocmds.vim
+source <sfile>:p/../basic/markdown.vim
 
 source <sfile>:p/../plugin/plugins.vim
 source <sfile>:p/../basic/colorscheme.vim  " colorscheme after plug loaded
