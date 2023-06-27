@@ -14,18 +14,30 @@ Function EnvSetup() {
     SetEnvVar "WEIYUN"         "D:\owen\weiyun"
 }
 
-Function AddHookToConfigFile($filePath, $msg, $commentMark="#", $encoding="unicode" ) {
-    $MarkLine="$commentMark owen configed"
-    $sourceLine="${msg} ${MarkLine}"
+Function AddHookToConfigFile($filePath, $msg, $leftCommentMark="#", 
+                $rightCommentMark="", $encoding="unicode", $action="add") {
+    $markLine   = "$leftCommentMark owen configed$rightCommentMark"
+    $sourceLine = "${msg} ${markLine}"
     New-Item-IfNoExists $filePath
-    if (!(Select-String -Pattern "$MarkLine" -Path "$filePath")) {
-        fmt_info "owen $filePath is configing"
-        $sourceLine | Out-File -Append -Encoding $encoding $filePath  # _vimrc will be utf8 format
+    $text = Get-Content $filePath
+    if (!($text | Select-String -Pattern "$markLine" -SimpleMatch)) {
+        fmt_info "AddHook: Add to owen $filePath"
+        # $sourceLine | Out-File -Append -Encoding $encoding $filePath  # _vimrc will be utf8 format
+        Switch ($action) {
+        "add"     { $newText = $text + @($sourceLine) }
+        "insert"  { $newText = @($sourceLine) + $text }
+        default   { fmt_error "AddHook: Unknow action $action"; return}
+        }
     } else {
-        fmt_info "update owen config in $filePath"
-        $newText = Get-Content $filePath | Foreach { $_ -replace ".*$MarkLine","$sourceLine" } 
-        $newText | Out-File -Encoding $encoding $filePath
+        fmt_info "AddHook: Update owen config in $filePath"
+        $newText = $text | Foreach { 
+            If ($_.contains("$markLine")) {
+                $_ = $sourceLine
+            };
+            $_
+        }
     }
+    $newText | Out-File -Encoding $encoding $filePath
 }
 
 Function DeployConfigDir($srcDir, $dstDir) {
@@ -77,27 +89,20 @@ Function MakeInstall() {
 
     "--- Deploy Config File ----"
     DeployConfigDir  "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
-    DeployConfigDir  "etc/lf"             "$Env:LF_CONFIG_HOME"
+    # DeployConfigDir  "etc/lf"             "$Env:LF_CONFIG_HOME"
     DeployConfigDir  "etc/lf"             "$Env:LOCALAPPDATA/lf"
     DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"
     DeployConfigDir  "etc/common"         "$Env:OwenInstallDir/etc/common"
+    DeployConfigDir  "etc/typora"         "$Env:APPDATA/Typora/themes/owen"
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
-    AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"'  "utf8"          # vimrc must be utf8 for parsing
+    AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"' ""  "utf8"          # vimrc must be utf8 for parsing
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
+    AddHookToConfigFile "$Env:APPDATA/Typora/themes/github.css" '@import "owen/owen-auto-number.css";'  "/*" "*/"   "utf8" "insert"
 
     # # v2ray
     # $file = Get-ChildItem $env:OwenInstallDir -Recurse "pac.txt"
     # cp $file "D:\owen\scoop\apps\v2rayN\current\guiConfigs\pac.txt"
-
-    # # typora config
-    # $file = Get-ChildItem $env:OwenInstallDir -Recurse "owen-auto-number"
-    # cp $file $Env:APPDATA/Typora/themes/owen-auto-number.css 
-    # $TYPORA_CSS_REF = '@import "owen-auto-number.css";    /* owen config */'
-    # $TYPORA_THEME_FILE = "$Env:APPDATA/Typora/themes/github.css"
-    # AddHookToConfigFile "$TYPORA_THEME_FILE" "$TYPORA_CSS_REF"
-    # sudo sed -i '/owen config/d' $TYPORA_THEME_FILE
-    # sudo sed -i "1s:^:$TYPORA_CSS_REF\n:" $TYPORA_THEME_FILE
 
     "--- Deploy bin files ---"
     DeployConfigDir "bin"  "$Env:OwenInstallDir/bin"

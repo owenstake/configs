@@ -64,6 +64,15 @@ Function bg() {Start-Process -NoNewWindow @args}
 del alias:rm -errorAction silentlyContinue
 Function rm { Remove-Item -v @args }
 
+# app
+Function ty($pathName=".") {
+    $pathName = $pathName.Trim("`"")  #
+    If ( !(Test-Path $pathName )) {
+        throw [System.IO.FileNotFoundException] "$pathName not found."
+    }
+    return typora.exe $pathName
+}
+
 # ls.exe
 # If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
 If  (Test-CommandExists "fd") {

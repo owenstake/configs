@@ -135,4 +135,5 @@ source <sfile>:p/../vim-preview.vim
 source <sfile>:p/../leaderf.vim
 source <sfile>:p/../gtags.vim
 source <sfile>:p/../table.vim
+source <sfile>:p/../misc.vim
 
