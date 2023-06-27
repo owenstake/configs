@@ -14,8 +14,10 @@ Function EnvSetup() {
     SetEnvVar "WEIYUN"         "D:\owen\weiyun"
 }
 
-Function AddHookToConfigFile($filePath, $msg, $leftCommentMark="#", 
-                $rightCommentMark="", $encoding="unicode", $action="add") {
+Function AddHookToConfigFile($filePath, $msg, $commentMark=@("#",""), 
+                $encoding="unicode", $addPosision="-1") {
+    $leftCommentMark  = $commentMark[0]
+    $rightCommentMark = $commentMark[1]
     $markLine   = "$leftCommentMark owen configed$rightCommentMark"
     $sourceLine = "${msg} ${markLine}"
     New-Item-IfNoExists $filePath
@@ -24,8 +26,8 @@ Function AddHookToConfigFile($filePath, $msg, $leftCommentMark="#",
         fmt_info "AddHook: Add to owen $filePath"
         # $sourceLine | Out-File -Append -Encoding $encoding $filePath  # _vimrc will be utf8 format
         Switch ($action) {
-        "add"     { $newText = $text + @($sourceLine) }
-        "insert"  { $newText = @($sourceLine) + $text }
+        -1     { $newText = $text + @($sourceLine) }  # last  line
+        0  { $newText = @($sourceLine) + $text } # first line 
         default   { fmt_error "AddHook: Unknow action $action"; return}
         }
     } else {
@@ -96,9 +98,9 @@ Function MakeInstall() {
     DeployConfigDir  "etc/typora"         "$Env:APPDATA/Typora/themes/owen"
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
-    AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  '"' ""  "utf8"          # vimrc must be utf8 for parsing
+    AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  @('"','') "utf8"          # vimrc must be utf8 for parsing
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
-    AddHookToConfigFile "$Env:APPDATA/Typora/themes/github.css" '@import "owen/owen-auto-number.css";'  "/*" "*/"   "utf8" "insert"
+    AddHookToConfigFile "$Env:APPDATA/Typora/themes/github.css" '@import "owen/owen.css";'  @("/*","*/")   "utf8" -1
 
     # # v2ray
     # $file = Get-ChildItem $env:OwenInstallDir -Recurse "pac.txt"
