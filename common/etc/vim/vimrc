@@ -1,9 +1,9 @@
 " DEBUG for vim :messages
 
-source <sfile>:p/../basic/basic.vim
-source <sfile>:p/../basic/keymap.vim
-source <sfile>:p/../basic/autocmds.vim
-source <sfile>:p/../basic/markdown.vim
+source <sfile>:p:h/basic/basic.vim
+source <sfile>:p:h/basic/keymap.vim
+source <sfile>:p:h/basic/autocmds.vim
+source <sfile>:p:h/basic/markdown.vim
 
-source <sfile>:p/../plugin/plugins.vim
-source <sfile>:p/../basic/colorscheme.vim  " colorscheme after plug loaded
+source <sfile>:p:h/plugin/plugins.vim
+source <sfile>:p:h/basic/colorscheme.vim  " colorscheme after plug loaded

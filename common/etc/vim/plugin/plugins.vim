@@ -128,12 +128,12 @@ call plug#end()
 " }}} end of plugin
 
 " source plugin config file
-source <sfile>:p/../fzf.vim
-source <sfile>:p/../git.vim
-source <sfile>:p/../coc.vim
-source <sfile>:p/../vim-preview.vim
-source <sfile>:p/../leaderf.vim
-source <sfile>:p/../gtags.vim
-source <sfile>:p/../table.vim
-source <sfile>:p/../misc.vim
+source <sfile>:p:h/fzf.vim
+source <sfile>:p:h/git.vim
+source <sfile>:p:h/coc.vim
+source <sfile>:p:h/vim-preview.vim
+source <sfile>:p:h/leaderf.vim
+source <sfile>:p:h/gtags.vim
+source <sfile>:p:h/table.vim
+source <sfile>:p:h/misc.vim
 

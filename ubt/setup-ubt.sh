@@ -76,8 +76,8 @@ main() {
         # nodejs 18 install - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
         curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
         sudo apt install -y nodejs
-        # npm config
-        sudo npm config set registry https://registry.npm.taobao.org  # mirror list
+        # npm config. why sudo for root user? Not necessary
+        npm config set registry http://registry.npmmirror.com  # mirror list
         sudo npm config set update-notifier false  # avoid update notice
         sudo npm config set fund false             # avoid fund notice
         # sudo npm config ls -l  # show all node config key=value

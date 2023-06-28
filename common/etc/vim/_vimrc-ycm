@@ -134,3 +134,5 @@ nmap <leader>ji :YcmCompleter GoToInclude<CR>   "跳转到include、声明或定
 nmap <leader>jm :YcmCompleter GoToImprecise<CR> "跳转到实现
 nmap <leader>jr :YcmCompleter GoToReferences<CR> "跳转到引用
 
+colorscheme monokai
+

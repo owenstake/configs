@@ -135,6 +135,7 @@ Function Scoop-install {
         git config --global --add safe.directory '*'
         git config --global core.autocrlf false
         git config --global core.whitespace cr-at-eol
+	git config --global http.sslVerify false
     }
     # Bucket update. Require git installed.
     $buckets = FormatAppsStr $script:bucketsStr

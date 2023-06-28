@@ -77,15 +77,15 @@ Function ty($pathName=".") {
 # If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
 If  (Test-CommandExists "fd") {
     del alias:ls -errorAction silentlyContinue
-    # Function ls  {fd --max-depth 1 --strip-cwd-prefix --color always @args}
-    # Function la  {ls --hidden @args}
-    # Function ll  {ls -l @args}
-    # Function lla {ls -l --hidden @args}
-
-    Function ls  {ls.exe -h --color @args | echo }
-    Function la  {ls -a @args}
+    Function ls  {fd --max-depth 1 --strip-cwd-prefix --color always @args}
+    Function la  {ls --hidden @args}
     Function ll  {ls -l @args}
-    Function lla {ls -l -a @args}
+    Function lla {ls -l --hidden @args}
+
+    # Function ls  {ls.exe -h --color @args | echo }
+    # Function la  {ls -a @args}
+    # Function ll  {ls -l @args}
+    # Function lla {ls -l -a @args}
 }
 
 # zlua init
