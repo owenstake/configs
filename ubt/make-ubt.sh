@@ -43,7 +43,7 @@ function MakeInstall() {
 
     fmt_info "-- Deploy hooks to config file ---------"
     AddHookToConfigFile   ~/.vimrc       "source $OwenInstallDir/etc/vim/vimrc"   '"'
-    AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zsh.conf"
+    AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
     AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
 
     ### Force echo to zsh tmux config file
