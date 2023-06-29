@@ -15,7 +15,7 @@ Function EnvSetup() {
 }
 
 Function AddHookToConfigFile($filePath, $msg, $commentMark=@("#",""), 
-                $encoding="unicode", $addPosision="-1") {
+                $encoding="unicode", $insertLineNum="-1") {
     $leftCommentMark  = $commentMark[0]
     $rightCommentMark = $commentMark[1]
     $markLine   = "$leftCommentMark owen configed$rightCommentMark"
@@ -25,10 +25,10 @@ Function AddHookToConfigFile($filePath, $msg, $commentMark=@("#",""),
     if (!($text | Select-String -Pattern "$markLine" -SimpleMatch)) {
         fmt_info "AddHook: Add to owen $filePath"
         # $sourceLine | Out-File -Append -Encoding $encoding $filePath  # _vimrc will be utf8 format
-        Switch ($action) {
+        Switch ($insertLineNum) {
         -1     { $newText = $text + @($sourceLine) }  # last  line
         0  { $newText = @($sourceLine) + $text } # first line 
-        default   { fmt_error "AddHook: Unknow action $action"; return}
+        default   { fmt_error "AddHook: Unknow insertLineNum $insertLineNum"; return}
         }
     } else {
         fmt_info "AddHook: Update owen config in $filePath"
@@ -100,7 +100,7 @@ Function MakeInstall() {
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  @('"','') "utf8"          # vimrc must be utf8 for parsing
     AddHookToConfigFile "$Profile"      ". $Env:OwenInstallDir/etc/profile/profile.ps1; If (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }"
-    AddHookToConfigFile "$Env:APPDATA/Typora/themes/github.css" '@import "owen/owen.css";'  @("/*","*/")   "utf8" -1
+    AddHookToConfigFile "$Env:APPDATA/Typora/themes/github.css" '@import "owen/owen.css";'  @("/*","*/")   "utf8" 0
 
     # # v2ray
     # $file = Get-ChildItem $env:OwenInstallDir -Recurse "pac.txt"
