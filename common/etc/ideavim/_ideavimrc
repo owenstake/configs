@@ -1,0 +1,11 @@
+let mapleader=" "
+set easymotion
+
+inoremap jk <esc>
+
+cnoremap vis :source ~/_ideavimrc
+
+noremap gcc :action CommentByLineComment<CR>
+
+noremap <leader>qq  :action FindInPath<CR>
+
