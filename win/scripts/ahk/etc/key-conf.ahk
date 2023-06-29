@@ -47,7 +47,7 @@ global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"    
                             , "KeyMapInNoramalMode" : "FoxitKeymapInNornalMode"    }
     ,"typora.exe"          : {"Shortcut" : "!t"                                    }
     ,"code.exe"            : {"Shortcut" : "!v"                                    }
-    ,"word.exe"            : {"Shortcut" : "!w"                                    }
+    ,"winword.exe"            : {"Shortcut" : "!w"                                    }
     ,"xshell.exe"          : {"Shortcut" : "!x"                                    }
     ,"zotero.exe"          : {"Shortcut" : "!z"                                    }
     ,"msedge.exe"          : {"Shortcut" : "!+c"

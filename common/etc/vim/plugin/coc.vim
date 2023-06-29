@@ -2,6 +2,7 @@
     " COC config {{{
     " if has('nvim')
         let g:coc_global_extensions = [
+          \ 'coc-marketplace',
           \ 'coc-snippets',
           \ 'coc-pairs',
           \ 'coc-eslint',
