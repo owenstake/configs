@@ -8,6 +8,8 @@
           \ 'coc-prettier',
           \ 'coc-json',
           \ 'coc-translator',
+          \ 'coc-pyright',
+          \ 'coc-go',
           \ ]
           " \ 'coc-tsserver',
         " from readme

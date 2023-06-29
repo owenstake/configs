@@ -60,11 +60,6 @@ function MakeInstall() {
     # WSL config.
     if uname -r | grep -qi "microsof"; then
         fmt_info "We are in wsl~~~"
-        # WSL system configs
-        # sudo rsync -r etc/win10/wsl.conf /etc/wsl.conf     # wsl config, i.e. default user and disk priviledge
-        # mkdir -p /mnt/d/.local/ && rsync -r etc/win10/* /mnt/d/.local/win10
-
-        # fmt_info 'Install to windows by "../win/make-win.ps1 install"'
         # powershell.exe -c "../win/make-win.ps1 install"
     fi
 
