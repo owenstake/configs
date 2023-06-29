@@ -1,0 +1,50 @@
+
+# bashrc
+
+```bash
+# User specific aliases and functions
+alias \
+rp='realpath' \
+# zc='z -c' \
+# zb='z -b' \
+# zf='z -I'
+# eval "$(lua /home/network/z/z.lua/z.lua --init bash)"
+export EDITOR=vim
+
+alias \
+ta='tmux a' \
+tn='tmux new -s' \
+tk='tmux kill-session -t' \
+tls='tmux ls' \
+tat='tmux a -t' \
+tmuxc='vim ~/.tmux.conf' \
+tmuxs='tmux source ~/.tmux.conf'
+
+```
+
+# tmux
+
+```bash
+# ~/.tmux.conf
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind - split-window -v
+bind tab last-window
+set -g window-status-current-bg white
+set -g base-index 1
+setw -g pane-base-index 1
+setw -g mode-keys vi
+#setw -g mode-mouse on
+#set -g mouse-select-pane on
+#set -g mouse-resize-pane on
+#set -g mouse-select-window on
+set-option -g default-command "TMOUT=0 bash"
+```
+
+# vimrc
+
+```bash
+inoremap jk <esc>
+```
