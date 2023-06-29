@@ -29,6 +29,7 @@ if uname -r | grep -qi "microsof" ; then
     export CONFIG_INSTALL_DIR_IN_WIN="/mnt/d"
 
     # Xserver connection check. It costs 1s.
+    CheckXserver
 
     alias \
     cmd="$CMD_PATH /C start "                             \
