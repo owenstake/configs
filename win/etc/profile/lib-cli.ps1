@@ -73,6 +73,15 @@ Function ty($pathName=".") {
     return typora.exe $pathName
 }
 
+Function da($pathName=".") {
+    $pathName = $pathName.Trim("`"")  #
+    If ( !(Test-Path $pathName )) {
+        throw [System.IO.FileNotFoundException] "$pathName not found."
+    }
+    Start-Process -NoNewWindow draw.io.exe $pathName
+    return
+}
+
 # ls.exe
 # If ( (Test-CommandExists fd) -and (Test-AppExistsInScoopByCache "fd") ) {
 If  (Test-CommandExists "fd") {

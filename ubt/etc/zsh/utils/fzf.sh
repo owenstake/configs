@@ -40,4 +40,5 @@ function _fzf_complete_ping () {
 }
 
 # FZF - https://github.com/junegunn/fzf#using-git {{{
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && source ~/.fzf/shell/key-bindings.zsh

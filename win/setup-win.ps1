@@ -158,6 +158,7 @@ Function Scoop-install {
 
     # Config Apps
     go env -w GOPROXY=https://goproxy.cn,direct
+    # global config
     If (Test-Path "$env:scoop\apps\global\current\bin") {
         EnvPathInsertAtHeadIfNoExists("$Env:SCOOP\apps\global\current\bin")
     }

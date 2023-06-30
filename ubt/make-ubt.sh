@@ -40,6 +40,7 @@ function MakeInstall() {
     DeployConfigDir   ../common/etc/vim   $OwenInstallDir/etc/vim/
     DeployConfigDir   etc/tmux            $OwenInstallDir/etc/tmux/
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
+    DeployConfigDir   scripts             $OwenInstallDir/scripts
 
     fmt_info "-- Deploy hooks to config file ---------"
     AddHookToConfigFile   ~/.vimrc       "source $OwenInstallDir/etc/vim/vimrc"   '"'

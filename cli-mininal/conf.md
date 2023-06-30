@@ -1,6 +1,11 @@
 
-# bashrc
+# app
+```bash
+yum install fd-find ripgrep tmux
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && cd ~/.fzf && ./install
+```
 
+# bashrc
 ```bash
 # User specific aliases and functions
 alias \
@@ -23,7 +28,6 @@ tmuxs='tmux source ~/.tmux.conf'
 ```
 
 # tmux
-
 ```bash
 # ~/.tmux.conf
 bind h select-pane -L
@@ -32,19 +36,20 @@ bind k select-pane -U
 bind l select-pane -R
 bind - split-window -v
 bind tab last-window
-set -g window-status-current-bg white
+# set -g window-status-current-bg white   # tmux1.8
+set-window-option -g window-status-current-style fg=brightred,bg=colour236,bright # tmux 3.2a
 set -g base-index 1
+set -g mouse on
 setw -g pane-base-index 1
 setw -g mode-keys vi
+set-option -g default-command "TMOUT=0 bash"
 #setw -g mode-mouse on
 #set -g mouse-select-pane on
 #set -g mouse-resize-pane on
 #set -g mouse-select-window on
-set-option -g default-command "TMOUT=0 bash"
 ```
 
 # vimrc
-
 ```bash
 inoremap jk <esc>
 ```

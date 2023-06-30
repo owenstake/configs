@@ -46,7 +46,7 @@ main() {
         # apps. rank.
         apps1="newsboat ranger global python3-pip universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
-            openssh-server tree bat "
+            openssh-server tree bat trash-cli"
         apps2=" poppler-utils "
         sudo apt install -y $apps1
         sudo apt install -y $apps2
