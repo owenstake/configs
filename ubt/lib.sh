@@ -22,3 +22,49 @@ setup_color() {
     FMT_BOLD=$(printf '\033[1m')
     FMT_RESET=$(printf '\033[0m')
 }
+
+
+if uname -r | grep -qi "microsof" ; then
+    export OwenInstallDirInWin=$(wslpath -ua "$(cmd.exe /c echo %OwenInstallDir% | tr -d '\r')")
+    function ExecPshFile() {
+        local filePathInWinForm=$(wslpath -ma $foundFile)
+        powershell.exe -File $filePathInWinForm ${@:2:$#}
+    }
+    function ExecOwenPshFile() {
+        SearchAndExecFileWithCallback "ExecPshFile" $OwenInstallDirInWin ${@:2:$#}
+        return $?
+    }
+fi
+
+function SearchAndExecFileWithCallback() {
+    local process="${1:-}"
+    local dirname=$(realpath $2)
+    local fileName=$3
+
+    if [[ -z $dirname ]] ; then
+        echo "Env dirname $dirname is null"
+        return -1
+    fi
+
+    local foundFile=$(find $dirname -name $fileName)
+    if [[ 0 == $? ]] ; then
+        if [[ -z $foundFile ]] ; then
+            echo "No found file $fileName"
+        else
+            $process $foundFile ${@:4:$#}
+            return $?
+        fi
+    else
+        echo "Search failed"
+    fi
+}
+
+function SearchAndExecFile() {
+    SearchAndExecFileWithCallback "" $@
+}
+
+function ExecOwenFile() {
+    SearchAndExecFileWithCallback "" $OwenInstallDir $@
+    return $?
+}
+

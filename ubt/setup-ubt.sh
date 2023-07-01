@@ -66,6 +66,7 @@ main() {
         # python3 - upgrade pip
         python3 -m pip install --upgrade setuptools
         python3 -m pip install asciinema
+        python3 -m pip install sshconf
     fi
 
     # Proxy for github

@@ -11,7 +11,6 @@ if uname -r | grep -qi "microsof" ; then
     source $zshroot/lib/alias.sh
     # Xserver connection check. It costs 1s.
     CheckXserver
-    ExecOwenFile "sshconfig.py"
 
     # Network - init when WSL starting {{{
     local linux_wsl_started_flag=/tmp/.wsl_linux_started

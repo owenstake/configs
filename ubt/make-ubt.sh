@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 source lib.sh
+
+ScriptDir=$(realpath $(dirname $0))
+
 export OwenInstallDir="$HOME/.dotfiles"  # used in ranger
 
 function AddHookToConfigFile() {
@@ -47,6 +50,16 @@ function MakeInstall() {
     AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
     AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
 
+    if uname -r | grep -qi "microsof" ; then
+        fmt_info "Generate ssh config and install"
+        jsonConfig=$(find .. -name "proxy.json" -exec realpath {} \;)
+        if [[ -z $jsonConfig ]] ; then
+            fmt_error "No found file proxy.json"
+        else
+            SearchAndExecFile ".." "sshconfig.py" $jsonConfig
+        fi
+    fi
+
     ### Force echo to zsh tmux config file
     # if [[ $1 = "f" ]]; then
     #     _owen_force_update=1
@@ -70,20 +83,20 @@ function main() {
     action=${1:-"install"}
     case $action in  
         install)  
-            echo "Installing ~~"  
+            fmt_info "Installing ~~"  
             MakeInstall
             ;;  
         uninstall)  
-            echo "Uninstalling ~~"  
+            fmt_info "Uninstalling ~~"  
             ;;  
         clean)  
-            echo "Cleaning ~~"
+            fmt_info "Cleaning ~~"
             ;;
         all)  
-            echo "Cleaning ~~"
+            fmt_info "Cleaning ~~"
             ;;
         *)
-            echo "unknown action $1"
+            fmt_error "unknown action $1"
     esac
 }
 
