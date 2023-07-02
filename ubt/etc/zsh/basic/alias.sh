@@ -13,7 +13,7 @@
     wtq='curl -s "wttr.in/~Quan+Zhou+Fujian?m" | less'    \
     wtx='curl -s "wttr.in/~xiamen+Fujian?m" | less'       \
     lz='lazygit'                                          \
-    nb='newsboat -ru ~/.local/etc/newsboat/rss_links.txt' \
+    nb='newsboat -ru $OwenInstallDir/etc/newsboat/rss_links.txt' \
     pg='grep -P'                                          \
     pac="vim ~/.local/etc/pac.txt"                        \
     vic='vim ~/.vimrc'                                    \

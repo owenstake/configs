@@ -35,7 +35,6 @@ function MakeInstall() {
     ## override config
     # mkdir -p ~/.local $$ mkdir -p ~/.config
     DeployConfigDir   etc/ranger     $HOME/.config/ranger/
-    DeployConfigDir   etc/newsboat   $HOME/.config/newsboat/
     DeployConfigDir   etc/fzf        $HOME/.config/fzf/
 
     # local config
@@ -43,6 +42,7 @@ function MakeInstall() {
     DeployConfigDir   ../common/etc/vim   $OwenInstallDir/etc/vim/
     DeployConfigDir   etc/tmux            $OwenInstallDir/etc/tmux/
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
+    DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
     DeployConfigDir   scripts             $OwenInstallDir/scripts
 
     fmt_info "-- Deploy hooks to config file ---------"
@@ -50,7 +50,7 @@ function MakeInstall() {
     AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
     AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
 
-    if uname -r | grep -qi "microsof" ; then
+    if [[ $(uname -a) == *WSL* ]] ; then
         fmt_info "Generate ssh config and install"
         jsonConfig=$(find .. -name "proxy.json" -exec realpath {} \;)
         if [[ -z $jsonConfig ]] ; then
@@ -72,7 +72,7 @@ function MakeInstall() {
     # fi
 
     # WSL config.
-    if uname -r | grep -qi "microsof"; then
+    if [[ $(uname -a) == *WSL* ]]; then
         fmt_info "We are in wsl~~~"
         # powershell.exe -c "../win/make-win.ps1 install"
     fi

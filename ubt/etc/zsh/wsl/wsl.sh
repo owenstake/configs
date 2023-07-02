@@ -2,7 +2,7 @@
 # Fix xclip, so we can copy between win10 and linux.
 # Xclip depends on x11 on linux and Xserver on win10.
 # To make xclip works on vim, we also need install vim-gtk
-if uname -r | grep -qi "microsof" ; then
+if [[ $(uname -a) == *WSL* ]] ; then
     fmt_info "We are in wsl~~~"
 
     zshroot=$(dirname $0)

@@ -24,8 +24,9 @@ setup_color() {
 }
 
 
-if uname -r | grep -qi "microsof" ; then
-    export OwenInstallDirInWin=$(wslpath -ua "$(cmd.exe /c echo %OwenInstallDir% | tr -d '\r')")
+if [[ $(uname -a) == *WSL* ]] ; then
+    export OwenInstallDirInWin=${OwenInstallDirInWin:-$(wslpath -ua \
+        $(powershell.exe -c '$env:OwenInstallDir' | tr -d '\r'))}
     function ExecPshFile() {
         local filePathInWinForm=$(wslpath -ma $foundFile)
         powershell.exe -File $filePathInWinForm ${@:2:$#}

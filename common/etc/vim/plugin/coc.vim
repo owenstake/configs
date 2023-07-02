@@ -11,6 +11,7 @@
           \ 'coc-translator',
           \ 'coc-pyright',
           \ 'coc-go',
+          \ 'coc-clangd',
           \ ]
           " \ 'coc-tsserver',
         " from readme

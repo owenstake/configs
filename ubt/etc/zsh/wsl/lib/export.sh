@@ -18,5 +18,5 @@ export all_proxy=${all_proxy:-http://$WSL_GATEWAY:10809}
 # export DISPLAY="$WINIP:0.0"              # For X11 server, so we can xclip.
 export DISPLAY=":0.0"   # For xwayland server. It is unix socket.
 export CONFIG_INSTALL_DIR_IN_WSL=
-export OwenInstallDirInWin=$(wslpath -ua "$(cmd.exe /c echo %OwenInstallDir% | tr -d '\r')")
+# export OwenInstallDirInWin=$(wslpath -ua "$(cmd.exe /c echo %OwenInstallDir% | tr -d '\r')")
 export PshDir='D:\.dotfiles\scripts\psh\'

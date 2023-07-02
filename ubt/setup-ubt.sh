@@ -44,7 +44,7 @@ main() {
         sudo apt update
         sudo apt upgrade -y
         # apps. rank.
-        apps1="newsboat ranger global python3-pip universal-ctags vim-gtk \
+        apps1="newsboat ranger global python3-pip clangd universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
             openssh-server tree bat trash-cli"
         apps2=" poppler-utils "
@@ -168,7 +168,7 @@ main() {
     if ! command_exists wd; then
         (
         python3 -m pip install bs4 lxml   # for wudao-dict
-        mkdir -p ~/.local/lib && cd $_
+        mkdir -p $OwenInstallDir/lib && cd $_
         git_clone https://github.com/chestnutheng/wudao-dict
         cd ./wudao-dict/wudao-dict
         sudo bash setup.sh #或者sudo ./setup.sh
