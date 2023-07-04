@@ -5,7 +5,7 @@ Function Get-IniContent ($filePath) {
     $ini = @{}
     switch -regex -file $FilePath
     {
-        "^\[(.+)\]" # Section
+        "^.?\[(.+)\]" # Section
         {
             $section = $matches[1]
             $ini[$section] = @{}
@@ -22,6 +22,12 @@ Function Get-IniContent ($filePath) {
         {
             $name,$value = $matches[1..2]
             $ini[$section][$name] = $value
+        }
+        "\s*" {}  # skip empty line
+        default
+        {
+            write-host $PSitem
+            write-host "No matched"
         }
     }
     return $ini
