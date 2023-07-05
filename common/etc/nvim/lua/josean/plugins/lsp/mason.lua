@@ -24,6 +24,9 @@ mason_lspconfig.setup({
   ensure_installed = {
     "tsserver",
     "html",
+    "pyright",
+    "clangd",
+    "gopls",
     "cssls",
     "tailwindcss",
     "lua_ls",
