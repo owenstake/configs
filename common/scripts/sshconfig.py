@@ -9,8 +9,18 @@ import os
 import json
 from pathlib import Path
 
-proxyJsonFile=sys.argv[1]
+if len(sys.argv) >= 2:
+    proxyJsonFile=sys.argv[1]
+    if os.path.exists(proxyJsonFile):
+        print(f"Config file is {sys.argv[1]}" )
+    else:
+        print(f"{proxyJsonFile} is no exists!" )
+        exit(-1)
+else:
+    print("Please specify a proxy config json file.")
+    exit(-1)
 
+# Opening JSON file
 sshConfigFile=expanduser("~/.ssh/config")
 
 # mkdir -p
@@ -24,19 +34,34 @@ sshConfig = read_ssh_config(sshConfigFile)
 gateways = netifaces.gateways()
 default_gateway = gateways['default'][netifaces.AF_INET][0]
 
-# Opening JSON file
-f = open(proxyJsonFile)
-proxyConfig = json.load(f)
-for key,value in proxyConfig.items():
-    host = value["ProxyIp"].replace(";"," ")
-    if host in sshConfig.hosts():
-        print("Found {} then update.".format(value["ProxyIp"]))
+with open(proxyJsonFile) as f:
+    proxyConfig = json.load(f)
+    for key, value in proxyConfig.items():
+        host = value["ProxyIp"].replace(";", " ").strip()
         pcmd = "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"])
-        sshConfig.set(host, ProxyCommand=pcmd)
-    else:
-        print("No found {} then add it.".format(value["ProxyIp"]))
-        pcmd = "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"])
-        sshConfig.add(host,ProxyCommand=pcmd)
+        rfwd1 = "localhost:3322 localhost:22"
+        rfwd2 = "RemoteForward localhost:10809 {}:10809".format(default_gateway)
+        k = {
+                'ProxyCommand': "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"]), 
+                "RemoteForward localhost:3322 localhost:22" : '',
+                "RemoteForward localhost:10809 {}:10809".format(default_gateway) : '',
+                }
+        if host in sshConfig.hosts():
+            print("Found {} then update.".format(host))
+            sshConfig.remove(host)
+            sshConfig.add(host,**k)
+            # sshConfig.set(host, ProxyCommand=pcmd)
+            # sshConfig.set(host, RemoteForward=rfwd1)
+            # sshConfig.set(host, **{rfwd2: ''})
+        else:
+            print("No found {} then add it.".format(host))
+            sshConfig.add(host,**k)
+            # sshConfig.add(host,ProxyCommand=pcmd)
+            # sshConfig.add(host,ProxyCommand=pcmd)
+            # sshConfig.add(host,RemoteForward=rfwd1)
+            # sshConfig.add(host, **{rfwd2: ''})
+
+        # for key in sshConfig.hosts():
+        #     print(key)
 
 sshConfig.write(sshConfigFile)
-

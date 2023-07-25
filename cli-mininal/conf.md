@@ -1,9 +1,13 @@
 
 # app
+
+## fzf
 ```bash
 yum install fd-find ripgrep tmux
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && cd ~/.fzf && ./install
 ```
+
+
 
 # bashrc
 ```bash
@@ -40,9 +44,15 @@ bind tab last-window
 set-window-option -g window-status-current-style fg=brightred,bg=colour236,bright # tmux 3.2a
 set -g base-index 1
 set -g mouse on
+# set -g mode-mouse on         # tmux1.8
+# set -g mouse-resize-pane on  # tmux1.8
+# set -g mouse-select-pane on  # tmux1.8
+# set -g mouse-select-window   # tmux1.8on
+# set -g mode-mouse on         # tmux1.8
 setw -g pane-base-index 1
 setw -g mode-keys vi
 set-option -g default-command "TMOUT=0 bash"
+set-option -g allow-rename off
 #setw -g mode-mouse on
 #set -g mouse-select-pane on
 #set -g mouse-resize-pane on

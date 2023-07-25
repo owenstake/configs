@@ -114,12 +114,14 @@ Plug 'glts/vim-radical' " gA decimal:"crd" hex:"crx" octal:"cro" binary:"crb"
     Plug 'honza/vim-snippets' " massive common snippets
 " }}}
 
-Plug 'dhruvasagar/vim-table-mode'  " <Leader>tm  for  :TableModeToggle
-Plug 'owenstake/md-img-paste.vim'
-Plug 'junegunn/goyo.vim'
-Plug 'dkarter/bullets.vim'         " <leader>x for checkbox
-Plug 'kshenoy/vim-signature'       " bookmarker
-Plug 'vim-latex/vim-latex'
+    Plug 'dhruvasagar/vim-table-mode'  " <Leader>tm  for  :TableModeToggle
+    Plug 'owenstake/md-img-paste.vim'
+    Plug 'junegunn/goyo.vim'
+    Plug 'dkarter/bullets.vim'         " <leader>x for checkbox
+    Plug 'kshenoy/vim-signature'       " bookmarker
+    Plug 'vim-latex/vim-latex'
+    Plug 'vim-scripts/DrawIt'
+    Plug 'preservim/tagbar'
 " Plug 'lyokha/vim-xkbswitch'
 " let g:XkbSwitchEnabled =0
 

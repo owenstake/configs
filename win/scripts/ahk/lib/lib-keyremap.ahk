@@ -243,6 +243,9 @@ KeyMapHandler() {
     return
 }
 
+WinActive2(pattern) {
+    return WinActive(pattern)
+}
 
 WinActiveAndInNormalMode(pattern) {
     return WinActive(pattern) && InNormalMode()

@@ -27,7 +27,7 @@ global KeySendMap := { "!j"  : "{Down}"
     , "!+k" : "^{Tab}"  }
 
 ; global HotkeyAppMap :=
-global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"       }
+global AppsConf := { "hh.exe":{"Shortcut":"!+a","ExePath":"C:\Windows\hh.exe"       }
     ,"chrome.exe"          : {"Shortcut" : "!c"
                             , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"    }
     ,"Draw.io.exe"         : {"Shortcut" : "!g"                                    }
@@ -45,7 +45,7 @@ global AppsConf := { "hh.exe":{"Shortcut":"!a","ExePath":"C:\Windows\hh.exe"    
     ,"FoxitPDFReader.exe"  : {"Shortcut" : "!s"
                             , "DefaultControl" : "FoxitDocWnd1"
                             , "KeyMapInNoramalMode" : "FoxitKeymapInNornalMode"    }
-    ,"typora.exe"          : {"Shortcut" : "!t"                                    }
+    ,"typora.exe"          : {"Shortcut" : "!a"                                    }
     ,"code.exe"            : {"Shortcut" : "!v"                                    }
     ,"winword.exe"            : {"Shortcut" : "!w"                                    }
     ,"xshell.exe"          : {"Shortcut" : "!x"                                    }
@@ -79,6 +79,7 @@ global FoxitKeymapInNornalMode := { "EditKey" : { "t"  : {"Action":"{Alt}rd2", "
         , "o"  : {"Action":"{Alt}re1a" , "help":"Rectangle"             }
         , "q"  : {"Action":"{Esc}"     , "help":""                      }
         , "s"  : {"Action":"+s"        , "help":"delete line"           }
+        , "v"  : {"Action":"{Alt}ha2a" , "help":"select"           }
         , "w"  : {"Action":"^u"        , "help":"underline"             } }
     , "CustomHandler" : "FoxitCustomKeymapHandler" }
 

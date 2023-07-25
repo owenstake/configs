@@ -40,6 +40,7 @@ function MakeInstall() {
     # local config
     # DeployConfigDir   ../common/etc/vim ~/.config/vim
     DeployConfigDir   ../common/etc/vim   $OwenInstallDir/etc/vim/
+    cp ../common/etc/init-in-one.lua      ~/.config/nvim/init.lua
     DeployConfigDir   etc/tmux            $OwenInstallDir/etc/tmux/
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
     DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/

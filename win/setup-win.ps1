@@ -145,6 +145,7 @@ Function Scoop-install {
             scoop bucket rm  $b
             scoop bucket add $b "https://gitee.com/scoop-bucket/$b.git"
         }
+        scoop bucket add scoopet https://github.com/ivaquero/scoopet
     }
     # Install old version App
     if (!(Test-ScoopApp("psfzf"))) {

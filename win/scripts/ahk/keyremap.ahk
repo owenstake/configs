@@ -1,7 +1,7 @@
 #SingleInstance force
-#MaxHotkeysPerInterval 200
 #NoEnv
-#MenuMaskKey vkE8
+; #MaxHotkeysPerInterval 200
+; #MenuMaskKey vkE8
 
 ; #Include %A_ScriptDir%\lib
 #include %A_LineFile%\..\lib\functionStr.ahk
@@ -19,6 +19,9 @@ SendMode Input
 For key, value in KeySendMap {
     Hotkey, %key%, DoKeySend
 }
+
+global CtrlMGroup
+global NornalModeGroup
 
 ; App keymap setting
 For appExe, conf in AppsConf {
@@ -55,13 +58,13 @@ For appExe, conf in AppsConf {
     ; Control M
     If (conf["DefaultControl"]) {
         GroupAdd, CtrlMGroup, %appMatcher%
-        Hotkey, If, WinActive("ahk_group CtrlMGroup")
+        Hotkey, If, WinActive2("ahk_group CtrlMGroup")
             Hotkey, ^m, CtrlMHandler
         Hotkey, If
     }
 }
 
-#If, WinActive("ahk_group CtrlMGroup")
+#If, WinActive2("ahk_group CtrlMGroup")
 #If
 
 ; Normal mode
@@ -77,8 +80,10 @@ For appExe, conf in AppsConf {
 	WheelDown::Send {Volume_Down}
 #If
 
+#IfWinActive
 ; hotkey
 CapsLock::RCtrl
 RAlt::Esc
 Launch_Mail::LongPressedSpeedUp("Volume_Down")
 Browser_Home::LongPressedSpeedUp("Volume_Up")
+

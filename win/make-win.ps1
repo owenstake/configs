@@ -91,6 +91,8 @@ Function MakeInstall() {
 
     "--- Deploy Config File ----"
     DeployConfigDir  "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
+    # DeployConfigDir  "../common/etc/nvim" "$Env:LOCALAPPDATA/nvim"
+    cp "../common/etc/init-in-one.lua" "$Env:LOCALAPPDATA/nvim/init.lua"
     # DeployConfigDir  "etc/lf"             "$Env:LF_CONFIG_HOME"
     DeployConfigDir  "etc/lf"             "$Env:LOCALAPPDATA/lf"
     DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"

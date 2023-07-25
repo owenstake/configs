@@ -107,6 +107,8 @@ return packer.startup(function(use)
   -- git integration
   use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
 
+  use("folke/which-key.nvim") -- bridges gap b/w mason & null-ls
+
   if packer_bootstrap then
     require("packer").sync()
   end

@@ -1,5 +1,7 @@
 
-" Basic Key Map {{{
+vnoremap > >gv
+vnoremap < <gv
+
 " nnoremap <C-j> :m .+0<CR>
 noremap <C-j> a<esc>
 inoremap <C-j> <esc>a
