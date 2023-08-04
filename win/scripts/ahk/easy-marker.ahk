@@ -60,13 +60,19 @@ global appsConfig :=
 
 figureCaptionMarkdownStr =
     ( LTrim
-    `<div><center style="font-size:15px;color:#999"><a name="fig:<++>">
-    `Fig. <>++>
+    `<div><center style="-typora-class:FigCnt;font-size:15px;color:#999">
+    `<a name="fig:<++>"><>++>
     `</a></center></div>
     `<++>
     )
 
-
+tableCaptionMarkdownStr =
+    ( LTrim
+    `<div><center style="-typora-class:TableCnt;font-size:15px;color:#999">
+    `<a name="tbl:<++>">  <>content++>
+    `</a></center></div>
+    `<++>
+    )
 
 markerMarkdown1 :=
     ( LTrim Join
@@ -90,7 +96,10 @@ markerMarkdown1 :=
     "highlight"      : "==<++>==<++>"                                         ,
     "backquote"      : "``<++>``<++>"                                         ,
     "figure"         : "![<title++>](<path++>) <++>"                          ,
-    "figureCaption"  : figureCaptionMarkdownStr
+    "figureCaption"  : figureCaptionMarkdownStr                 ,
+    "tableCaption"   : tableCaptionMarkdownStr,
+    "figureRef" : "<a href=#fig:<++>>fig</a> <++>" ,
+    "tableRef" : "<a href=#tbl:<++> <++>"
     }
     )
 
@@ -339,9 +348,11 @@ hotStringMap2 :=
     ( Join
     {
     ":X*?:;aa"   : {"Action":"hyperlink"                 , "HelpMsg":""} ,
-    ":X*:;ap"    : {"Action":"figure"                    , "HelpMsg":""} ,
+    ":X*:;af"    : {"Action":"figureRef"                    , "HelpMsg":""} ,
+    ":X*:;at"    : {"Action":"tableRef"                    , "HelpMsg":""} ,
 
-    ":X*:;ca"   : {"Action":"figureCaption"             , "HelpMsg":""} ,
+    ":X*:;cf"   : {"Action":"figureCaption"             , "HelpMsg":""} ,
+    ":X*:;ct"   : {"Action":"tableCaption"             , "HelpMsg":""} ,
     ":X*?:;dd"  : {"Action":"cutLine"                  , "HelpMsg":""} ,
     ":X*?:;pp"  : {"Action":"pasteLine"                  , "HelpMsg":""} ,
     ":X*?:;xx"  : {"Action":"checkbox"                  , "HelpMsg":""} ,

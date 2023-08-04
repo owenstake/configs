@@ -137,9 +137,35 @@ Function AddRule($xml, $proxyId, $proxyIp, $name) {
     $ruleList.InsertAfter($newRuleNode, $ruleList.FirstChild) | Out-Null
 }
 
+Function Get-AppExe($appExe) {
+    # exe path
+    $appName = $appExe -Replace "\.exe",""
+    $lnks    = Get-ChildItem -R *.lnk -Path `
+                "$env:ALLUSERSPROFILE\Microsoft\Windows\Start Menu\Programs" ,`
+                "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\"
+
+    $sh = New-Object -ComObject WScript.Shell
+    Foreach ($l in $lnks) {
+        If ($l.Basename -eq $appName) {
+            return  $l.FullName
+        }
+        $tp = $sh.CreateShortcut($l.FullName).TargetPath
+        If (($tp) -and (Test-Path $tp -PathType leaf)) {
+            if ($(Get-Item $tp).Basename -eq $appName) {
+                # echo $tp
+                return  $tp
+            }
+        }
+    }
+    write-error "no match in Get-AppExe in powershell. app name is $appExe."
+    return
+}
+
 Function UpdateProxifier($config) {
     $proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
     $xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
+	$profixierExe = $(Get-AppExe proxifier)
+	echo $profixierExe
 
     $id        = $config["Port"]
     $port      = $config["Port"]
@@ -149,7 +175,7 @@ Function UpdateProxifier($config) {
     AddRule   $xml  "$id"  "$proxyIp"  "$proxyInfo"
     $xml.Save($proxifierProfileFile)
 
-    & "$Env:SCOOP/apps/proxifier/current/Proxifier.exe" $proxifierProfileFile silent-load
+    & $profixierExe $proxifierProfileFile silent-load
 }
 
 Function UpdateXshell($config, $XshellconfigFile) {

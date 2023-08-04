@@ -108,6 +108,13 @@ Function MakeInstall() {
     # $file = Get-ChildItem $env:OwenInstallDir -Recurse "pac.txt"
     # cp $file "D:\owen\scoop\apps\v2rayN\current\guiConfigs\pac.txt"
 
+    "--- Crack typora ---"
+    if ($file = Get-ChildItem -Recurse "winmm.dll") {
+		if (($tyExe = $(Get-AppExe 'typora')) -and ($tyDir = $(Get-Item $tyExe).DirectoryName)) {
+			cp -Force $file $tyDir
+		}
+	}
+
     "--- Deploy bin files ---"
     DeployConfigDir "bin"  "$Env:OwenInstallDir/bin"
 

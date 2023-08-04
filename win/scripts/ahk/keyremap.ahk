@@ -4,9 +4,9 @@
 ; #MenuMaskKey vkE8
 
 ; #Include %A_ScriptDir%\lib
+#include %A_LineFile%\..\etc\key-conf.ahk
 #include %A_LineFile%\..\lib\functionStr.ahk
 #include %A_LineFile%\..\lib\lib-keyremap.ahk
-#include %A_LineFile%\..\etc\key-conf.ahk
 #include *i %A_LineFile%\..\custom.ahk
 
 SendMode Input
@@ -64,6 +64,12 @@ For appExe, conf in AppsConf {
     }
 }
 
+; hotkey
+Launch_Mail::LongPressedSpeedUp("Volume_Down")
+Browser_Home::LongPressedSpeedUp("Volume_Up")
+CapsLock::RCtrl
+RAlt::Esc
+
 #If, WinActive2("ahk_group CtrlMGroup")
 #If
 
@@ -79,11 +85,4 @@ For appExe, conf in AppsConf {
 	WheelUp::Send  {Volume_Up}     ; Wheel over taskbar: increase/decrease volume.  One space after send is important
 	WheelDown::Send {Volume_Down}
 #If
-
-#IfWinActive
-; hotkey
-CapsLock::RCtrl
-RAlt::Esc
-Launch_Mail::LongPressedSpeedUp("Volume_Down")
-Browser_Home::LongPressedSpeedUp("Volume_Up")
 

@@ -116,10 +116,11 @@ Function Get-AppExe($appExe) {
 
     $sh = New-Object -ComObject WScript.Shell
     Foreach ($l in $lnks) {
-        If ($l.Basename -eq $appName) {
-            return  $l.FullName
-        }
         $tp = $sh.CreateShortcut($l.FullName).TargetPath
+        If ($l.Basename -eq $appName) {
+            # return  $l.FullName
+            return  $tp   # return .exe path not .lnk
+        }
         If (($tp) -and (Test-Path $tp -PathType leaf)) {
             if ($(Get-Item $tp).Basename -eq $appName) {
                 # echo $tp
@@ -127,7 +128,7 @@ Function Get-AppExe($appExe) {
             }
         }
     }
-    write-error "no match in Get-AppExe in powershell. app name is $appExe."
+    Write-Error "no match in Get-AppExe in powershell. app name is $appExe."
     return
 }
 
