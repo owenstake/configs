@@ -5,13 +5,11 @@ h1, h2, h3, h4, strong {
 
 /* 添加自动序号样式 */
 #write {  /* 全局初始化 */
-  counter-reset: h1cnt figCnt;
-  /* counter-reset: h1; */
-  /* counter-reset: figCnt; */
+  counter-reset: h1cnt;
 }
 
 h1 {
-  counter-reset: h2cnt;
+  counter-reset: h2cnt figCnt;
 }
 
 h2 {
@@ -30,22 +28,34 @@ h5 {
   counter-reset: h6cnt;
 }
 
-/* figure auto number */
-#write [style*="-typora-class:FigCnt"]:before {
-    counter-increment: figCnt;
-    content: "Fig "counter(h1cnt)"."counter(figCnt)":";
-}
 
-#write p:before {
-    counter-increment: figCnt;
-    content: attr(data-before);
+/* figure/table auto number */
+/* #write [style*="-typora-class:FigCnt"]:before { */
+#write div:has(a[name^="fig"]) { 
+    text-align:center;
+    font-size:15px;
+    color:#999;
 }
-
+#write div:has(a[name^="table"]) {
+    text-align:center;
+    font-size:15px;
+    color:#999;
+}
+#write div>a[name^="fig"]:before {
+    counter-increment: figCnt;
+    content: "Fig-"counter(h1cnt)"."counter(figCnt)" ";
+}
 /* table auto number */
-#write [style*="-typora-class:TableCnt"]:before {
+/* #write [style*="-typora-class:TableCnt"]:before { */
+#write div>a[name^="table:"]:before {
     counter-increment: TableCnt;
-    content: "Table "counter(h1cnt)"."counter(TableCnt)":";
+    content: "Table-"counter(h1cnt)"."counter(TableCnt)" ";
 }
+
+/* figure reference */
+/* a::before { */
+/*     content:var(--bvar); */
+/* } */
 
 /* header auto number */
 #write h1:before {

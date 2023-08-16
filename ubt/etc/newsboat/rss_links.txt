@@ -28,6 +28,8 @@ https://rsshub.app/zhihu/topic/19553101 "~Elon Musk"
 https://rsshub.app/zhihu/topic/19922319 "~Boston Dynamics"
 https://rsshub.app/zhihu/topic/19570193 "~Vim"
 
+https://rsshub.app/twitter/user/whyyoutouzhele "~"
+
 https://rsshub.app/bilibili/user/dynamic/21837784 "~阿斗归来了"
 
 https://rsshub.app/sspai/index "~少数派"

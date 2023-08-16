@@ -111,7 +111,7 @@ Function MakeInstall() {
     "--- Crack typora ---"
     if ($file = Get-ChildItem -Recurse "winmm.dll") {
 		if (($tyExe = $(Get-AppExe 'typora')) -and ($tyDir = $(Get-Item $tyExe).DirectoryName)) {
-			cp -Force $file $tyDir
+			cp $file $tyDir -errorAction silentlyContinue
 		}
 	}
 

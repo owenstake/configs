@@ -217,7 +217,7 @@ KeyMapHandler() {
     map        := %mapVarName%
     key        := A_ThisHotkey
     ; move keymap
-    If (action := map["MoveKey"][key]["Action"]) {
+    If (!GetKeyState("CapsLock", "P") && action := map["MoveKey"][key]["Action"]) {
         zFuncCallPattern := "^(\w+)\((.*)\)$"
         If (IsFuncCallStr(action)) {
             ret := ParseFuncAndEval(action)
@@ -239,7 +239,8 @@ KeyMapHandler() {
     If (map["CustomHandler"]) {
         return
     }
-    send % key
+
+    sendinput % key
     return
 }
 
@@ -248,11 +249,11 @@ WinActive2(pattern) {
 }
 
 WinActiveAndInNormalMode(pattern) {
-    return WinActive(pattern) && InNormalMode()
+    return WinActive(pattern) && InNormalMode() && !GetKeyState("CapsLock", "P")  ; capslock is remaped
 }
 
 WinActiveAndInInsertMode(pattern) {
-    return WinActive(pattern) && !InNormalMode()
+    return WinActive(pattern) && !InNormalMode() && !GetKeyState("CapsLock", "P")  ; capslock is remaped
 }
 
 EnterNormalMode() {

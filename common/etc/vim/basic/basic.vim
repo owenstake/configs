@@ -6,6 +6,8 @@ set number                " show line number
 set cc=80                 " set max charactors per line
 set smartcase ignorecase  " set for case search
                           " set relativenumber
+set paste    " raw paste
+
 syntax on
 filetype plugin indent on
 filetype plugin on
