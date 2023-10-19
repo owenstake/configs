@@ -1,0 +1,154 @@
+
+h1, h2, h3, h4, strong {
+  font-weight: 600;
+}
+
+/* 添加自动序号样式 */
+#write {  /* 全局初始化 */
+  counter-reset: h1cnt;
+}
+
+h1 {
+  counter-reset: h2cnt figCnt;
+}
+
+h2 {
+  counter-reset: h3cnt;
+}
+
+h3 {
+  counter-reset: h4cnt;
+}
+
+h4 {
+  counter-reset: h5cnt;
+}
+
+h5 {
+  counter-reset: h6cnt;
+}
+
+
+/* figure/table auto number */
+/* #write [style*="-typora-class:FigCnt"]:before { */
+#write div:has(a[name^="fig"]) { 
+    text-align:center;
+    font-size:15px;
+    color:#999;
+}
+#write div:has(a[name^="table"]) {
+    text-align:center;
+    font-size:15px;
+    color:#999;
+}
+#write div>a[name^="fig"]:before {
+    counter-increment: figCnt;
+    content: "Fig-"counter(h1cnt)"."counter(figCnt)" ";
+}
+/* table auto number */
+/* #write [style*="-typora-class:TableCnt"]:before { */
+#write div>a[name^="table:"]:before {
+    counter-increment: TableCnt;
+    content: "Table-"counter(h1cnt)"."counter(TableCnt)" ";
+}
+
+#write ul[name^="info"] {
+    background-color:#EEFFFF;
+    border-color:#88bbFF;
+    border-radius: 4px;
+    border-width:2px;
+    border-style:solid;
+    margin:0em;
+    list-style-type:"ℹ";
+    list-style-position:outside;
+    padding-left:1.8em;
+}
+
+#write ul[name^="info"]>li {
+    padding-left:0.3em;
+}
+
+#write ul[name^="warn"] {
+    background-color:#FFFFCC;
+    border-color:#FFCC66;
+    border-radius: 4px;
+    border-width:2px;
+    border-style:solid;
+    margin:0em;
+    list-style-type:"⚠";
+    list-style-position:outside;
+    padding-left:1.8em;
+}
+
+#write ul[name^="warn"]>li {
+    padding-left:0.3em;
+}
+
+/* <div style='background-color:#EEFFFF;border-color:#88bbFF;border-radius: 4px;border-width:2px;border-style:solid;margin:0em'><ul style='list-style-type:"ℹ";list-style-position:outside;margin:0em;padding-left:1.8em;'><li style='padding-left:0.3em'> */
+/* ovs server端分析 */
+/* --monitor 变成一个daemon */
+/* </div> */
+
+/* figure reference */
+/* a::before { */
+/*     content:var(--bvar); */
+/* } */
+
+/* header auto number */
+#write h1:before {
+  counter-increment: h1cnt;
+  content: counter(h1cnt) " ";
+}
+
+#write h2:before {
+  counter-increment: h2cnt;
+  content: counter(h1cnt)"." counter(h2cnt)" ";
+}
+
+#write h3:before,
+h3.md-focus.md-heading:before { /** override the default style for focused headings */
+  counter-increment: h3cnt;
+  content: counter(h1cnt)"." counter(h2cnt)"."counter(h3cnt) " ";
+}
+
+#write h4:before,
+h4.md-focus.md-heading:before {
+  counter-increment: h4cnt;
+  content: counter(h1cnt) "." counter(h2cnt) "."counter(h3cnt) "."counter(h4cnt) " ";
+}
+
+#write h5:before,
+h5.md-focus.md-heading:before {
+  counter-increment: h5cnt;
+  content: counter(h1cnt) "." counter(h2cnt) "."counter(h3cnt) "."counter(h4cnt) "."counter(h5cnt) " "
+}
+
+#write h6:before,
+h6.md-focus.md-heading:before {
+  counter-increment: h6cnt;
+  content: counter(h1cnt) "." counter(h2cnt) "."counter(h3cnt) "."counter(h4cnt) "."counter(h5cnt) "."counter(h6cnt) " "
+}
+
+/** override the default style for focused headings */
+#write>h3.md-focus:before,
+#write>h4.md-focus:before,
+#write>h5.md-focus:before,
+#write>h6.md-focus:before,
+h3.md-focus:before,
+h4.md-focus:before,
+h5.md-focus:before,
+h6.md-focus:before {
+  color: inherit;
+  border: inherit;
+  border-radius: inherit;
+  position: inherit;
+  left: initial;
+  float: none;
+  top: initial;
+  font-size: inherit;
+  padding-left: inherit;
+  padding-right: inherit;
+  vertical-align: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
