@@ -28,7 +28,9 @@ https://rsshub.app/zhihu/topic/19553101 "~Elon Musk"
 https://rsshub.app/zhihu/topic/19922319 "~Boston Dynamics"
 https://rsshub.app/zhihu/topic/19570193 "~Vim"
 
-https://rsshub.app/twitter/user/whyyoutouzhele "~"
+https://rsshub.app/twitter/user/whyyoutouzhele "~lilaoshi"
+https://rsshub.app/twitter/user/torontobigface
+https://rsshub.app/twitter/user/DIYgod
 
 https://rsshub.app/bilibili/user/dynamic/21837784 "~阿斗归来了"
 
@@ -37,8 +39,9 @@ https://rsshub.app/sspai/index "~少数派"
 https://rsshub.app/bjp/apod
 https://rsshub.app/nasa/apod
 
-https://rsshub.app/smzdm/keyword/男装
-https://rsshub.app/smzdm/keyword/优衣库男
+https://rsshub.app/smzdm/keyword/优衣库+dry-ex+拉链连帽开衫
+https://rsshub.app/smzdm/keyword/优衣库+男内裤
+https://rsshub.app/smzdm/keyword/爱他美+卓萃
 https://rsshub.app/google/scholar/larsblackmore
 https://rsshub.app/latexstudio/home
 https://rsshub.app/blogs/wangyin

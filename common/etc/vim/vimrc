@@ -1,6 +1,6 @@
 " DEBUG for vim :messages
 
-source <sfile>:p:h/basic/basic.vim
+source <sfile>:p:h/basic/options.vim
 source <sfile>:p:h/basic/keymap.vim
 source <sfile>:p:h/basic/autocmds.vim
 source <sfile>:p:h/basic/markdown.vim

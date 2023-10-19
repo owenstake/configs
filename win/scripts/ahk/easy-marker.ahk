@@ -414,11 +414,6 @@ RegisterHotstringMap() {
     }
 }
 
-; main
-Hotkey, IfWinActive, ahk_group zEditors
-RegisterHotstringMap()
-Hotkey, IfWinActive
-
 Snippet(action) {
     app := GetActiveApp() ; apps: Typora,Obsidian,Overleaf,CSDN
     markerStyle := GetActiveMarkerStyle() ; type: latex or markdown
@@ -773,4 +768,9 @@ StagePlayCommon(stages) {
     }
     Return playedLineCnt
 }
+
+; main
+Hotkey, IfWinActive, ahk_group zEditors
+RegisterHotstringMap()
+Hotkey, IfWinActive
 

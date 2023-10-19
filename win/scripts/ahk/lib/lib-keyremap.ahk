@@ -173,7 +173,8 @@ LongPressedSpeedUp(targetKey) {
 CtrlMHandler() {
     WinGet, appExe, ProcessName, A    ; get current window ahk_exe
     ctrl := AppsConf[appExe]["DefaultControl"]
-    Controlclick, %ctrl%, A
+    Controlclick, %ctrl%, A,,,, NA x1 y1
+	; ControlGetFocus, %ctrl%, A
 }
 
 ; AnyKeyWait() { 
@@ -244,8 +245,8 @@ KeyMapHandler() {
     return
 }
 
-WinActive2(pattern) {
-    return WinActive(pattern) && true
+WinActiveAndCapsDown(winPattern) {
+    return WinActive(winPattern) && GetKeyState("CapsLock", "P") ; capslock + m
 }
 
 WinActiveAndInNormalMode(pattern) {

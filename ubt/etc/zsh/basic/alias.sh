@@ -10,7 +10,7 @@
     fd='fdfind'                                           \
     ra='ranger'                                           \
     wt='curl -s "wttr.in/~haizhu+guangzhou?m" | less'     \
-    wtq='curl -s "wttr.in/~Quan+Zhou+Fujian?m" | less'    \
+    wtq='curl -s "wttr.in/~QuanGang+Fujian?m" | less'    \
     wtx='curl -s "wttr.in/~xiamen+Fujian?m" | less'       \
     lz='lazygit'                                          \
     nb='newsboat -ru $OwenInstallDir/etc/newsboat/rss_links.txt' \

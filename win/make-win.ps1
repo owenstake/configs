@@ -97,7 +97,7 @@ Function MakeInstall() {
     DeployConfigDir  "etc/lf"             "$Env:LOCALAPPDATA/lf"
     DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"
     DeployConfigDir  "etc/common"         "$Env:OwenInstallDir/etc/common"
-    DeployConfigDir  "etc/typora"         "$Env:APPDATA/Typora/themes/owen"
+    DeployConfigDir  "etc/typora/css"         "$Env:APPDATA/Typora/themes/owen"
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  @('"','') "utf8"          # vimrc must be utf8 for parsing

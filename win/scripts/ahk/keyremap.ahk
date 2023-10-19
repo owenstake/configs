@@ -10,6 +10,7 @@
 #include *i %A_LineFile%\..\custom.ahk
 
 SendMode Input
+SetCapsLockState, AlwaysOff
 
 ;========================================================
 ;====== Main ============================================
@@ -58,19 +59,19 @@ For appExe, conf in AppsConf {
     ; Control M
     If (conf["DefaultControl"]) {
         GroupAdd, CtrlMGroup, %appMatcher%
-        Hotkey, If, WinActive2("ahk_group CtrlMGroup")
-            Hotkey, ^m, CtrlMHandler
+        Hotkey, If, WinActiveAndCapsDown("ahk_group CtrlMGroup")
+            Hotkey, m, CtrlMHandler
         Hotkey, If
     }
 }
 
-; hotkey
+; hotkeys threads
 Launch_Mail::LongPressedSpeedUp("Volume_Down")
 Browser_Home::LongPressedSpeedUp("Volume_Up")
 CapsLock::RCtrl
 RAlt::Esc
 
-#If, WinActive2("ahk_group CtrlMGroup")
+#If, WinActiveAndCapsDown("ahk_group CtrlMGroup")
 #If
 
 ; Normal mode
