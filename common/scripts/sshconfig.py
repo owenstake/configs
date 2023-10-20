@@ -1,67 +1,59 @@
 #!/usr/bin/env python3
 from __future__ import print_function
-from sshconf import read_ssh_config
-from os.path import expanduser
+from sshconf import SshConfig, read_ssh_config
+# from os.path import expanduser
 import netifaces
+import tempfile
 
 import sys
 import os
 import json
 from pathlib import Path
 
-if len(sys.argv) >= 2:
-    proxyJsonFile=sys.argv[1]
-    if os.path.exists(proxyJsonFile):
-        print(f"Config file is {sys.argv[1]}" )
-    else:
-        print(f"{proxyJsonFile} is no exists!" )
-        exit(-1)
-else:
-    print("Please specify a proxy config json file.")
+helpMsg="""
+This program generates sshconfig file based on proxy.json.
+Usage:
+  argv[1]: proxy config json file
+  argv[2]: ssh config file
+"""
+
+if len(sys.argv) < 3:
+    print(helpMsg)
     exit(-1)
 
-# Opening JSON file
-sshConfigFile=expanduser("~/.ssh/config")
+proxyJsonFile=sys.argv[1]
+if not os.path.exists(proxyJsonFile):
+    print(f"{proxyJsonFile} is no exists!" )
+    exit(-1)
 
-# mkdir -p
-dirname = os.path.dirname(sshConfigFile)
-Path(dirname).mkdir(parents=True, exist_ok=True)
-# touch
-Path(sshConfigFile).touch(exist_ok=True)
+# print(f"Proxy Config file is {sys.argv[1]}" )
+sshConfigFile=sys.argv[2]
 
-sshConfig = read_ssh_config(sshConfigFile)
+# Get empty config
+file = tempfile.NamedTemporaryFile()
+sshConfig = read_ssh_config(file.name)
 
 gateways = netifaces.gateways()
 default_gateway = gateways['default'][netifaces.AF_INET][0]
 
+# Opening JSON file
 with open(proxyJsonFile) as f:
     proxyConfig = json.load(f)
     for key, value in proxyConfig.items():
         host = value["ProxyIp"].replace(";", " ").strip()
-        pcmd = "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"])
-        rfwd1 = "localhost:3322 localhost:22"
-        rfwd2 = "RemoteForward localhost:10809 {}:10809".format(default_gateway)
         k = {
                 'ProxyCommand': "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"]), 
                 "RemoteForward localhost:3322 localhost:22" : '',
                 "RemoteForward localhost:10809 {}:10809".format(default_gateway) : '',
+                "UserKnownHostsFile=/dev/null":'',
+                "StrictHostKeyChecking=no":'',
                 }
-        if host in sshConfig.hosts():
-            print("Found {} then update.".format(host))
-            sshConfig.remove(host)
-            sshConfig.add(host,**k)
-            # sshConfig.set(host, ProxyCommand=pcmd)
-            # sshConfig.set(host, RemoteForward=rfwd1)
-            # sshConfig.set(host, **{rfwd2: ''})
-        else:
-            print("No found {} then add it.".format(host))
-            sshConfig.add(host,**k)
-            # sshConfig.add(host,ProxyCommand=pcmd)
-            # sshConfig.add(host,ProxyCommand=pcmd)
-            # sshConfig.add(host,RemoteForward=rfwd1)
-            # sshConfig.add(host, **{rfwd2: ''})
+        sshConfig.add(host,**k)
 
-        # for key in sshConfig.hosts():
-        #     print(key)
+# mkdir -p and touch
+dirname = os.path.dirname(sshConfigFile)
+Path(dirname).mkdir(parents=True, exist_ok=True)
+Path(sshConfigFile).touch(exist_ok=True)
 
+# ssh config write to file
 sshConfig.write(sshConfigFile)

@@ -45,20 +45,26 @@ function MakeInstall() {
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
     DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
 
-    fmt_info "-- Deploy hooks to config file ---------"
-    AddHookToConfigFile   ~/.vimrc       "source $OwenInstallDir/etc/vim/vimrc"   '"'
-    AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
-    AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
-
+    # Generate ssh config file
     if [[ $(uname -a) == *WSL* ]] ; then
         fmt_info "Generate ssh config and install"
         jsonConfig=$(find .. -name "proxy.json" -exec realpath {} \;)
         if [[ -z $jsonConfig ]] ; then
             fmt_error "No found file proxy.json"
         else
-            SearchAndExecFile ".." "sshconfig.py" $jsonConfig
+            SearchAndExecFile \
+                ".." \
+                "sshconfig.py" \
+                $jsonConfig \
+                $OwenInstallDir/etc/ssh/config
         fi
     fi
+
+    fmt_info "-- Deploy hooks to config file ---------"
+    AddHookToConfigFile   ~/.vimrc       "source $OwenInstallDir/etc/vim/vimrc"   '"'
+    AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
+    AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
+    AddHookToConfigFile   ~/.ssh/config  "Include $OwenInstallDir/etc/ssh/config"
 
     ### Force echo to zsh tmux config file
     # if [[ $1 = "f" ]]; then
