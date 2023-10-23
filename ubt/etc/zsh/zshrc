@@ -7,6 +7,7 @@ source $zshroot/basic/alias.sh
 source $zshroot/basic/basic.sh
 source $zshroot/basic/export.sh
 source $zshroot/basic/keybindings.sh
+source $zshroot/basic/func.sh
 
 source $zshroot/utils/zplug.sh
 source $zshroot/utils/fzf.sh
