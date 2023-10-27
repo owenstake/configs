@@ -50,7 +50,7 @@ main() {
         apps2=" poppler-utils "
         sudo apt install -y $apps1
         sudo apt install -y $apps2
-        sudo apt install -y zsh   # install zsh final for check
+        sudo apt install -y zsh   # install zsh at the final stage for check
         sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
         # start service
         sudo systemctl enable ssh

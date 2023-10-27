@@ -162,23 +162,23 @@ function wcd() {
 }
 function CheckXserver() {
     for i in $(seq 0 3); do
-    # nc -zv winhost $((6000+$i)) -w1 2>& /dev/null
-    timeout 0.2 nc -zv winhost $((6000+$i)) 2>& /dev/null
-    [ $? != 0 ] && break
+        # nc -zv winhost $((6000+$i)) -w1 2>& /dev/null
+        timeout 0.2 nc -zv $WSL_GATEWAY $((6000+$i)) 2>& /dev/null
+        [ $? != 0 ] && break
     done
     if [ $i -eq 0 ]; then
-    fmt_warn "Xserver is unreachable"
-    unalias vim 2>&/dev/null
-    unset DISPLAY_XSERVER
+        fmt_warn "Xserver is unreachable"
+        unalias vim 2>&/dev/null
+        unset DISPLAY_XSERVER  # wayland => DISPLAY=:0.0
     else
-    fmt_info "Xserver is reachable at $DISPLAY_XSERVER"
-    # xserver is running
-    LAST_MONITOR=$((i-1))
-    export DISPLAY_XSERVER=${WSL_GATEWAY}:${LAST_MONITOR}.0   # For mobaxterm x11 server.
-    if [[ -n $WAYLAND_DISPLAY ]]; then
-        # Use xserver for clip in vim. Wayland is not for copy.
-        alias vim="DISPLAY=$DISPLAY_XSERVER vim "
-    fi
+        fmt_info "Xserver is reachable at $DISPLAY_XSERVER"
+        # xserver is running
+        LAST_MONITOR=$((i-1))
+        export DISPLAY_XSERVER=${WSL_GATEWAY}:${LAST_MONITOR}.0   # For mobaxterm x11 server.
+        if [[ -n $WAYLAND_DISPLAY ]]; then
+            # Use xserver for clip in vim. Wayland is not for copy.
+            alias vim="DISPLAY=$DISPLAY_XSERVER vim "
+        fi
     fi
 }
 
