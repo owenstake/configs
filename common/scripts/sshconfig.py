@@ -42,11 +42,13 @@ with open(proxyJsonFile) as f:
     for key, value in proxyConfig.items():
         host = value["ProxyIp"].replace(";", " ").strip()
         k = {
+                "# Localtion: {}".format(value["Location"]):"",
                 'ProxyCommand': "nc -X 5 -x {}:{} %h %p".format(default_gateway,value["Port"]), 
                 "RemoteForward localhost:3322 localhost:22" : '',
                 "RemoteForward localhost:10809 {}:10809".format(default_gateway) : '',
-                "UserKnownHostsFile=/dev/null":'',
+                # "UserKnownHostsFile=/dev/null":'',
                 "StrictHostKeyChecking=no":'',
+                "LogLevel ERROR":'',
                 }
         sshConfig.add(host,**k)
 
