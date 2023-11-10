@@ -10,9 +10,8 @@ Set-Location $pscommandpath/..
 # Configure String
 $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
 $script:wingetAppstr = "
-    Sogou.SogouInput  Tencent.WeiyunSync  Baidu.BaiduNetdisk
+    Sogou.SogouInput  Tencent.WeiyunSync  
     Thunder.Xmp       
-    # Tencent.QQMusic
     "
 $script:scoopAppstr = "
     gow sudo vim-tux less bat tre-command recycle-bin file    # CLI basic tool
@@ -21,7 +20,8 @@ $script:scoopAppstr = "
     ffmpeg 
     7zip snipaste ScreenToGif notepadplusplus flux everything # UI simple tool 
     foxit-reader xray v2rayN vscode draw.io googlechrome      # UI super tool
-    qq wechat foxit-reader mobaxterm foxmail SarasaGothic-SC
+    qq wechat foxit-reader mobaxterm foxmail baiduNetdisk
+    SarasaGothic-SC
 	zotero tor-browser firefox typora obsidian scoop-completion
     proxifier                                                 # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C
     vcredist2022                                              # Need by v2ray, windows-terminal
@@ -49,7 +49,6 @@ Function Get-AppsInstalledInScoop {
 
 Function Get-AppsInstalledInWinget {
     $wingetApps = @()
-    # scoop export | ConvertFrom-Json | Foreach { $chocoApps += $_.name }
     $tmpFile = New-TemporaryFile
     winget export --source winget  -o $tmpFile | out-null
     $wingetJson = Get-Content $tmpFile | ConvertFrom-Json
@@ -72,8 +71,8 @@ Function FormatAppsStr($appstr) {
     return ,$apps
 }
 
-Function Get-AppsNeedInstall($installer) {
-    $appStr = Get-Variable -scope Script -name "${installer}Appstr" -ValueOnly # i.e. scoopAppstr
+Function Get-AppsNeedInstall($installer, $appStr) {
+    # $appStr = Get-Variable -scope Script -name "${appstr}" -ValueOnly # i.e. scoopAppstr
     $appsRequired    = FormatAppsStr $appStr
     $appsInstalled   = & "Get-AppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
     $appsNeedInstall = $appsRequired | where {$appsInstalled -NotContains $_}
@@ -135,14 +134,15 @@ Function Scoop-install {
         git config --global --add safe.directory '*'
         git config --global core.autocrlf false
         git config --global core.whitespace cr-at-eol
-	git config --global http.sslVerify false
+        git config --global http.sslVerify false
+        git config --global http.https://github.com.proxy http://localhost:10809
     }
     # Bucket update. Require git installed.
     $buckets = FormatAppsStr $script:bucketsStr
     if (!(scoop bucket list | findstr $buckets[-1])) {
         fmt_info "SCOOP: Updating bucket source to Gitee for speeding up"
         Foreach ($b in $buckets) {
-            scoop bucket rm  $b
+            scoop bucket rm  $b 6> $null
             scoop bucket add $b "https://gitee.com/scoop-bucket/$b.git"
         }
         scoop bucket add scoopet https://github.com/ivaquero/scoopet
@@ -153,7 +153,7 @@ Function Scoop-install {
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
     # Install Apps
-    If ($apps = Get-AppsNeedInstall "SCOOP" ) {
+    If ($apps = Get-AppsNeedInstall "SCOOP" $scoopAppstr ) {
         scoop install $apps
     }
 
@@ -185,7 +185,7 @@ Function Winget-install() {
     SetEnvVar "WINGET" "D:\owen\winget"
     # $env:WINGET="D:\owen\winget"
     # [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
-    $apps = Get-AppsNeedInstall "WINGET" 
+    $apps = Get-AppsNeedInstall "WINGET" $wingetAppstr
     # Iterate install. winget has no batch install interface 2023.05.25
     Foreach ($app in $apps) {
         winget install --id="$app" -e --no-upgrade -l "$env:WINGET"
@@ -194,7 +194,7 @@ Function Winget-install() {
 
 Function Psmodule-Install {
     Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-    $apps = Get-AppsNeedInstall "psModule" 
+    $apps = Get-AppsNeedInstall "psModule"  $psModuleAppstr
     Install-Module -Name "PSreadline" -Scope CurrentUser -RequiredVersion 2.1.0   # reverse ops: uninstall-module
     Foreach ($app in $apps) {
         If (!(get-module $app)) {
