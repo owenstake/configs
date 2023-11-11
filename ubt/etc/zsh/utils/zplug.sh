@@ -51,7 +51,7 @@
       ## zsh-autosuggestions - note the source command must be at the end of .zshrc
       source "$ZPLUG_REPOS/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
     } else {
-        fmt_error "Do not install zplug, please install!"
+        fmt_error "Please install zplug!"
         # echo "# curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh"
         curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
     }

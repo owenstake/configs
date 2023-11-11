@@ -1,3 +1,4 @@
+export OwenInstallDir="$HOME/.dotfiles"  # used in ranger
 
 FMT_RED=$(printf '\033[31m')
 FMT_GREEN=$(printf '\033[32m')

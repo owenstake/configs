@@ -13,19 +13,26 @@ $script:wingetAppstr = "
     Sogou.SogouInput  Tencent.WeiyunSync  
     Thunder.Xmp       
     "
-$script:scoopAppstr = "
-    gow sudo vim-tux less bat tre-command recycle-bin file    # CLI basic tool
-    global go autohotkey1.1 lua python nodejs-lts winget git  # CLI program tool
-    lf lua fd ripgrep z.lua fzf pscolor psfzf                 # CLI super tool
-    ffmpeg 
-    7zip snipaste ScreenToGif notepadplusplus flux everything # UI simple tool 
-    foxit-reader xray v2rayN vscode draw.io googlechrome      # UI super tool
-    qq wechat foxit-reader mobaxterm foxmail baiduNetdisk
-    SarasaGothic-SC
-	zotero tor-browser firefox typora obsidian scoop-completion
-    proxifier                                                 # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C
-    vcredist2022                                              # Need by v2ray, windows-terminal
+
+$script:scoopAppstr1 = "
+    # Install first
+    7zip autohotkey1.1 vim-tux windows-terminal xray v2rayN vscode
     $(If ($WinVersion -gt 18362) { "windows-terminal oh-my-posh" } else { "cmder" })
+"
+
+$script:scoopAppstr2 = "
+    gow sudo  less bat tre-command recycle-bin file    # CLI basic tool
+    global go  lua python nodejs-lts winget git  # CLI program tool
+    lf lua fd ripgrep z.lua fzf pscolor psfzf                 # CLI super tool
+    scoop-completion ffmpeg 
+    snipaste ScreenToGif notepadplusplus flux everything # UI simple tool 
+    foxit-reader  draw.io googlechrome      # UI super tool
+    SarasaGothic-SC
+    # UI app
+    qq wechat foxit-reader mobaxterm foxmail baiduNetdisk
+	zotero tor-browser firefox typora obsidian HeidiSQL
+    proxifier                                                 # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C 
+    vcredist2022                             # C++ lib Need by v2ray, windows-terminal
     "
 $script:bucketsStr = "main extras versions nerd-fonts"
 
@@ -71,9 +78,15 @@ Function FormatAppsStr($appstr) {
     return ,$apps
 }
 
-Function Get-AppsNeedInstall($installer, $appStr) {
+Function Get-AppsNeedInstall($installer, $appStrs) {
     # $appStr = Get-Variable -scope Script -name "${appstr}" -ValueOnly # i.e. scoopAppstr
-    $appsRequired    = FormatAppsStr $appStr
+    $appsRequired = @()
+    Foreach ($s in $appStrs) {
+        $appsRequired    += FormatAppsStr $s
+    }
+    echo "owen required"
+    echo "$appsRequired"
+    
     $appsInstalled   = & "Get-AppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
     $appsNeedInstall = $appsRequired | where {$appsInstalled -NotContains $_}
     $appsInstalledButNotrequired = $appsInstalled | where {$appsRequired -NotContains $_}
@@ -153,7 +166,7 @@ Function Scoop-install {
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
     # Install Apps
-    If ($apps = Get-AppsNeedInstall "SCOOP" $scoopAppstr ) {
+    If ($apps = Get-AppsNeedInstall "SCOOP" ($scoopAppstr1,$scoopAppstr2) ) {
         scoop install $apps
     }
 
@@ -185,7 +198,7 @@ Function Winget-install() {
     SetEnvVar "WINGET" "D:\owen\winget"
     # $env:WINGET="D:\owen\winget"
     # [environment]::setEnvironmentVariable('WINGET',$env:WINGET,'User')
-    $apps = Get-AppsNeedInstall "WINGET" $wingetAppstr
+    $apps = Get-AppsNeedInstall "WINGET" @($wingetAppstr)
     # Iterate install. winget has no batch install interface 2023.05.25
     Foreach ($app in $apps) {
         winget install --id="$app" -e --no-upgrade -l "$env:WINGET"
@@ -194,7 +207,7 @@ Function Winget-install() {
 
 Function Psmodule-Install {
     Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-    $apps = Get-AppsNeedInstall "psModule"  $psModuleAppstr
+    $apps = Get-AppsNeedInstall "psModule"  @($psModuleAppstr)
     Install-Module -Name "PSreadline" -Scope CurrentUser -RequiredVersion 2.1.0   # reverse ops: uninstall-module
     Foreach ($app in $apps) {
         If (!(get-module $app)) {

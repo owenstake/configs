@@ -1,9 +1,6 @@
 #!/usr/bin/bash
 source lib.sh
-
 ScriptDir=$(realpath $(dirname $0))
-
-export OwenInstallDir="$HOME/.dotfiles"  # used in ranger
 
 function AddHookToConfigFile() {
     local file=$1

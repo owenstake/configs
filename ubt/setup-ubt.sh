@@ -42,7 +42,17 @@ main() {
         wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
         sudo python3 oh-my-tuna.py --global -y
         sudo apt update
+
+        # for nodejs
+        sudo apt install -y ca-certificates curl gnupg
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        NODE_MAJOR=20
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+        sudo apt install nodejs -y
         sudo apt upgrade -y
+
         # apps. rank.
         apps1="newsboat ranger global python3-pip clangd universal-ctags vim-gtk \
             xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
@@ -73,26 +83,14 @@ main() {
     gateway=$(ip route | head -1 | awk '{print $3}')
     export all_proxy=http://$gateway:10809
 
-    if ! command_exists node ; then
-        # nodejs 18 install - [How to Install Latest Node.js on Ubuntu – TecAdmin](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/ )
-        curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-        sudo apt install -y nodejs
-        # npm config. why sudo for root user? Not necessary
-        npm config set registry http://registry.npmmirror.com  # mirror list
-        sudo npm config set update-notifier false  # avoid update notice
-        sudo npm config set fund false             # avoid fund notice
-        # sudo npm config ls -l  # show all node config key=value
-        node --version
-        npm  --version
-    fi
-
     # check network proxy
     if curl -s www.google.com --connect-timeout 3 > /dev/null; then
         fmt_info "Proxy ok."
     else
         fmt_error "Proxy fail. Please check win10 v2ray is ok for 10809."
-        fmt_error "1. win v2ray is ok for 10809 ?"
-        fmt_error "2. win firewall is opened for wsl ?. If not, do the following command in powershell."
+        fmt_error "1. win v2rayN is ok for 10809 ?"
+        fmt_error "2. win v2rayN is ok for remote ?"
+        fmt_error "3. win firewall is opened for wsl ?. If not, do the following command in powershell."
         fmt_error 'sudo Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)".'
         return
     fi
@@ -147,16 +145,6 @@ main() {
         cd - 2>/dev/null
     fi
 
-    if [[ ! -e ~/configs ]]; then
-        (
-        cd ~
-        # shallow clone
-        git_clone https://github.com/owenstake/configs.git
-        cd configs
-        ./bootstrap.sh
-        )
-    fi
-
     # tldr
     if ! command_exists tldr; then
         fmt_info "tldr install and config"
@@ -176,7 +164,6 @@ main() {
     fi
 
     # lazygit
-
     if ! command_exists lazygit; then
         LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
         curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
