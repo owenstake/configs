@@ -11,7 +11,7 @@ Set-Location $pscommandpath/..
 $WinVersion = (Get-WmiObject Win32_OperatingSystem).BuildNumber
 $script:wingetAppstr = "
     Sogou.SogouInput  Tencent.WeiyunSync  
-    Thunder.Xmp       
+    Thunder.Xmp       Thunder.Thunder
     "
 
 $script:scoopAppstr1 = "
