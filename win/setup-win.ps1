@@ -240,7 +240,7 @@ Function custom-install() {
 }
 
 Function Wsl-install() {
-    if !(wsl -v | out-null) {
+    if (!(wsl -v | out-null)) {
         fmt_info "Install WSL"
         wsl --install --no-distribution
     }
