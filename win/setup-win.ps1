@@ -122,7 +122,10 @@ Function Scoop-install {
 		# $env:SCOOP_GLOBAL='D:\apps'
 		# [environment]::setEnvironmentVariable('SCOOP_GLOBAL',$env:SCOOP_GLOBAL,'Machine')
 		# Install scoop for user. https://gitee.com/glsnames/scoop-installer
-		Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+        If ((Get-ExecutionPolicy -scope CurrentUser) -ne "RemoteSigned") {
+            fmt_info "Set-ExecutionPolicy"
+            Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+        }
 		iwr -useb scoop.201704.xyz | iex	
         # Restore apps from exist install dir.
         If (Test-Path -pathtype Container $scoopInstallDir) {
