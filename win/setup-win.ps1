@@ -84,8 +84,6 @@ Function Get-AppsNeedInstall($installer, $appStrs) {
     Foreach ($s in $appStrs) {
         $appsRequired    += FormatAppsStr $s
     }
-    echo "owen required"
-    echo "$appsRequired"
     
     $appsInstalled   = & "Get-AppsInstalledIn${installer}"  # i.e GetAppsInstalledInScoop
     $appsNeedInstall = $appsRequired | where {$appsInstalled -NotContains $_}
@@ -241,6 +239,13 @@ Function custom-install() {
     # kuwo-app-install
 }
 
+Function Wsl-install() {
+    if !(wsl -v | out-null) {
+        fmt_info "Install WSL"
+        wsl --install --no-distribution
+    }
+}
+
 Function main {
 	# .\bootstrap-win.ps1
     "This script just install app and config system"
@@ -248,6 +253,7 @@ Function main {
     # Chocolatey-install
     Psmodule-install
     Winget-install
+    Wsl-install
     custom-install
     Set-Shuangpin
     New-Item ~/.root -Force
