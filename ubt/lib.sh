@@ -7,6 +7,13 @@ FMT_BLUE=$(printf '\033[34m')
 FMT_BOLD=$(printf '\033[1m')
 FMT_RESET=$(printf '\033[0m')
 
+appsCommon="
+    newsboat ranger global python3-pip  universal-ctags vim-gtk
+    xclip net-tools x11-apps  fd-find 
+    openssh-server tree trash-cli
+    xbindkeys xautomation
+    "
+
 function fmt_info() {
     printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }

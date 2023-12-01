@@ -2,6 +2,7 @@
 # usage: https://wiki.archlinux.org/title/Newsboat
 # rss: https://docs.rsshub.app/
 
+https://www.youtube.com/feeds/videos.xml?channel_id=UCghLs6s95LrBWOdlZUCH4qw "stone"
 https://lukesmith.xyz/rss.xml                       "luke smith"
 https://www.nba.com/lakers/rss.xml
 https://rsshub.app/zhibo8/more/nba
@@ -12,7 +13,6 @@ https://rsshub.app/zhihu/people/answers/giantchen   "~陈硕的知乎回答"
 https://rsshub.app/zhihu/people/activities/chen-bin-88   "~陈斌的知乎动态"
 https://rsshub.app/zhihu/people/activities/MrAir   "~MrAir的知乎动态"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCwgKmJM4ZJQRJ-U5NjvR2dg "geohotz"
-https://www.youtube.com/feeds/videos.xml?channel_id=UCghLs6s95LrBWOdlZUCH4qw "stone"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCrGSFNEBmCN0rqhATZels2Q "gongzi shen"
 https://www.youtube.com/feeds/videos.xml?channel_id=UCaPc9GRK9FoSyqM_c7-fDgw "Vlog xinsheng"
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2MgB-upjmPWAP_p7hdk_MQ "Renbumei"
@@ -41,6 +41,7 @@ https://rsshub.app/nasa/apod
 
 https://rsshub.app/smzdm/keyword/优衣库+dry-ex+拉链连帽开衫
 https://rsshub.app/smzdm/keyword/优衣库+男内裤
+https://rsshub.app/smzdm/keyword/优衣库+男+摇粒绒
 https://rsshub.app/smzdm/keyword/爱他美+卓萃
 https://rsshub.app/google/scholar/larsblackmore
 https://rsshub.app/latexstudio/home

@@ -29,10 +29,11 @@ $script:scoopAppstr2 = "
     foxit-reader  draw.io googlechrome      # UI super tool
     SarasaGothic-SC
     # UI app
-    qq wechat foxit-reader mobaxterm foxmail baiduNetdisk
+    wechat foxit-reader mobaxterm foxmail baiduNetdisk
 	zotero tor-browser firefox typora obsidian HeidiSQL
-    proxifier                                                 # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C 
-    vcredist2022                             # C++ lib Need by v2ray, windows-terminal
+    motrix
+    proxifier               # L6Z8A-XY2J4-BTZ3P-ZZ7DF-A2Q9C 
+    vcredist2022            # C++ lib Need by v2ray, windows-terminal
     "
 $script:bucketsStr = "main extras versions nerd-fonts"
 
@@ -114,35 +115,35 @@ Function Scoop-install {
     # Env setting
 	If (!(Test-CommandExists scoop)) {
         fmt_info "SCOOP: Installing scoop first"
-        SetEnvVar
         SetEnvVar "SCOOP"       "$scoopInstallDir"
         SetEnvVar "scoopUiApps" "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
-        # $env:scoopUiApps="$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Scoop Apps"
-		# [environment]::setEnvironmentVariable('SCOOPUIAPPS',$env:scoopUiApps,'User')
-		# $env:SCOOP_GLOBAL='D:\apps'
-		# [environment]::setEnvironmentVariable('SCOOP_GLOBAL',$env:SCOOP_GLOBAL,'Machine')
-		# Install scoop for user. https://gitee.com/glsnames/scoop-installer
-        If ((Get-ExecutionPolicy -scope CurrentUser) -ne "RemoteSigned") {
-            fmt_info "Set-ExecutionPolicy"
-            Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-        }
-		iwr -useb scoop.201704.xyz | iex	
-        # Restore apps from exist install dir.
         If (Test-Path -pathtype Container $scoopInstallDir) {
+            $need_restore = $true
+        }
+        # install scoop
+		iwr -useb scoop.201704.xyz | iex	
+        If (!(Test-CommandExists scoop)) {
+            fmt_error "Fail to install scoop. Stop this script."
+            exit -1
+        }
+        # Restore apps from exist install dir.
+        if ($need_restore) {
             $prompt = "Do you want to restore scoop apps from $scoopInstallDir ? [y]/n"
             If (!(read-host -Prompt "$prompt") -eq "n") {
                 scoop reset *
             }
         }
-	}
+	} else {
+        fmt_info "Scoop is already installed"
+    }
 	fmt_info "SCOOP: Installing Apps in $scoopInstallDir"
     # git install first for scoop
 	if (!(Test-CommandExists git)) {  # git maybe install outside
 		scoop install git
 	}
 	if (!(Test-CommandExists git)) {
-        fmt_error "SCOOP: Git installation fail. Stop this script"
-        return -1
+        fmt_error "SCOOP: Git installation fail. Stop this script."
+        exit -1
     } else {
         fmt_info "SCOOP: Git config"
         git config --global --add safe.directory '*'
@@ -243,20 +244,39 @@ Function custom-install() {
 }
 
 Function Wsl-install() {
-    if (!(wsl -v | out-null)) {
+    $prev = [Console]::OutputEncoding # Save current value.
+    # Tell PowerShell to interpret external-program output as 
+    # UTF-16LE ("Unicode") encoded.
+    [Console]::OutputEncoding = [System.Text.Encoding]::Unicode
+    if (!(wsl -v | Select-String "WSLg")) {  # if wsl is installed
         fmt_info "Install WSL"
         wsl --install --no-distribution
+        fmt_warn "Reboot is need for wsl to take effect!"
+    } else {
+        if (wsl -v | Select-String "Error") {  # if wsl is installed
+            fmt_warn "WSL is installed and reboot is need for wsl to take effect!"
+        } else {
+            fmt_info "WSL is installed."
+        }
+    }
+    [Console]::OutputEncoding = $prev # Restore previous value.
+}
+
+Function Setup-ExecutionPolicy() {
+    If ((Get-ExecutionPolicy -scope CurrentUser) -ne "RemoteSigned") {
+        fmt_info "Set-ExecutionPolicy"
+        Set-ExecutionPolicy RemoteSigned -scope CurrentUser
     }
 }
 
 Function main {
-	# .\bootstrap-win.ps1
+    Setup-ExecutionPolicy
     "This script just install app and config system"
+    Wsl-install
 	Scoop-install
     # Chocolatey-install
     Psmodule-install
     Winget-install
-    Wsl-install
     custom-install
     Set-Shuangpin
     New-Item ~/.root -Force

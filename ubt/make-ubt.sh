@@ -8,6 +8,14 @@ function AddHookToConfigFile() {
     local commentMarker=${3:-"#"}
     local MarkLine="$commentMarker owen configed" 
     local line="${msg} ${MarkLine}"
+
+    # touch file and mkdir -p
+    if [ ! -e "$file" ]; then
+        mkdir -p $(dirname $file)
+        touch $file
+    fi
+
+    # check flag
     if ! grep -q "$MarkLine" $file ; then
         fmt_info "owen $file is configing"
         echo "$line" >> $file
@@ -28,6 +36,13 @@ function DeployConfigDir() {
     fmt_info "DeployConfigDir $srcDir to $dstDir"
 }
 
+function DeployConfigFile() {
+    local srcFile=$1
+    local dstFile=$2
+    mkdir -p $(dirname $dstFile)
+    fmt_info "DeployConfigFile $srcFile to $dstFile"
+}
+
 function MakeInstall() {
     ## override config
     # mkdir -p ~/.local $$ mkdir -p ~/.config
@@ -37,10 +52,11 @@ function MakeInstall() {
     # local config
     # DeployConfigDir   ../common/etc/vim ~/.config/vim
     DeployConfigDir   ../common/etc/vim   $OwenInstallDir/etc/vim/
-    cp ../common/etc/init-in-one.lua      ~/.config/nvim/init.lua
     DeployConfigDir   etc/tmux            $OwenInstallDir/etc/tmux/
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
     DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
+
+    DeployConfigFile ../common/etc/init-in-one.lua ~/.config/nvim/init.lua
 
     # Generate ssh config file
     if [[ $(uname -a) == *WSL* ]] ; then

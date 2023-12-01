@@ -54,12 +54,9 @@ main() {
         sudo apt upgrade -y
 
         # apps. rank.
-        apps1="newsboat ranger global python3-pip clangd universal-ctags vim-gtk \
-            xclip net-tools x11-apps lua5.4 subversion fd-find wl-clipboard \
-            openssh-server tree bat trash-cli"
-        apps2=" poppler-utils "
-        sudo apt install -y $apps1
-        sudo apt install -y $apps2
+        appsUbt="clangd lua5.4 bat subversion wl-clipboard poppler-utils"
+        sudo apt install -y $appsCommon
+        sudo apt install -y $appsUbt
         sudo apt install -y zsh   # install zsh at the final stage for check
         sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
         # start service

@@ -132,6 +132,22 @@ If (Get-Module -ListAvailable "PSreadline") {
     Set-PSReadLineOption -HistorySearchCursorMovesToEnd
     # auto suggestions
     Set-PSReadLineOption -PredictionSource History
+
+    Set-PSReadLineKeyHandler -Key 'Ctrl+e' `
+            -BriefDescription "Go to EndOfLine or AcceptSuggestion" `
+            -LongDescription `
+                "If cursor is not at the end of line, then go to end of line, `
+                otherwise try to AcceptSuggestion" `
+            -ScriptBlock {
+        $line = $null
+        $cursor = $null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+        if ($cursor -ne $line.Length) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::EndOfLine()
+        } else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion()
+        }
+    }
 }
 
 # --- psfzf -----

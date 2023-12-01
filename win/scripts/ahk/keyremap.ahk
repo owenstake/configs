@@ -68,7 +68,7 @@ For appExe, conf in AppsConf {
 ; hotkeys threads
 Launch_Mail::LongPressedSpeedUp("Volume_Down")
 Browser_Home::LongPressedSpeedUp("Volume_Up")
-CapsLock::RCtrl
+CapsLock::LCtrl
 RAlt::Esc
 
 #If, WinActiveAndCapsDown("ahk_group CtrlMGroup")
