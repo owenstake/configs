@@ -57,7 +57,7 @@ main() {
         apps1="newsboat ranger global python3-pip universal-ctags vim-gtk \
             xclip   lua5.3 ripgrep fd-find
             openssh-server tree trash-cli kate"
-        apps2=" poppler-utils wmctrl xbindkeys xautomation terminator"
+        apps2=" poppler-utils wmctrl xbindkeys xautomation terminator xvkbd"
         sudo apt install -y $apps1
         sudo apt install -y $apps2
         sudo apt install -y zsh    # install zsh at the final stage for check
