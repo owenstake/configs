@@ -1,0 +1,38 @@
+# key map
+
+# arrow keymap
+"~/uos-keymap.sh h"
+  Alt+h
+"~/uos-keymap.sh j"
+  Alt+j
+"~/uos-keymap.sh k"
+  Alt+k
+"~/uos-keymap.sh l"
+  Alt+l
+
+#############
+# app map
+#############
+"~/uos-switch-windows.sh typora"
+  Alt+a
+"~/uos-switch-windows.sh firefox"
+  Alt+c
+"~/uos-switch-windows.sh 'File Manager'"
+  Alt+e
+"~/uos-switch-windows.sh Konsole"
+  Alt+n
+# v2rayA
+"xdg-open http://127.0.0.1:2017"
+  Alt+Shift+n
+"~/uos-switch-windows.sh qq"
+  Alt+q
+"~/uos-switch-windows.sh wechat"
+  Alt+r
+"~/uos-switch-windows.sh 'Visual Studio Code'"
+  Alt+v
+"~/uos-switch-windows.sh 'Xshell'"
+  Alt+x
+
+# "xvkbd -xsendevent -text '\m1'"
+"xdotool click 1"
+  control+m

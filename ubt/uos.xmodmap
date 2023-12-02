@@ -1,0 +1,14 @@
+! disable CapsLock(66). Because outer win10 ahk is already map CapsLock to Ctrl.
+keycode 66 =
+! clear Lock
+! keycode 66 = Control_L   # ahk convert capslock to control
+! add Control = Control_L    # Control prefix 绑定到 Control_L 方法
+
+! map Alt(64)+hjkl to array key
+! conflict with xbindkeys. This take over the alt key as Mode_switc
+! keycode 64 =
+! keycode 64 = Mode_switch
+! keysym h = h H Left
+! keysym j = j J Down
+! keysym k = k K Up
+! keysym l = l L Right
