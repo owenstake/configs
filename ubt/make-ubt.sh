@@ -39,8 +39,9 @@ function DeployConfigDir() {
 function DeployConfigFile() {
     local srcFile=$1
     local dstFile=$2
-    mkdir -p $(dirname $dstFile)
     fmt_info "DeployConfigFile $srcFile to $dstFile"
+    mkdir -p $(dirname $dstFile)
+    rsync $srcFile $dstFile
 }
 
 function MakeInstall() {
@@ -57,6 +58,17 @@ function MakeInstall() {
     DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
 
     DeployConfigFile ../common/etc/init-in-one.lua ~/.config/nvim/init.lua
+    DeployConfigDir   etc/keymap        $OwenInstallDir/etc/keymap/
+
+    # xbindkeys config
+    if command_exists xbindkeys; then
+	DeployConfigFile etc/keymap/xbindkeysrc ~/.xbindkeysrc
+    fi
+
+    # xmodmap config
+    if command_exists xmodmap; then
+	DeployConfigFile etc/keymap/xmodmap ~/.Xmodmap
+    fi
 
     # Generate ssh config file
     if [[ $(uname -a) == *WSL* ]] ; then

@@ -7,6 +7,7 @@ fi
 scriptName="$0"
 key=$1
 declare -A keymap
+
 keymap[h]="Left"
 keymap[j]="Down"
 keymap[k]="Up"

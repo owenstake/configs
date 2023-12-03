@@ -31,6 +31,9 @@ setup_color() {
     FMT_RESET=$(printf '\033[0m')
 }
 
+command_exists() {
+    command -v "$@" >/dev/null 2>&1
+}
 
 if [[ $(uname -a) == *WSL* ]] ; then
     export OwenInstallDirInWin=${OwenInstallDirInWin:-$(wslpath -ua \

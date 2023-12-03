@@ -1,0 +1,38 @@
+# key map
+
+# arrow keymap
+"xvkbd -xsendevent -text '\[Left]'"
+  Alt+h
+"xvkbd -xsendevent -text '\[Down]'"
+  Alt+j
+"xvkbd -xsendevent -text '\[Up]'"
+  Alt+k
+"xvkbd -xsendevent -text '\[Right]'"
+  Alt+l
+
+#############
+# app map
+#############
+"~/.dotfiles/etc/keymap/switch-windows.sh typora"
+  Alt+a
+"~/.dotfiles/etc/keymap/switch-windows.sh firefox"
+  Alt+c
+"~/.dotfiles/etc/keymap/switch-windows.sh 'File Manager'"
+  Alt+e
+"~/.dotfiles/etc/keymap/switch-windows.sh Konsole"
+  Alt+n
+# v2rayA
+"xdg-open http://127.0.0.1:2017"
+  Alt+Shift+n
+"~/.dotfiles/etc/keymap/switch-windows.sh qq"
+  Alt+q
+"~/.dotfiles/etc/keymap/switch-windows.sh wechat"
+  Alt+r
+"~/.dotfiles/etc/keymap/switch-windows.sh 'Visual Studio Code'"
+  Alt+v
+"~/.dotfiles/etc/keymap/switch-windows.sh 'Xshell'"
+  Alt+x
+
+# "xvkbd -xsendevent -text '\m1'"
+"xdotool click 1"
+  control+m
