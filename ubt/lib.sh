@@ -90,3 +90,8 @@ GetCurOsName() {
     echo ${curOsName,,}
 }
 
+GitClone() {
+    # local url=$1
+    git clone --depth 1 $@
+}
+

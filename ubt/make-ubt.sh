@@ -2,7 +2,7 @@
 source lib.sh
 ScriptDir=$(realpath $(dirname $0))
 
-function AddHookToConfigFile() {
+AddHookToConfigFile() {
     local file="$1"
     local msg="$2"
     local commentMarker=${3:-"#"}
@@ -34,7 +34,7 @@ function AddHookToConfigFile() {
     esac
 }
 
-function DeployConfigDir() {
+DeployConfigDir() {
     local srcDir=$1
     local dstDir=$2
     mkdir -p $dstDir
@@ -42,7 +42,7 @@ function DeployConfigDir() {
     fmt_info "DeployConfigDir $srcDir to $dstDir"
 }
 
-function DeployConfigFile() {
+DeployConfigFile() {
     local srcFile=$1
     local dstFile=$2
     fmt_info "DeployConfigFile $srcFile to $dstFile"
@@ -50,7 +50,7 @@ function DeployConfigFile() {
     rsync $srcFile $dstFile
 }
 
-function MakeInstall() {
+MakeInstall() {
     ## override config
     # mkdir -p ~/.local $$ mkdir -p ~/.config
     DeployConfigDir   etc/ranger     $HOME/.config/ranger/
@@ -123,7 +123,7 @@ function MakeInstall() {
 
 }
 
-function main() {
+main() {
     action=${1:-"install"}
     case $action in  
         install)  
