@@ -67,7 +67,7 @@ main() {
     fi
 
     # install v2rayA
-    if ! command_exists v2ray; then
+    if ! command_exists v2raya; then
 	    wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
 	    echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
 

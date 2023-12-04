@@ -43,7 +43,7 @@ main() {
     # if ! command_exists trash; then
         # APT repo for Tsinghua
         if ! InOs uos ; then   # Tsinghua repo is not for UOS
-            if ! grep tsinghua /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
+            if ! grep -q tsinghua /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
                 wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
                 sudo python3 oh-my-tuna.py --global -y
                 sudo apt update
@@ -102,13 +102,13 @@ main() {
 
     # install v2rayA
     if ! command_exists v2raya; then
-	    wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
-	    echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
+        wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
+        echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
 
-	    sudo apt update
-	    sudo apt install v2raya v2ray ## 也可以使用 xray 包
-	    sudo systemctl start v2raya.service
-	    sudo systemctl enable v2raya.service
+        sudo apt update
+        sudo apt install v2raya v2ray ## 也可以使用 xray 包
+        sudo systemctl start v2raya.service
+        sudo systemctl enable v2raya.service
     fi
 
     # python pip mirror config
@@ -223,13 +223,15 @@ main() {
 
     # golang 1.21.4
     if ! command_exists go; then
-	    wget https://go.dev/dl/go1.21.4.linux-arm64.tar.gz
-	    sudo tar -C /usr/local -xzf go1.21.4.linux-arm64.tar.gz
-	    rm go1.21.4.linux-arm64.tar.gz
-	    if ! grep -q "/usr/local/go/bin" /etc/profile; then
-		    sudo echo "/usr/local/go/bin" >> /etc/profile
-	    fi
-	    go env -w GOPROXY=https://goproxy.cn,direct
+        wget https://go.dev/dl/go1.21.4.linux-arm64.tar.gz
+        mkdir -p ~/.local
+        tar -C ~/.local -xzf go1.21.4.linux-arm64.tar.gz
+        rm $_
+        if ! grep -q "~/.local/go/bin" ~/.profile; then
+            echo "PATH=\$PATH:\$HOME/.local/go/bin" >> ~/.profile
+            source ~/.profile
+        fi
+        go env -w GOPROXY=https://goproxy.cn,direct
     fi
 
     fmt_info "Finish install"

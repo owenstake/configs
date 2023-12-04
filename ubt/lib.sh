@@ -7,18 +7,11 @@ FMT_BLUE=$(printf '\033[34m')
 FMT_BOLD=$(printf '\033[1m')
 FMT_RESET=$(printf '\033[0m')
 
-appsCommon="
-    newsboat ranger global python3-pip  universal-ctags vim-gtk
-    xclip net-tools x11-apps  fd-find 
-    openssh-server tree trash-cli
-    xbindkeys xautomation
-    "
-
-function fmt_info() {
+fmt_info() {
     printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
-function fmt_error() {
+fmt_error() {
     printf '%sERRO: [%s] %s%s\n' "${FMT_RED}${FMT_BOLD}" "$funcstack[2] $@" "$@" "$FMT_RESET"  1>&2
 }
 
@@ -48,7 +41,7 @@ if [[ $(uname -a) == *WSL* ]] ; then
     }
 fi
 
-function SearchAndExecFileWithCallback() {
+SearchAndExecFileWithCallback() {
     local process="${1:-}"
     local dirname=$(realpath $2)
     local fileName=$3
@@ -71,12 +64,29 @@ function SearchAndExecFileWithCallback() {
     fi
 }
 
-function SearchAndExecFile() {
+SearchAndExecFile() {
     SearchAndExecFileWithCallback "" $@
 }
 
-function ExecOwenFile() {
+ExecOwenFile() {
     SearchAndExecFileWithCallback "" $OwenInstallDir $@
     return $?
+}
+
+InWsl() {
+    [[ $(uname -a) == *WSL* ]]
+    return $?
+}
+
+InOs() {
+    local name=$1
+    local curOsName=$(grep "^NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    [ "${name,,}" = "${curOsName,,}" ]   # ,, is for low-case
+    return $?
+}
+
+GetCurOsName() {
+    local curOsName=$(grep "^NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    echo ${curOsName,,}
 }
 
