@@ -13,24 +13,24 @@
 #############
 # app map
 #############
-"~/.dotfiles/etc/keymap/switch-windows.sh typora"
+"switch-windows.sh typora"
   Alt+a
-"~/.dotfiles/etc/keymap/switch-windows.sh firefox"
+"switch-windows.sh firefox"
   Alt+c
-"~/.dotfiles/etc/keymap/switch-windows.sh 'File Manager'"
+"switch-windows.sh 'File Manager'"
   Alt+e
-"~/.dotfiles/etc/keymap/switch-windows.sh Konsole"
+"switch-windows.sh Konsole"
   Alt+n
 # v2rayA
 "xdg-open http://127.0.0.1:2017"
   Alt+Shift+n
-"~/.dotfiles/etc/keymap/switch-windows.sh qq"
+"switch-windows.sh qq"
   Alt+q
-"~/.dotfiles/etc/keymap/switch-windows.sh wechat"
+"switch-windows.sh wechat"
   Alt+r
-"~/.dotfiles/etc/keymap/switch-windows.sh 'Visual Studio Code'"
+"switch-windows.sh 'Visual Studio Code'"
   Alt+v
-"~/.dotfiles/etc/keymap/switch-windows.sh 'Xshell'"
+"switch-windows.sh 'Xshell'"
   Alt+x
 
 # "xvkbd -xsendevent -text '\m1'"

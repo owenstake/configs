@@ -3,8 +3,8 @@ source lib.sh
 ScriptDir=$(realpath $(dirname $0))
 
 function AddHookToConfigFile() {
-    local file=$1
-    local msg=$2
+    local file="$1"
+    local msg="$2"
     local commentMarker=${3:-"#"}
     local MarkLine="$commentMarker owen configed" 
     local line="${msg} ${MarkLine}"
@@ -15,7 +15,7 @@ function AddHookToConfigFile() {
         touch $file
     fi
 
-    # check flag
+    # check if config item is already in config file
     if ! grep -q "$MarkLine" $file ; then
         fmt_info "owen $file is configing"
         echo "$line" >> $file
@@ -24,7 +24,12 @@ function AddHookToConfigFile() {
         # echo "# -- end owen $file config -- " >> $file
     else
         fmt_info "update owen config in $file"
-        sed -i "s@.*$MarkLine.*@$line@" $file
+	lineNum=$(grep -n "$MarkLine" $file | cut -d':' -f1)
+        # sed -i 's@.*'${MarkLine}'@'${line}'@' $file
+	# awk 'NR=='$lineNum' {$0="'$PATH'"} 1' $file > $file
+	# awk '{ if (NR == '$lineNum') print "'$line'" ; else print $0}' $file > $file
+	sed -i "$lineNum c $line" $file
+        # sed -i "/$MarkLine/\c$line/g" $file
     fi
 }
 
@@ -59,6 +64,9 @@ function MakeInstall() {
 
     DeployConfigFile ../common/etc/init-in-one.lua ~/.config/nvim/init.lua
     DeployConfigDir   etc/keymap        $OwenInstallDir/etc/keymap/
+    DeployConfigDir   bin               $OwenInstallDir/bin
+
+    # echo "export PATH=$PATH:$OwenInstallDir/bin" >> ~/.profile
 
     # xbindkeys config
     if command_exists xbindkeys; then
@@ -86,10 +94,21 @@ function MakeInstall() {
     fi
 
     fmt_info "-- Deploy hooks to config file ---------"
-    AddHookToConfigFile   ~/.vimrc       "source $OwenInstallDir/etc/vim/vimrc"   '"'
-    AddHookToConfigFile   ~/.zshrc       "source $OwenInstallDir/etc/zsh/zshrc"
-    AddHookToConfigFile   ~/.tmux.conf   "source $OwenInstallDir/etc/tmux/tmux.conf"
-    AddHookToConfigFile   ~/.ssh/config  "Include $OwenInstallDir/etc/ssh/config"
+    AddHookToConfigFile   \
+	    ~/.vimrc      \
+	    "source $OwenInstallDir/etc/vim/vimrc"   '"'
+    AddHookToConfigFile   \
+	    ~/.zshrc      \
+	    "source $OwenInstallDir/etc/zsh/zshrc"
+    AddHookToConfigFile   \
+	    ~/.tmux.conf  \
+	    "source $OwenInstallDir/etc/tmux/tmux.conf"
+    AddHookToConfigFile   \
+	    ~/.ssh/config \
+	    "Include $OwenInstallDir/etc/ssh/config"
+    AddHookToConfigFile   \
+	    ~/.profile    \
+	    "[ -d $OwenInstallDir/bin ] && PATH=\"$OwenInstallDir/bin:\$PATH\""
 
     ### Force echo to zsh tmux config file
     # if [[ $1 = "f" ]]; then
