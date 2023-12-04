@@ -7,6 +7,14 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
+# glocal var
+appsCommon="
+    newsboat ranger global python3-pip  universal-ctags vim-gtk
+    xclip net-tools x11-apps  fd-find 
+    openssh-server tree trash-cli
+    xbindkeys xautomation
+    "
+
 # function
 command_exists() {
     command -v "$@" >/dev/null 2>&1
