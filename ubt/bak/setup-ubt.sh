@@ -7,28 +7,33 @@ trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
 # echo an error message before exiting
 trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 
-
 # glocal var
-curOsName=$(GetCurOsName)
-appsCommonStr="
-    fd-find global python3-pip universal-ctags vim-gtk
-    ranger newsboat openssh-server tree trash-cli wmctrl
-    x11-apps xclip xbindkeys xautomation xvkbd zsh
+appsCommon="
+    newsboat ranger global python3-pip  universal-ctags vim-gtk
+    xclip net-tools x11-apps  fd-find 
+    openssh-server tree trash-cli
+    xbindkeys xautomation
     "
 
-case $curOsName in
-    uos)
-    appsExpected="$appsCommonStr"
-    ;;
-    ubuntu)
-    appsExpected="$appsCommonStr clangd bat wl-clipboard "
-    ;;
-esac
+# function
+command_exists() {
+    command -v "$@" >/dev/null 2>&1
+}
+
+# fmt_info() {
+#     printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
+# }
+# fmt_error() {
+#     printf '%sERRO: %s%s\n' "${FMT_RED}${FMT_BOLD}" "$*" "$FMT_RESET"
+# }
 
 git_clone() {
     # local url=$1
     git clone --depth 1 $@
 }
+
+# TestProxy() {
+# }
 
 main() {
     setup_color
@@ -40,78 +45,33 @@ main() {
     fmt_info "Build dir is $buildDir"
     cd $buildDir
 
-    # if ! command_exists trash; then
-        # APT repo for Tsinghua
-        if ! InOs uos ; then   # Tsinghua repo is not for UOS
-            if ! grep -q tsinghua /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
-                wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
-                sudo python3 oh-my-tuna.py --global -y
-                sudo apt update
-            fi
-        fi
-
-        # Nodejs install
-        if ! command_exists node ; then
-            NODE_MAJOR=20
-            CUR_NODE_MAJOR=$(node --version | cut -d'.' -f1 | tr -d 'v')
-            if [ $CUR_NODE_MAJOR -lt $NODE_MAJOR ] ; then
-                fmt_info "Install nodejs $NODE_MAJOR"
-                sudo apt install -y ca-certificates curl gnupg
-                sudo mkdir -p /etc/apt/keyrings
-                curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
-                    | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-                echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg]"\
-                        "https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | \
-                        sudo tee /etc/apt/sources.list.d/nodesource.list
-                sudo apt install nodejs -y
-            fi
-        fi
-        # sudo apt upgrade -y --allow-unauthenticated
-
-        # get apps installed
-        appsInstalledStr=$(apt list --installed 2>/dev/null | cut -d'/' -f1)
-        declare -A appsInstalled
-        for a in $appsInstalledStr; do
-            appsInstalled[$a]=1   # mark as installed
-        done
-
-        # get apps need install
-        # check app expected
-        # declare -A appsNeedInstall
-        for a in $appsExpected; do
-            if [ ! -v "appsInstalled[$a]" ] ; then # check if app is already installed
-                appsNeedInstall+=($a)
-            fi
-        done
-        if [ 0 -eq ${#appsNeedInstall[@]} ]; then
-            fmt_info "Expected apps is all installed."
-        else
-            fmt_info "Install ${#appsNeedInstall[@]} apps ${appsNeedInstall[@]}"
-            sudo apt install -y ${appsNeedInstall[@]}
-        fi
-
-        # bat
-        if [ -f /usr/bin/batcat ] && \
-            [ ! -f /usr/bin/bat ] && \
-            [ ! -e /usr/local/bin/bat ] ; then
-            sudo ln -s /usr/bin/batcat /usr/local/bin/bat
-        fi
-        # start service
-        # sudo systemctl enable ssh
-    # fi
-
-    # install v2rayA
-    if ! command_exists v2raya; then
-        wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
-        echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
-
+    if ! command_exists zsh; then
+        # repo list config to Tsinghua
+        wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
+        sudo python3 oh-my-tuna.py --global -y
         sudo apt update
-        sudo apt install v2raya v2ray ## 也可以使用 xray 包
-        sudo systemctl start v2raya.service
-        sudo systemctl enable v2raya.service
+
+        # for nodejs
+        sudo apt install -y ca-certificates curl gnupg
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        NODE_MAJOR=20
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+        sudo apt install nodejs -y
+        sudo apt upgrade -y
+
+        # apps. rank.
+        appsUbt="clangd lua5.4 bat subversion wl-clipboard poppler-utils"
+        sudo apt install -y $appsCommon
+        sudo apt install -y $appsUbt
+        sudo apt install -y zsh   # install zsh at the final stage for check
+        sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
+        # start service
+        sudo systemctl enable ssh
     fi
 
-    # python pip mirror config
+    # python config
     if [[ ! -e ~/.pip/pip.conf ]]; then
         mkdir -p ~/.pip
         echo "[global]                                            " >> ~/.pip/pip.conf
@@ -124,19 +84,15 @@ main() {
         python3 -m pip install sshconf
     fi
 
-    # Proxy
-    if InWsl ; then
-        gateway=$(ip route | head -1 | awk '{print $3}')
-        export all_proxy=http://$gateway:10809
-    else
-        export all_proxy=http://127.0.0.1:20171  # v2rayA
-    fi
+    # Proxy for github
+    gateway=$(ip route | head -1 | awk '{print $3}')
+    export all_proxy=http://$gateway:10809
 
     # check network proxy
     if curl -s www.google.com --connect-timeout 3 > /dev/null; then
         fmt_info "Proxy ok."
     else
-        fmt_error "Proxy fail. Please check v2rayA or v2rayN(win10-wsl) is ok for 10809."
+        fmt_error "Proxy fail. Please check win10 v2ray is ok for 10809."
         fmt_error "1. win v2rayN is ok for 10809 ?"
         fmt_error "2. win v2rayN is ok for remote ?"
         fmt_error "3. win firewall is opened for wsl ?. If not, do the following command in powershell."
@@ -148,7 +104,7 @@ main() {
     if [[ ! -e ~/.oh-my-zsh ]]; then
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh )" \
             "" --unattended --keep-zshrc
-        sudo chsh -s /usr/bin/zsh $(whoami)
+        sudo chsh -s /usr/bin/zsh z
         echo 'export ZSH="$HOME/.oh-my-zsh"' >> ~/.zshrc
         echo 'ZSH_THEME="robbyrussell"'      >> ~/.zshrc
         echo 'source $ZSH/oh-my-zsh.sh'      >> ~/.zshrc
@@ -219,19 +175,6 @@ main() {
         tar xf lazygit.tar.gz lazygit
         sudo install lazygit /usr/local/bin
         # rm lazygit lazygit.tar.gz # clean
-    fi
-
-    # golang 1.21.4
-    if ! command_exists go; then
-        wget https://go.dev/dl/go1.21.4.linux-arm64.tar.gz
-        mkdir -p ~/.local
-        tar -C ~/.local -xzf go1.21.4.linux-arm64.tar.gz
-        rm $_
-        if ! grep -q "~/.local/go/bin" ~/.profile; then
-            echo "PATH=\$PATH:\$HOME/.local/go/bin" >> ~/.profile
-            source ~/.profile
-        fi
-        go env -w GOPROXY=https://goproxy.cn,direct
     fi
 
     fmt_info "Finish install"
