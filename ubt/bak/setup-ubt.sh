@@ -69,6 +69,75 @@ main() {
         sudo ln -sf /usr/bin/batcat /usr/local/bin/bat
         # start service
         sudo systemctl enable ssh
+    # if ! command_exists trash; then
+        # APT repo for Tsinghua
+        if ! InOs uos ; then   # Tsinghua repo is not for UOS
+            if ! grep -q tsinghua /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
+                wget https://tuna.moe/oh-my-tuna/oh-my-tuna.py
+                sudo python3 oh-my-tuna.py --global -y
+                sudo apt update
+            fi
+        fi
+
+        # Nodejs install
+        if ! command_exists node ; then
+            NODE_MAJOR=20
+            CUR_NODE_MAJOR=$(node --version | cut -d'.' -f1 | tr -d 'v')
+            if [ $CUR_NODE_MAJOR -lt $NODE_MAJOR ] ; then
+                fmt_info "Install nodejs $NODE_MAJOR"
+                sudo apt install -y ca-certificates curl gnupg
+                sudo mkdir -p /etc/apt/keyrings
+                curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+                    | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+                echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg]"\
+                        "https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | \
+                        sudo tee /etc/apt/sources.list.d/nodesource.list
+                sudo apt install nodejs -y
+            fi
+        fi
+        # sudo apt upgrade -y --allow-unauthenticated
+
+        # get apps installed
+        appsInstalledStr=$(apt list --installed 2>/dev/null | cut -d'/' -f1)
+        declare -A appsInstalled
+        for a in $appsInstalledStr; do
+            appsInstalled[$a]=1   # mark as installed
+        done
+
+        # get apps need install
+        # check app expected
+        # declare -A appsNeedInstall
+        for a in $appsExpected; do
+            if [ ! -v "appsInstalled[$a]" ] ; then # check if app is already installed
+                appsNeedInstall+=($a)
+            fi
+        done
+        if [ 0 -eq ${#appsNeedInstall[@]} ]; then
+            fmt_info "Expected apps is all installed."
+        else
+            fmt_info "Install ${#appsNeedInstall[@]} apps ${appsNeedInstall[@]}"
+            sudo apt install -y ${appsNeedInstall[@]}
+        fi
+
+        # bat
+        if [ -f /usr/bin/batcat ] && \
+            [ ! -f /usr/bin/bat ] && \
+            [ ! -e /usr/local/bin/bat ] ; then
+            sudo ln -s /usr/bin/batcat /usr/local/bin/bat
+        fi
+        # start service
+        # sudo systemctl enable ssh
+    # fi
+
+    # install v2rayA
+    if ! command_exists v2raya; then
+        wget -qO - https://apt.v2raya.org/key/public-key.asc | sudo tee /etc/apt/keyrings/v2raya.asc
+        echo "deb [signed-by=/etc/apt/keyrings/v2raya.asc] https://apt.v2raya.org/ v2raya main" | sudo tee /etc/apt/sources.list.d/v2raya.list
+
+        sudo apt update
+        sudo apt install v2raya v2ray ## 也可以使用 xray 包
+        sudo systemctl start v2raya.service
+        sudo systemctl enable v2raya.service
     fi
 
     # python config
@@ -175,6 +244,19 @@ main() {
         tar xf lazygit.tar.gz lazygit
         sudo install lazygit /usr/local/bin
         # rm lazygit lazygit.tar.gz # clean
+    fi
+
+    # golang 1.21.4
+    if ! command_exists go; then
+        wget https://go.dev/dl/go1.21.4.linux-arm64.tar.gz
+        mkdir -p ~/.local
+        tar -C ~/.local -xzf go1.21.4.linux-arm64.tar.gz
+        rm $_
+        if ! grep -q "~/.local/go/bin" ~/.profile; then
+            echo "PATH=\$PATH:\$HOME/.local/go/bin" >> ~/.profile
+            source ~/.profile
+        fi
+        go env -w GOPROXY=https://goproxy.cn,direct
     fi
 
     fmt_info "Finish install"
