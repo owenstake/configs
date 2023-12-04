@@ -16,21 +16,22 @@ function AddHookToConfigFile() {
     fi
 
     # check if config item is already in config file
-    if ! grep -q "$MarkLine" $file ; then
-        fmt_info "owen $file is configing"
-        echo "$line" >> $file
-        # echo "# -- owen $file config -- "     >> $file
-        # echo "$msg"                           >> $file
-        # echo "# -- end owen $file config -- " >> $file
-    else
-        fmt_info "update owen config in $file"
-	lineNum=$(grep -n "$MarkLine" $file | cut -d':' -f1)
-        # sed -i 's@.*'${MarkLine}'@'${line}'@' $file
-	# awk 'NR=='$lineNum' {$0="'$PATH'"} 1' $file > $file
-	# awk '{ if (NR == '$lineNum') print "'$line'" ; else print $0}' $file > $file
-	sed -i "$lineNum c $line" $file
-        # sed -i "/$MarkLine/\c$line/g" $file
-    fi
+    local itemNum=$(grep -c -F "$MarkLine" $file)
+    case $itemNum in
+	    0)
+            fmt_info "Add config item to $file"
+            echo "$line" >> $file
+            ;;
+	    1)
+            fmt_info "Update config item in $file"
+            lineNum=$(grep -n "$MarkLine" $file | cut -d':' -f1)
+            sed -i "$lineNum c $line" $file
+            ;;
+	    *)
+            fmt_error "Fail to update owen config in $file"
+            fmt_error "There are more then one line exists in $file"
+        ;;
+    esac
 }
 
 function DeployConfigDir() {
@@ -62,9 +63,13 @@ function MakeInstall() {
     DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
     DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
 
-    DeployConfigFile ../common/etc/init-in-one.lua ~/.config/nvim/init.lua
     DeployConfigDir   etc/keymap        $OwenInstallDir/etc/keymap/
     DeployConfigDir   bin               $OwenInstallDir/bin
+
+    if [ -f ../common/etc/init-in-one.lua ] ; then
+        DeployConfigFile ../common/etc/init-in-one.lua \
+                            ~/.config/nvim/init.lua
+    fi
 
     # echo "export PATH=$PATH:$OwenInstallDir/bin" >> ~/.profile
 
@@ -109,17 +114,6 @@ function MakeInstall() {
     AddHookToConfigFile   \
 	    ~/.profile    \
 	    "[ -d $OwenInstallDir/bin ] && PATH=\"$OwenInstallDir/bin:\$PATH\""
-
-    ### Force echo to zsh tmux config file
-    # if [[ $1 = "f" ]]; then
-    #     _owen_force_update=1
-    #     fmt_info "Force update config files including zsh,tmux"
-    #     fmt_info "You must take care of the duplicated term in zsh/tmux config file~~~"
-    #     fmt_info "zsh  $(realpath ~/.zshrc)"
-    #     fmt_info "tmux $(realpath ~/.tmux.conf)"
-    # else
-    #     _owen_force_update=
-    # fi
 
     # WSL config.
     if [[ $(uname -a) == *WSL* ]]; then
