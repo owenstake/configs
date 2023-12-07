@@ -2,54 +2,6 @@
 source lib.sh
 ScriptDir=$(realpath $(dirname $0))
 
-AddHookToConfigFile() {
-	local file="$1"
-	local msg="$2"
-	local commentMarker=${3:-"#"}
-	local MarkLine="$commentMarker owen configed"
-	local line="${msg} ${MarkLine}"
-
-	# touch file and mkdir -p
-	if [ ! -e "$file" ]; then
-		mkdir -p $(dirname $file)
-		touch $file
-	fi
-
-	# check if config item is already in config file
-	local itemNum=$(grep -c -F "$MarkLine" $file)
-	case $itemNum in
-		0)
-			fmt_info "Add config item to $file"
-			echo "$line" >> $file
-			;;
-		1)
-			fmt_info "Update config item in $file"
-			lineNum=$(grep -n "$MarkLine" $file | cut -d':' -f1)
-			sed -i "$lineNum c $line" $file
-			;;
-		*)
-			fmt_error "Fail to update owen config in $file"
-			fmt_error "There are more then one line exists in $file"
-		;;
-	esac
-}
-
-DeployConfigDir() {
-	local srcDir=$1
-	local dstDir=$2
-	mkdir -p $dstDir
-	rsync -r $srcDir/* $dstDir
-	fmt_info "DeployConfigDir $srcDir to $dstDir"
-}
-
-DeployConfigFile() {
-	local srcFile=$1
-	local dstFile=$2
-	fmt_info "DeployConfigFile $srcFile to $dstFile"
-	mkdir -p $(dirname $dstFile)
-	rsync $srcFile $dstFile
-}
-
 MakeInstall() {
 	## override config
 	# mkdir -p ~/.local $$ mkdir -p ~/.config
