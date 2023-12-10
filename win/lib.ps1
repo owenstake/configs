@@ -1,3 +1,4 @@
+### Function ########
 Function fmt_info {
 	Write-Host $args -BackgroundColor DarkCyan
 }
@@ -81,5 +82,13 @@ Function EnvPathInsertAtHeadIfNoExists($item) {
     }
     $env:path = $item + ";" + $env:path
     [Environment]::SetEnvironmentVariable('PATH', $Env:PATH, 'User')
+}
+
+Function IsUosWin() {
+    if ($Env:UserName.contains("Administrator")) {
+        echo "In UosWin"
+        return $true
+    }
+    return $false
 }
 

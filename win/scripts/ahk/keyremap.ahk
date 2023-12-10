@@ -65,11 +65,26 @@ For appExe, conf in AppsConf {
     }
 }
 
+ToggleAppInAltTabList() {
+    Winget, id, id, A
+    ; Toggle
+    WinSet, ExStyle, ^0x80, A ; 0x80 is WS_EX_TOOLWINDOW
+
+    ; Get current state
+    WinGet, ExStyle, ExStyle, A ; 0x80 is WS_EX_TOOLWINDOW
+    If (ExStyle & 0x80) {
+       MsgBox The window is remove from alt-tab list.
+    } else {
+       MsgBox The window is add to alt-tab list.
+    }
+}
+
 ; hotkeys threads
 Launch_Mail::LongPressedSpeedUp("Volume_Down")
 Browser_Home::LongPressedSpeedUp("Volume_Up")
 CapsLock::LCtrl
 RAlt::Esc
+!+p::ToggleAppInAltTabList()
 
 #If, WinActiveAndCapsDown("ahk_group CtrlMGroup")
 #If
