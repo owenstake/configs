@@ -5,18 +5,6 @@ Set-Location $pscommandpath/..
 # https://gitee.com/glsnames/scoop-installer
 # https://gitee.com/scoop-bucket
 
-### Global var ########
-if ((Get-Volume).DriveLetter -contains "d"){
-    $scoopInstallDir="D:\owen\scoop"
-} else {
-    $scoopInstallDir="~/owen/scoop"
-}
-
-$isUosWin = IsUosWin
-if ($isUosWin) {
-    $miniInstall=$true
-}
-
 # depend on nothing
 
 # Configure String
@@ -28,22 +16,18 @@ $script:wingetAppstr = "
 
 $script:scoopAppstr1 = "
     # Install first
-    7zip autohotkey1.1 vim-tux xray v2rayN vscode
+    7zip autohotkey1.1 vim-tux windows-terminal xray v2rayN vscode
     $(If ($WinVersion -gt 18362) { "windows-terminal oh-my-posh" } else { "cmder" })
 "
 
-$script:scoopCliAppstr1 = "
+$script:scoopAppstr2 = "
     gow sudo  less bat tre-command recycle-bin file    # CLI basic tool
     global go  lua python nodejs-lts winget git  # CLI program tool
     lf lua fd ripgrep z.lua fzf pscolor psfzf                 # CLI super tool
-    scoop-completion 
-    "
-$script:scoopCliAppstr2 = "
-    ffmpeg SarasaGothic-SC
-"
-$script:scoopUiAppstr2 = "
+    scoop-completion ffmpeg 
     snipaste ScreenToGif notepadplusplus flux everything # UI simple tool 
     foxit-reader  draw.io googlechrome      # UI super tool
+    SarasaGothic-SC
     # UI app
     wechat foxit-reader mobaxterm foxmail baiduNetdisk
 	zotero tor-browser firefox typora obsidian HeidiSQL
@@ -124,6 +108,7 @@ Function Get-AppsNeedInstall($installer, $appStrs) {
 
 Function Scoop-install {
     fmt_info "SCOOP: Start"
+	$scoopInstallDir="D:\owen\scoop"
 	# fix ssl in tyy win10 server 2016 - 
 	# TLS - https://learn.microsoft.com/zh-cn/dotnet/framework/network-programming/tls
 	# [System.Net.ServicePointManager]::SecurityProtocol += [System.Net.SecurityProtocolType]::Tls12;
@@ -136,14 +121,7 @@ Function Scoop-install {
             $need_restore = $true
         }
         # install scoop
-        if ((whoami).contains("Administrator")) {
-            iwr -useb scoop.201704.xyz -outfile 'install.ps1'
-            ./install.ps1 -RunAsAdmin
-            rm ./install.ps1
-        } else {
-            iwr -useb scoop.201704.xyz | iex
-        }
-
+		iwr -useb scoop.201704.xyz | iex	
         If (!(Test-CommandExists scoop)) {
             fmt_error "Fail to install scoop. Stop this script."
             exit -1
@@ -190,13 +168,7 @@ Function Scoop-install {
         scoop hold psfzf  # no update psfzf. psfzf@latest is broken.
     }
     # Install Apps
-    if ($miniInstall) {
-        $appsStrs = ($scoopAppstr1, $scoopCliAppstr1)
-    } else {
-        $appsStrs = ($scoopAppstr1, $scoopCliAppstr1,
-                        $scoopCliAppstr2, $scoopUiAppstr2)
-    }
-    If ($apps = Get-AppsNeedInstall "SCOOP" $appsStrs ) {
+    If ($apps = Get-AppsNeedInstall "SCOOP" ($scoopAppstr1,$scoopAppstr2) ) {
         scoop install $apps
     }
 
@@ -300,9 +272,7 @@ Function Setup-ExecutionPolicy() {
 Function main {
     Setup-ExecutionPolicy
     "This script just install app and config system"
-    if (!($isUosWin)) {
-        Wsl-install
-    }
+    Wsl-install
 	Scoop-install
     # Chocolatey-install
     Psmodule-install
@@ -315,3 +285,25 @@ Function main {
 
 $time = Measure-Command { main }
 fmt_info "Total: Time elasped is $time"
+
+# cmd history - $env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+# .net-framework - https://dotnet.microsoft.com/zh-cn/download/dotnet-framework/thank-you/net472-web-installer
+# $env:ALL_PROXY="http://127.0.0.1:10809"
+# scoop config proxy http://127.0.0.1:10809
+# scoop config rm proxy
+
+# restore scoop all apps
+# scoop reset *
+
+# v2rayN - subscribe - https://subbs.susuda.sslcdnapp.net/link/rfB6U0hYByqVcNwm?sub=3&extend=1
+
+# vimrc
+# let &pythonthreedll = 'D:\scoop\apps\python\3.11.3\python311.dll'
+
+# 24-bit Color may be not support in the Windows 10 console (Windows 10 release 1703 onwards)
+# https://devblogs.microsoft.com/commandline/24-bit-color-in-the-windows-console/
+
+
+
+
+

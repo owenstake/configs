@@ -56,14 +56,6 @@ Function Get-IniContentToString($InputObject) {
     # return $lines -join "`n"
 }
 
-Function Test-CommandExists($cmd) {
-    If (Get-Command $cmd -ErrorAction SilentlyContinue) {
-        return $true
-    } else {
-        return $false
-    }
-}
-
 # [powershell - Create Hashtable from JSON - Stack Overflow](https://stackoverflow.com/questions/40495248/create-hashtable-from-json )
 [CmdletBinding]
 Function Get-FromJson {
@@ -170,19 +162,7 @@ Function Get-AppExe($appExe) {
 }
 
 Function UpdateProxifier($config) {
-    $profileFiles = ("$Env:SCOOP\persist\proxifier\Profiles\Default.ppx",
-                    "$Env:AppData\proxifier\Profiles\Default.ppx")
-    $proxifierProfileFile = $Null
-    Foreach ($f in $profileFiles) {
-        If (test-path -PathType Leaf $f) {
-            $proxifierProfileFile = $f
-            break
-        }
-    }
-    if ($proxifierProfileFile -eq $null) {
-        write-error "Fail to find proxifier profile!"
-        return
-    }
+    $proxifierProfileFile = "$Env:SCOOP\persist\proxifier\Profiles\Default.ppx"
     $xml = [xml](Get-Content $proxifierProfileFile -Encoding utf8)
 	$profixierExe = $(Get-AppExe proxifier)
 	echo $profixierExe
@@ -199,8 +179,7 @@ Function UpdateProxifier($config) {
 }
 
 Function UpdateXshell($config, $XshellconfigFile) {
-    # $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
-    $XshellExe  = "xshell.exe"
+    $XshellExe  = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
     $iniNeedItems = @{
         'CONNECTION:SSH' = @{
             'FwdReq_0_LocalOnly'   = 0                     
@@ -236,7 +215,8 @@ Function UpdateXshell($config, $XshellconfigFile) {
     Get-IniContentToString $ini | Set-Content $XshellconfigFile
 
     "===== Start Xshell ============="
-    & Xshell.exe "$XshellconfigFile"
+    & "$XshellExe" "$XshellconfigFile"
+
 }
 
 Function Main() {
@@ -255,10 +235,7 @@ Function Main() {
     "Found proxy.json in $configsFile"
     # $configsFile = "$env:OwenInstallDir/etc/common"
     $configs     = Get-FromJson "$configsFile"
-    If (!(Test-CommandExists "xshell")) {
-        Write-Error "Please install Xshell first!"
-        return
-    }
+    $XshellExe   = "C:\Program Files (x86)\NetSarang\Xshell 7\Xshell.exe"
 
     # "====== Map serverIp to port ==================="
     # $configs | ConvertTo-Json

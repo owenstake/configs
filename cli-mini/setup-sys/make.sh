@@ -31,7 +31,6 @@ bashrc_for_tmux="
     alias zc='z -c'
     alias zb='z -b'
     alias zf='z -I'
-    alias reboot='echo reboot use \\reboot'
     rgf () {
         rg --color=always --line-number --no-heading             \\
             --smart-case '\${*:-}' |                             \\
