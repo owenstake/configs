@@ -99,6 +99,55 @@ GetAppMatcher(app) {
     return match
 }
 
+IsWindow(hWnd){
+    WinGet, dwStyle, Style, ahk_id %hWnd%
+    if ((dwStyle&0x08000000) || !(dwStyle&0x10000000)) {
+        ; 0x08000000 is WS_DISABLED.
+        ; 0x10000000 is WS_VISIBLE.
+        return false
+    }
+    WinGet, dwExStyle, ExStyle, ahk_id %hWnd%
+    if (dwExStyle & 0x00000080) {
+        ; 0x80 is WS_EX_TOOLWINDOW.
+        return false
+    }
+    WinGetClass, szClass, ahk_id %hWnd%
+    if (szClass = "TApplication") {
+        return false
+    }
+    return true
+}
+
+InMainScreen(this_id) {
+    WinGetPos, x, y, , , ahk_id %this_id%
+    return x > -100  ;if your primary screen is 0 >..
+    ; if (x > -100) {    ;if your primary screen is 0 >..
+    ;     ; WinSet, Bottom,, ahk_id %this_id%
+    ; }
+}
+
+OwenAltTab(match) {
+    WinGet, id, list, %match%
+    ; WinGet, id, list,,, Program Manager
+    WinGet, aid, id, A
+    Loop, %id%
+    {
+        this_id := id%A_Index%
+        ; skip current active win
+        IfWinActive, ahk_id %this_ID%
+            continue
+        ; WinGetTitle, title, ahk_id %this_ID%
+        If (!IsWindow(WinExist("ahk_id" . this_ID))) {
+            continue
+        }
+        If (!InMainScreen(this_id)) {
+            continue
+        }
+        WinActivate, ahk_id %this_id%
+        break
+    }
+}
+
 DoKeyToApp() {
     keywait alt ; avoid trigger alt for app
     appName := GetAppNameByShortcut()
@@ -106,9 +155,13 @@ DoKeyToApp() {
     match   := GetAppMatcher(appName)
     if WinExist(match) {  ; This will be expanded because it is a expression
         if WinActive(match) {
+            ; OwenAltTab("")
+            ; OwenAltTab(match)
             Send !{Esc}
+            return
         } else {
-            WinActivate, %match%  ; Command syntax
+            OwenAltTab(match)
+            ; WinActivate, %match%
         }
     } else {
         if (conf["ExePath"]) {

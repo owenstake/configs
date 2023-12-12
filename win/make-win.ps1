@@ -8,10 +8,16 @@ if ($file = Get-ChildItem . -Recurse "lib-script.ps1") {
     . $file.Fullname  # contain Get-AppExe
 }
 
+### Global var ########
 Function EnvSetup() {
-    SetEnvVar "OwenInstallDir" "D:\.dotfiles"
+    if ((Get-Volume).DriveLetter -contains "d"){
+        SetEnvVar "OwenInstallDir" "D:\.dotfiles"
+        SetEnvVar "WEIYUN"         "D:\owen\weiyun"
+    } else {
+        SetEnvVar "OwenInstallDir" "~/.dotfiles"
+        SetEnvVar "WEIYUN"         "~/owen/weiyun"
+    }
     SetEnvVar "LF_CONFIG_HOME" "$Env:OwenInstallDir\etc\lf"
-    SetEnvVar "WEIYUN"         "D:\owen\weiyun"
 }
 
 Function AddHookToConfigFile($filePath, $msg, $commentMark=@("#",""), 
@@ -50,7 +56,7 @@ Function DeployConfigDir($srcDir, $dstDir) {
 
 Function AddStartupTask($filePath) {
     If (!(Get-Item $filePath -errorAction silentlyContinue)) {
-        fmt_error "AddStartupTask() fail, $filePath do not exists"
+        fmt_warn "AddStartupTask() fail, $filePath do not exists"
         return
     }
     "Add Startup Task $filePath"
@@ -59,19 +65,31 @@ Function AddStartupTask($filePath) {
     CreateShortCutToDir $filePath $initd
 }
 
+Function AddAppToStartupTask($app) {
+    If (!(Test-CommandExists "$app")) {
+        fmt_warn "AddAppStartupTask() fail, $app do not exists"
+        return
+    }
+    return AddStartupTask "$(Get-AppExe $app)"
+}
+
 Function MakeAll() {
     # Make
-    fmt_info "Compiling ahk and go"
+    fmt_info "Compiling ahk/go/ps for bin."
     if ($file = Get-ChildItem -Recurse "previewer.go") {  # preview for lf
+        fmt_info "Compile $file to bin/$($file.basename).exe"
         go build -o "bin/$($file.basename).exe" "$file"
     }
     if ($file = Get-ChildItem -Recurse "keyremap.ahk") {
+        fmt_info "Compile $file to bin/$($file.basename).exe"
         ahk2exe "$file" "bin\$($file.basename).exe"   # must be backslash for ahk2exe
     }
     if ($file = Get-ChildItem -Recurse "easy-marker.ahk") {
+        fmt_info "Compile $file to bin/$($file.basename).exe"
         ahk2exe "$file" "bin\$($file.basename).exe"   # must be backslash for ahk2exe
     }
     if ($file = Get-ChildItem -Recurse "xshell-proxy.ps1") {
+        fmt_info "Compile $file to bin/$($file.basename).exe"
         ps2exe -inputFile "$file" -outputFile "bin/$($file.basename).exe"
     }
 }
@@ -92,12 +110,17 @@ Function MakeInstall() {
     "--- Deploy Config File ----"
     DeployConfigDir  "../common/etc/vim"  "$Env:OwenInstallDir/etc/vim"
     # DeployConfigDir  "../common/etc/nvim" "$Env:LOCALAPPDATA/nvim"
-    cp "../common/etc/init-in-one.lua" "$Env:LOCALAPPDATA/nvim/init.lua"
+    $luaFile ="../common/etc/init-in-one.lua" 
+    if (Test-Path -pathtype Container $luaFile) {
+        cp "$luaFile" "$Env:LOCALAPPDATA/nvim/init.lua"
+    }
     # DeployConfigDir  "etc/lf"             "$Env:LF_CONFIG_HOME"
     DeployConfigDir  "etc/lf"             "$Env:LOCALAPPDATA/lf"
     DeployConfigDir  "etc/profile"        "$Env:OwenInstallDir/etc/profile"
     DeployConfigDir  "etc/common"         "$Env:OwenInstallDir/etc/common"
-    DeployConfigDir  "etc/typora/css"         "$Env:APPDATA/Typora/themes/owen"
+    If (Test-CommandExists typora.exe) {
+        DeployConfigDir  "etc/typora/css"         "$Env:APPDATA/Typora/themes/owen"
+    }
 
     "--- Write hook to vim and powrshell profile, because vim, profile can not be custom path"
     AddHookToConfigFile "$HOME\_vimrc"  "source $Env:OwenInstallDir/etc/vim/vimrc"  @('"','') "utf8"          # vimrc must be utf8 for parsing
@@ -110,7 +133,9 @@ Function MakeInstall() {
 
     "--- Crack typora ---"
     if ($file = Get-ChildItem -Recurse "winmm.dll") {
-		if (($tyExe = $(Get-AppExe 'typora')) -and ($tyDir = $(Get-Item $tyExe).DirectoryName)) {
+		if ((Test-CommandExists typora.exe) -and
+            ($tyExe = $(Get-AppExe 'typora')) -and
+            ($tyDir = $(Get-Item $tyExe).DirectoryName)) {
 			cp $file $tyDir -errorAction silentlyContinue
 		}
 	}
@@ -131,9 +156,9 @@ Function MakeInstall() {
     }
 
     # Add startup task
-    AddStartupTask "$(Get-AppExe 'qq')"
-    AddStartupTask "$(Get-AppExe 'proxifier')"
-    AddStartupTask "$(Get-AppExe 'V2rayN')"
+    AddAppToStartupTask "qq"
+    AddAppToStartupTask "proxifier"
+    AddAppToStartupTask "V2rayN"
     if ($file = Get-ChildItem "$Env:OwenInstallDir" -Recurse "keyremap.ahk") {
         AddStartupTask $file.FullName
     }
