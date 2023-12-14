@@ -42,21 +42,34 @@ bashrc_for_tmux="
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'  \\
             --bind 'enter:become(vim {1} +{2})'
     }
-    eval \"\$(lua $zlua_dir/z.lua --init bash)\"
+    eval \"\$(lua $InstallDir/repo/zlua/z.lua --init bash)\"
     [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 "
 
 vim_config="inoremap jk <esc>"
 
+git_repo_install() {
+    local repo_name=$1
+    local bin_name=$2
+    local dl_url=$(curl -s https://api.github.com/repos/$repo_name/releases/latest |
+				jq -r '.assets[] | select(.name |
+                        match("x86_64-unknown-linux-musl.*gz$"))
+                        .browser_download_url')
+    local dl_tgz=${dl_url##*/}
+    local dl_dir=${dl_tgz%%.tar.gz}
+    # fmt_info "Download from $dl_url"
+    # fmt_info "Retrieve $dl_dir/$bin_name from download url"
+    # fmt_info "Deploy bin to $InstallDir/bin"
+    curl -sL $dl_url |
+            tar -xz -C ./bin --strip-components=1 $dl_dir/$bin_name
+}
+
 fd_install() {
-    local repo="sharkdp/fd"
-    local fd_url=$(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | 
-				jq -r '.assets[] |
-				select(.name|contains("x86_64-unknown-linux-musl")).browser_download_url')
-    local fd_tgz=${fd_url##*/}
-    local fd_dir=${fd_tgz%%.tar.gz}
-    curl -L $fd_url |
-            tar -xz -C $InstallDir/bin --strip-components=1 $fd_dir/fd
+    git_repo_install "sharkdp/fd" "fd"
+}
+
+ripgrep_install() {
+    git_repo_install "BurntSushi/ripgrep" "rg"
 }
 
 fzf_install() {
@@ -71,7 +84,7 @@ fzf_install() {
 }
 
 zlua_install() {
-	local zlua_dir="$InstallDir/repo/zlua"
+	local zlua_dir="./repo/zlua"
 	# make
 	if [[ ! -e $zlua_dir ]]; then
 		git clone --depth 1 https://gitee.com/mirrors/z.lua.git $zlua_dir
@@ -108,6 +121,8 @@ Make() {
 		zlua_install
 		fmt_info "Install fd-find"
 		fd_install
+		fmt_info "Install ripgrep"
+		ripgrep_install
     fi
 }
 

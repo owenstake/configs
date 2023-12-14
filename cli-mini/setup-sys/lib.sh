@@ -41,6 +41,7 @@ GetTmuxConfig() {
 			return -1
 			;;
 	esac
+    echo "$tmux_config"
 }
 
 # function
