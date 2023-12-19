@@ -58,7 +58,7 @@ git_repo_build() {
     local bin_name=$1
     local repo_name=$2
     local file_pattern=${3:-"x86_64-unknown-linux-musl.*tar.[xg]z$"}
-    fmt_info "build $bin_name"
+    fmt_info "Download $bin_name"
 
     local dl_url=$(curl -s https://api.github.com/repos/$repo_name/releases/latest |
                 jq -r '.assets[] | select(.name | match("'$file_pattern'"))
@@ -120,9 +120,11 @@ rust_tools_download() {
     git_repo_build "lsd"       "lsd-rs/lsd"
     git_repo_build "mcfly"     "cantino/mcfly"
     git_repo_build "sd"        "chmln/sd"
+    git_repo_build "starship"  "starship/starship"
     git_repo_build "tokei"     "XAMPPRocky/tokei"
     git_repo_build "watchexec" "watchexec/watchexec"
 
+    return
 }
 
 fzf_config() {
@@ -160,7 +162,7 @@ zlua_config() {
     case $action in
         download)
             fmt_info "Download zlua"
-            if [[ ! -e $zlua_dir ]]; then # TODO
+            if [[ ! -e $zlua_dir ]]; then
                 git clone --depth 1 https://gitee.com/mirrors/z.lua.git $zlua_dir \
                         && rm -rf $_/.git
             fi
@@ -189,11 +191,32 @@ MakeAll() {
     echo "$bashrc_for_tmux" > $InstallDir/etc/bashrc  # hook in tmux conf
 
     fmt_info "Generate tmux config"
-    tmuxConfig=$(GetTmuxConfig)
+    local tmuxConfig=$(GetTmuxConfig )
     echo "$tmuxConfig" > $buildDir/etc/tmux.conf
 
     # check network proxy
-    export all_proxy=http://127.0.0.1:10809
+    local os_release=$(cat /etc/os-release | grep -xoP 'ID=\K.*')
+    local proxy_server_address
+    if [ -n "$all_proxy" ]; then
+        fmt_info "Env all_proxy is configed already."
+    else
+        case $os_release in
+            centos)
+                proxy_server_address=http://127.0.0.1:10809
+                ;;
+            uos)
+                proxy_server_address=http://127.0.0.1:20171
+                ;;
+            ubuntu)
+                proxy_server_address=http://$WINIP:10809
+                ;;
+            *)
+                fmt_error "Unknown system type $os_release"
+                ;;
+        esac
+        fmt_info "Env all_proxy set to $proxy_server_address"
+        export all_proxy=$proxy_server_address
+    fi
     if ! curl -s www.google.com --connect-timeout 3 > /dev/null; then
         fmt_error "Proxy fail. Please check proxy port 10809."
         fmt_error "1. SSH login from wsl ? Exec in wsl: ssh $(whoami)@xx"
