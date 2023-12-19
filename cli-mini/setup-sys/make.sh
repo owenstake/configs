@@ -1,16 +1,22 @@
+#!/usr/bin/bash
 source lib.sh
 
 scriptDir=$(dirname $0)
 
-InstallDir="$HOME/z/dotfile"
-# fzf_dir="$InstallDir/bin"
+if [ -z $scriptDir ]; then
+    fmt_error "\$scriptDir is None"
+    exit -1
+fi
+buildDir=$scriptDir/output
+InstallDir="$HOME/z/.dotfile"
+
+subdir=(bin etc repo)
 
 mkdir -p $InstallDir
 mkdir -p $InstallDir/etc
 mkdir -p $InstallDir/repo
 mkdir -p $InstallDir/bin
 
-mkdir -p $scriptDir/bin
 
 bash_config="
     # configed
@@ -26,7 +32,7 @@ bash_config="
 bashrc_for_tmux="
     export EDITOR=vim # configed
     source ~/.bashrc
-	export PATH=\$PATH:$InstallDir/bin
+    export PATH=\$PATH:$InstallDir/bin
     alias rp='realpath'
     alias zc='z -c'
     alias zb='z -b'
@@ -48,58 +54,143 @@ bashrc_for_tmux="
 
 vim_config="inoremap jk <esc>"
 
-git_repo_install() {
-    local repo_name=$1
-    local bin_name=$2
+git_repo_build() {
+    local bin_name=$1
+    local repo_name=$2
+    local file_pattern=${3:-"x86_64-unknown-linux-musl.*tar.[xg]z$"}
+    fmt_info "build $bin_name"
+
     local dl_url=$(curl -s https://api.github.com/repos/$repo_name/releases/latest |
-				jq -r '.assets[] | select(.name |
-                        match("x86_64-unknown-linux-musl.*gz$"))
-                        .browser_download_url')
-    local dl_tgz=${dl_url##*/}
-    local dl_dir=${dl_tgz%%.tar.gz}
+                jq -r '.assets[] | select(.name | match("'$file_pattern'"))
+                        .browser_download_url'  )
+    local dl_file=${dl_url##*/}
+    # local dl_dir=${dl_tgz%%.tar.gz}
     # fmt_info "Download from $dl_url"
     # fmt_info "Retrieve $dl_dir/$bin_name from download url"
     # fmt_info "Deploy bin to $InstallDir/bin"
-    curl -sL $dl_url |
-            tar -xz -C ./bin --strip-components=1 $dl_dir/$bin_name
+    dst_dir="$buildDir/bin"
+    fmt_info "$dl_url"
+    # dl_file_ext=${dl_file#*.}
+    case $dl_file in
+        *.tar.[xg]z)
+            # Get final part of filename splitted by "."
+            local zipMethod=${dl_file##*.}
+            # default local array
+            declare -A zipMapOption=([gz]="--gzip" [xz]="--xz")
+            local option=${zipMapOption[$zipMethod]}
+            if [ -z "$option" ]; then
+                fmt_error "unknown zipMethod $zipMethod"
+                return
+            fi
+            curl -sL $dl_url | tar -x $option -C $dst_dir \
+                                    --transform='s%.*/%%' \
+                                    --no-anchor "$bin_name"
+            ;;
+        *.gz)
+            local bin_file="$buildDir/bin/$bin_name"
+            curl -sL $dl_url | gunzip -c > $bin_file && chmod +x $bin_file
+            ;;
+        *.zip)
+            # unzip can not read from stdin
+            echo " curl -sL $dl_url | unzip - -Wjo "**$bin_name" -d $dst_dir"
+            curl -sL $dl_url | unzip - -Wo "**$bin_name" -d $dst_dir -j
+            ;;
+        *)
+            fmt_error "unknow ext decompress for $dl_file"
+            ;;
+    esac
 }
 
-fd_install() {
-    git_repo_install "sharkdp/fd" "fd"
+rust_tools_download() {
+    git_repo_build "fd"        "sharkdp/fd"
+    git_repo_build "rg"        "BurntSushi/ripgrep"
+    git_repo_build "zoxide"    "ajeetdsouza/zoxide"
+    git_repo_build "lf"        "gokcehan/lf"         "lf-linux-amd64.tar.gz$"
+    git_repo_build "eza"       "eza-community/eza"
+    git_repo_build "bat"       "sharkdp/bat"
+
+    git_repo_build "bandwhich" "imsnif/bandwhich"
+    git_repo_build "btm"       "ClementTsang/bottom"
+    git_repo_build "delta"     "dandavison/delta"
+    git_repo_build "difft"     "Wilfred/difftastic"  "difft-x86_64-unknown-linux-gnu.tar.gz"
+    git_repo_build "dust"      "bootandy/dust"
+    git_repo_build "fselect"   "jhspetersson/fselect" "fselect-x86_64-linux-musl.gz$"
+    git_repo_build "grex"      "pemistahl/grex"
+    git_repo_build "hyperfine" "sharkdp/hyperfine"
+    git_repo_build "lsd"       "lsd-rs/lsd"
+    git_repo_build "mcfly"     "cantino/mcfly"
+    git_repo_build "sd"        "chmln/sd"
+    git_repo_build "tokei"     "XAMPPRocky/tokei"
+    git_repo_build "watchexec" "watchexec/watchexec"
+
 }
 
-ripgrep_install() {
-    git_repo_install "BurntSushi/ripgrep" "rg"
+fzf_config() {
+    local fzf_dir="$InstallDir/repo/fzf"
+    action=${1}
+    case $action in
+        download)
+            if [[ ! -e $fzf_dir ]]; then
+                # make
+                fmt_info "Download fzf through proxy"
+                git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
+                # --all for set short-cut <ctrl-t> <ctrl-r>
+                # make install
+            else
+                fmt_info "Skip download fzf, $fzf_dir is already exists, "
+            fi
+            ;;
+        install)
+            fmt_info "Install fzf through proxy"
+            $fzf_dir/install --all --no-update-rc
+            # bashrc config already
+            ;;
+        *)
+            fmt_error "unknown action $action"
+            return
+            ;;
+    esac
 }
 
-fzf_install() {
-	local fzf_dir="$InstallDir/repo/fzf"
-	if [[ ! -e $fzf_dir ]]; then
-		# make
-		git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
-		# --all for set short-cut <ctrl-t> <ctrl-r>
-		# make install
-		$fzf_dir/install --all --no-update-rc
-	fi
+zlua_config() {
+    local zlua_dir="$buildDir/repo/zlua"
+    # local zlua_install_dir="$InstallDir/repo/zlua"
+    # make
+    action=${1}
+    case $action in
+        download)
+            fmt_info "Download zlua"
+            if [[ ! -e $zlua_dir ]]; then # TODO
+                git clone --depth 1 https://gitee.com/mirrors/z.lua.git $zlua_dir \
+                        && rm -rf $_/.git
+            fi
+            ;;
+        install)
+            fmt_info "Install zlua"
+            # bashrc config already
+            ;;
+        *)
+            fmt_error "unknown action $action"
+            ;;
+    esac
+    return
 }
 
-zlua_install() {
-	local zlua_dir="./repo/zlua"
-	# make
-	if [[ ! -e $zlua_dir ]]; then
-		git clone --depth 1 https://gitee.com/mirrors/z.lua.git $zlua_dir
-	fi
-	# make install
-	# add hook to bashrc_tmux
-}
+# ./make all should not polute other dir but itself.
+MakeAll() {
+    # make -p
+    fmt_info "Construct buildDir"
+    for d in ${subdir[@]}; do
+        fmt_info "make dir $buildDir/$d"
+        mkdir -p $buildDir/$d
+    done
 
-Make() {
-	fmt_info "Generate bashrc for tmux"
+    fmt_info "Generate bashrc for tmux"
     echo "$bashrc_for_tmux" > $InstallDir/etc/bashrc  # hook in tmux conf
 
-	fmt_info "Generate tmux config"
+    fmt_info "Generate tmux config"
     tmuxConfig=$(GetTmuxConfig)
-	echo "$tmuxConfig" > $scriptDir/etc/tmux.conf
+    echo "$tmuxConfig" > $buildDir/etc/tmux.conf
 
     # check network proxy
     export all_proxy=http://127.0.0.1:10809
@@ -115,49 +206,99 @@ Make() {
     else
         fmt_info "Proxy ok."
         # fzf. build bin file need github.
-        fmt_info "Install fzf"
-		fzf_install
-        fmt_info "Install zlua"
-		zlua_install
-		fmt_info "Install fd-find"
-		fd_install
-		fmt_info "Install ripgrep"
-		ripgrep_install
+        zlua_config download
+        fzf_config  download
+        rust_tools_download
     fi
 }
 
 MakeInstall() {
-	fmt_info "Deploy file"
-	DeployConfigDir  bin  $InstallDir/bin
-	DeployConfigDir  etc  $InstallDir/etc
+    fmt_info "Construct install dir"
+    fmt_info "Deploy file"
+    # for d in ${subdir[@]}; do
+    #     mkdir -p $InstallDir/$d
+    #     DeployConfigDir  $buildDir/$d  $InstallDir/$d
+    # done
+    DeployConfigDir  $buildDir  $InstallDir
 
+    fmt_info "Write config to file"
     # set ls color. Beautify the color for ls dir
-    echo 'DIR 01;36' > ~/.dir_colors  
+    # echo 'DIR 01;36' > ~/.dir_colors # fix by set terminal color mode to xterm
     # vim config
     if [ ! -e ~/.vimrc ] || ! grep -q "inoremap jk"  ~/.vimrc ; then
         echo "$vim_config" >> ~/.vimrc
+        # echo "$vim_config" >> ~/.vimrc
     fi
     # bashrc
     if ! grep -q "# configed" ~/.bashrc ; then
         echo "$bash_config" >> ~/.bashrc
     fi
 
-    # add hook
-	# hook tmux
-	AddHookToConfigFile    \
-		~/.tmux.conf       \
-		"source $InstallDir/etc/tmux.conf"
-	# hook vim
-	AddHookToConfigFile    \
-		~/.config/nvim/init.vim       \
-		"source $InstallDir/etc/init.vim"
+    fmt_info "Add hook to config file"
+    # hook tmux
+    AddHookToConfigFile    \
+        ~/.tmux.conf       \
+        "source $InstallDir/etc/tmux.conf"
+    # hook vim
+    AddHookToConfigFile    \
+        ~/.config/nvim/init.vim       \
+        "source $InstallDir/etc/init.vim"
+
+    fmt_info "Custom app install"
+    zlua_config install
+    fzf_config  install
+    return
+}
+
+MakeClean() {
+    if [ -z "$buildDir" ]; then
+        fmt_error "\$buildDir is none"
+        return
+    fi
+    fmt_info "Clean build dir $buildDir"
+    rm -r $buildDir
+    return
+}
+
+MakeUninstall() {
+    if [ -z "$InstallDir" ]; then
+        fmt_error "\$InstallDir is none!"
+        return -1
+    fi
+    fmt_info "Delete Hook in config file"
+    DeleteHookInConfigFile ~/.tmux.conf
+    DeleteHookInConfigFile ~/.config/nvim/init.vim
+
+    fmt_info "Clean install dir $InstallDir"
+    rm -r $InstallDir
+    return
 }
 
 main() {
     setup_log_color
-	Make
-	MakeInstall
+
+    target=${1:-"all"}
+    case $target in
+        install)
+            fmt_info "Installing ~~"
+            MakeInstall
+            ;;
+        uninstall)
+            fmt_info "Uninstalling ~~"
+            MakeUninstall
+            ;;
+        clean)
+            fmt_info "Cleaning ~~"
+            MakeClean
+            ;;
+        all)
+            fmt_info "Building ~~"
+            MakeAll
+            ;;
+        *)
+            fmt_error "unknown target $1"
+            ;;
+    esac
 }
 
-main
-
+main "$@"

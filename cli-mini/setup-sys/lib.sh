@@ -21,7 +21,7 @@ GetTmuxConfig() {
 		set -g mouse-resize-pane on  # tmux1.8
 		set -g mouse-select-pane on  # tmux1.8
 		set -g mouse-select-window   # tmux1.8
-		set -g window-status-current-bg white   # tmux1.8
+		set -g window-status-current-bg yellow   # tmux1.8
 	"
 
 	tmux32a_extra_config="
@@ -74,6 +74,38 @@ AddHookToConfigFile() {
 			fmt_error "Fail to update owen config in $file"
 			fmt_error "There are more then one line exists in $file"
 		;;
+	esac
+}
+
+DeleteHookInConfigFile() {
+	local file="$1"
+	local msg="$2"
+	local commentMarker=${3:-"#"}
+	local MarkLine="$commentMarker owen configed"
+	local line="${msg} ${MarkLine}"
+
+	# touch file and mkdir -p
+	if [ ! -e "$file" ]; then
+		mkdir -p $(dirname $file)
+		touch $file
+	fi
+
+	# check if config item is already in config file
+	local itemNum=$(grep -c -F "$MarkLine" $file)
+	case $itemNum in
+		0)
+			fmt_info "No hook item found in $file"
+			echo "$line" >> $file
+			;;
+		1)
+			fmt_info "Remove one hook item in $file"
+			lineNum=$(grep -n "$MarkLine" $file | cut -d':' -f1)
+			sed -i "$lineNum d" $file
+			;;
+		*)
+			fmt_error "There are more then one hook line exists in $file, "\
+                        "please remove them manually"
+            ;;
 	esac
 }
 
