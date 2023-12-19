@@ -42,15 +42,16 @@ global AppsConf := { "hh.exe":{"Shortcut":"!+a","ExePath":"C:\Windows\hh.exe"   
     ,"mobaxterm.exe"       : {"Shortcut" : "!m"                                    }
     ,"WindowsTerminal.exe" : {"Shortcut" : "!n"                                    }
     ,"powerpoint.exe"      : {"Shortcut" : "!p"                                    }
-    ,"qq.exe"              : {"Shortcut" : "!q"                                    }
+    ,"bgzs-pc.exe"              : {"Shortcut" : "!q"                                    }
     ,"wechat.exe"          : {"Shortcut" : "!r"                                    }
     ,"FoxitPDFReader.exe"  : {"Shortcut" : "!s"
                             , "DefaultControl" : "FoxitDocWnd1"
-                            , "KeyMapInNoramalMode" : "FoxitKeymapInNornalMode"    }
+                            , "KeyMapInNoramalMode" : "FoxitKeymapInNormalMode"    }
     ,"typora.exe"          : {"Shortcut" : "!a"                                    }
     ,"code.exe"            : {"Shortcut" : "!v"                                    }
-    ,"winword.exe"            : {"Shortcut" : "!w"                                    }
-    ,"xshell.exe"          : {"Shortcut" : "!x"                                    }
+    ,"winword.exe"         : {"Shortcut" : "!w"                                    }
+    ,"xshell.exe"          : {"Shortcut" : "!x"
+                            , "KeyMapInNoramalMode" : "XshellKeymapInNormalMode"   }
     ,"zotero.exe"          : {"Shortcut" : "!z"                                    }
     ,"msedge.exe"          : {"Shortcut" : "!+c"
                             , "DefaultControl" : "Chrome_RenderWidgetHostHWND1"    }
@@ -63,7 +64,7 @@ global AppsConf := { "hh.exe":{"Shortcut":"!+a","ExePath":"C:\Windows\hh.exe"   
     ,"v2rayN.exe"          : {"Shortcut" : "!+v"                                   }
     ,"Excel.exe"           : {"Shortcut" : "!+x"                                   } }
 
-global FoxitKeymapInNornalMode := { "EditKey" : { "t"  : {"Action":"{Alt}rd2", "help":"Text box"} }
+global FoxitKeymapInNormalMode := { "EditKey" : { "t"  : {"Action":"{Alt}rd2", "help":"Text box"} }
     , "MoveKey" : { "j"  : {"Action":"{Down}"    , "help":""  }
         , "k"  : {"Action":"{Up}"      , "help":""                      }
         , "u"  : {"Action":"{PgUp}"    , "help":""                      }
@@ -109,5 +110,5 @@ global ExplorerKeymapInNornalMode := { "MoveKey" : { "j" : {"Action":"{Down}", "
         ,"z & r" : {"Action":"ExplorerNavigate(""~\Desktop"")"   , "help":"Go to Desktop"         }
         ,"z & w" : {"Action":"ExplorerNavigate(""" WEIYUN """)"  , "help":"Go to Weiyun"          } } }
 
-; global XshellKeymapInNormalMode := { "MoveKey" : { "^+r up" : "{alt}fr" } }
+global XshellKeymapInNormalMode := { "MoveKey" : { "f12" : {"Action":"TMOUT=0{enter}",  "help":""  } } }
 

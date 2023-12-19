@@ -119,6 +119,10 @@ IsWindow(hWnd){
 }
 
 InMainScreen(this_id) {
+    WinGet, WinState, MinMax, ahk_id %this_id%
+    if (WinState == -1) {
+        return true
+    }
     WinGetPos, x, y, , , ahk_id %this_id%
     return x > -100  ;if your primary screen is 0 >..
     ; if (x > -100) {    ;if your primary screen is 0 >..
@@ -127,17 +131,17 @@ InMainScreen(this_id) {
 }
 
 OwenAltTab(match) {
-    WinGet, id, list, %match%
-    ; WinGet, id, list,,, Program Manager
-    WinGet, aid, id, A
-    Loop, %id%
+    WinGet, ids, list, %match%
+    ; WinGet, id, list
+    Loop, %ids%
     {
-        this_id := id%A_Index%
+        this_id := ids%A_Index%
+        WinGetTitle, this_title, ahk_id %this_id%
+        ; msgbox, %this_id% %this_title%
         ; skip current active win
-        IfWinActive, ahk_id %this_ID%
+        IfWinActive, ahk_id %this_id%
             continue
-        ; WinGetTitle, title, ahk_id %this_ID%
-        If (!IsWindow(WinExist("ahk_id" . this_ID))) {
+        If (!IsWindow(WinExist("ahk_id" . this_id))) {
             continue
         }
         If (!InMainScreen(this_id)) {

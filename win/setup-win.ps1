@@ -35,7 +35,10 @@ $script:scoopAppstr1 = "
 $script:scoopCliAppstr1 = "
     gow sudo  less bat tre-command recycle-bin file    # CLI basic tool
     global go  lua python nodejs-lts winget git  # CLI program tool
-    lf lua fd ripgrep z.lua fzf pscolor psfzf                 # CLI super tool
+    lf eza lua fd ripgrep z.lua fzf pscolor psfzf    # CLI super tool
+    # Cli rust tool
+    bat delta dust eza fd fselect grex hyperfine lf lsd tokei ripgrep sd
+    starship watchexec zoxide 
     scoop-completion 
     "
 $script:scoopCliAppstr2 = "

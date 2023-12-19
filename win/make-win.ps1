@@ -21,7 +21,7 @@ Function EnvSetup() {
 }
 
 Function AddHookToConfigFile($filePath, $msg, $commentMark=@("#",""), 
-                $encoding="unicode", $insertLineNum="-1") {
+                                $encoding="unicode", $insertLineNum="-1") {
     $leftCommentMark  = $commentMark[0]
     $rightCommentMark = $commentMark[1]
     $markLine   = "$leftCommentMark owen configed$rightCommentMark"
