@@ -7,11 +7,12 @@ if [ -z $scriptDir ]; then
     fmt_error "\$scriptDir is None"
     exit -1
 fi
-buildDir=$scriptDir/output
-InstallDir="$HOME/z/.dotfile"
-
+# global var
 subdir=(bin etc repo)
+buildDir=$scriptDir/output
+mkdir $buildDir
 
+InstallDir="$HOME/z/.dotfile"
 mkdir -p $InstallDir
 mkdir -p $InstallDir/etc
 mkdir -p $InstallDir/repo
@@ -32,6 +33,7 @@ bash_config="
 bashrc_for_tmux="
     export EDITOR=vim # configed
     source ~/.bashrc
+    # export PATH=\$PATH:\$HOME/.cargo/bin
     export PATH=\$PATH:$InstallDir/bin
     alias rp='realpath'
     alias zc='z -c'
@@ -57,24 +59,38 @@ vim_config="inoremap jk <esc>"
 git_repo_build() {
     local bin_name=$1
     local repo_name=$2
-    local file_pattern=${3:-"x86_64-unknown-linux-musl.*tar.[xg]z$"}
-    fmt_info "Download $bin_name"
+    local cpu_arch=$(uname -m)
+    # match .tar.gz .tar.xa .tgz
+    local file_pattern=${3:-"${cpu_arch}-unknown-linux-musl\.t.*[xg]z$"}
+    if [ -n "$3" ] ; then
+        file_pattern=${file_pattern/x86_64/$cpu_arch}
+        if [ "$cpu_arch" = "aarch64" ] ; then
+            file_pattern=${file_pattern/amd64/arm64}
+        fi
+    fi
+    # local file_pattern_by=${3:-"x86_64-unknown-linux-musl.*tar.[xg]z$"}
+    fmt_info "Download $bin_name in $file_pattern from $repo_name"
 
     local dl_url=$(curl -s https://api.github.com/repos/$repo_name/releases/latest |
                 jq -r '.assets[] | select(.name | match("'$file_pattern'"))
                         .browser_download_url'  )
+    if [ -z "$dl_url" ] ; then
+        fmt_error "dl_url is empty $dl_url fail"
+        return -1
+    fi
+
     local dl_file=${dl_url##*/}
     # local dl_dir=${dl_tgz%%.tar.gz}
     # fmt_info "Download from $dl_url"
     # fmt_info "Retrieve $dl_dir/$bin_name from download url"
     # fmt_info "Deploy bin to $InstallDir/bin"
-    dst_dir="$buildDir/bin"
-    fmt_info "$dl_url"
+    local dst_dir="$buildDir/bin"
+    fmt_info "Download url is $dl_url"
     # dl_file_ext=${dl_file#*.}
     case $dl_file in
-        *.tar.[xg]z)
+        *.tar.[xg]z | *.tgz )
             # Get final part of filename splitted by "."
-            local zipMethod=${dl_file##*.}
+            local zipMethod=${dl_file: -2}  # get last two charactors
             # default local array
             declare -A zipMapOption=([gz]="--gzip" [xz]="--xz")
             local option=${zipMapOption[$zipMethod]}
@@ -101,7 +117,16 @@ git_repo_build() {
     esac
 }
 
+# this func only for x86, unable to compat for multi os
 rust_tools_download() {
+    git_repo_build "cargo-binstall"  "cargo-bins/cargo-binstall"
+    # git_repo_build "cargo-binstall"  "cargo-bins/cargo-binstall"
+    # lf  is golang tool
+    # $buildDir/bin/cargo-binstall -y --install-path \
+    #                 $buildDir/bin fd rg zoxide eza \
+    #                 bat bandwhich btm delta difftastic dust fselect \
+    #                 grex hyperfine lsd mcfly sd starship tokei watchexec
+
     git_repo_build "fd"        "sharkdp/fd"
     git_repo_build "rg"        "BurntSushi/ripgrep"
     git_repo_build "zoxide"    "ajeetdsouza/zoxide"
@@ -182,7 +207,7 @@ zlua_config() {
 MakeAll() {
     # make -p
     fmt_info "Construct buildDir"
-    for d in ${subdir[@]}; do
+    for d in "${subdir[@]}"; do
         fmt_info "make dir $buildDir/$d"
         mkdir -p $buildDir/$d
     done
@@ -195,7 +220,7 @@ MakeAll() {
     echo "$tmuxConfig" > $buildDir/etc/tmux.conf
 
     # check network proxy
-    local os_release=$(cat /etc/os-release | grep -xoP 'ID=\K.*')
+    local os_release=$(cat /etc/os-release | grep -xoP 'ID=\K.*' | tr -d '"')
     local proxy_server_address
     if [ -n "$all_proxy" ]; then
         fmt_info "Env all_proxy is configed already."
@@ -212,6 +237,7 @@ MakeAll() {
                 ;;
             *)
                 fmt_error "Unknown system type $os_release"
+                return -1
                 ;;
         esac
         fmt_info "Env all_proxy set to $proxy_server_address"
