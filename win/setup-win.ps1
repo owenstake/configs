@@ -36,9 +36,12 @@ $script:scoopCliAppstr1 = "
     gow sudo  less bat tre-command recycle-bin file    # CLI basic tool
     global go  lua python nodejs-lts winget git  # CLI program tool
     lf eza lua fd ripgrep z.lua fzf pscolor psfzf    # CLI super tool
-    # Cli rust tool
-    bat delta dust eza fd fselect grex hyperfine lf lsd tokei ripgrep sd
+    # Cli super tool in rust
+    bat delta dust eza fd fselect grex hyperfine lsd tokei ripgrep sd
     starship watchexec zoxide 
+    # Cli super tool in golang
+    lf fzf
+    # Final
     scoop-completion 
     "
 $script:scoopCliAppstr2 = "
@@ -207,8 +210,9 @@ Function Scoop-install {
     go env -w GOPROXY=https://goproxy.cn,direct
     # global config
     If (Test-Path "$env:scoop\apps\global\current\bin") {
-        EnvPathInsertAtHeadIfNoExists("$Env:SCOOP\apps\global\current\bin")
+        EnvPathUserInsertIfNoExists 0 "$Env:SCOOP\apps\global\current\bin"
     }
+    EnvPathUserInsertIfNoExists -1 "$Env:USERPROFILE\.cargo\bin"
 
     return
 }

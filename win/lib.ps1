@@ -69,7 +69,7 @@ Function Test-CommandExists {
     }
 }
 
-Function EnvPathInsertAtHeadIfNoExists($item) {
+Function EnvPathUserInsertIfNoExists($pos, $item) {
     If (!(Test-Path $item)) {
         Write-Error "Args is invalid. $item"
         return
@@ -80,8 +80,15 @@ Function EnvPathInsertAtHeadIfNoExists($item) {
             return
         }
     }
-    $env:path = $item + ";" + $env:path
-    [Environment]::SetEnvironmentVariable('PATH', $Env:PATH, 'User')
+    $Path_Machine = [Environment]::GetEnvironmentVariable('Path','Machine')
+    $Path_User    = [Environment]::GetEnvironmentVariable('Path','User')
+    Switch ($pos) {
+        -1 {$Path_User = $Path_User + ";" +  $item}
+        0 {$Path_User = $item + ";" + $Path_User}
+        Default { Write-Error "unknow pos $pos"; return }
+    }
+    [Environment]::SetEnvironmentVariable('PATH', $Path_User, 'User')
+    $Env:Path = $Path_Machine + $Path_User
 }
 
 Function IsUosWin() {
