@@ -154,9 +154,9 @@ base_binstall() {
             # echo " curl -sL $dl_url | unzip - -Wjo "**$bin_name" -d $dst_dir"
             # curl -sL $dl_url | unzip - -Wo "**$bin_name" -d $dst_dir -j
             echo "zip url dl_url"
-            tmpfile="/tmp/temp.zip"
+            tmpfile=$(mktemp)
             curl -L $dl_url -o $tmpfile && 
-                    unzip -j $tmpfile "**/$bin_name" -d $dst_dir &&
+                    unzip -jo $tmpfile "**/$bin_name" -d $dst_dir &&
                     rm $tmpfile
             ;;
         *)
@@ -190,8 +190,8 @@ rust_tools_install_by_cargo_binstall() {
                     --install-path $buildDir/bin                \
                     bat fd-find ripgrep zoxide eza              \
                     bandwhich bottom difftastic du-dust fselect \
-                    hyperfine lsd mcfly sd starship             \
-                    tokei watchexec-cli
+                    hexyl hyperfine lsd mcfly procs sd starship \
+                    tealdeer tokei watchexec-cli
     return
 }
 
