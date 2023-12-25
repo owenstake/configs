@@ -33,12 +33,12 @@ $script:scoopAppstr1 = "
 "
 
 $script:scoopCliAppstr1 = "
-    gow sudo  less bat tre-command recycle-bin file    # CLI basic tool
-    global go  lua python nodejs-lts winget git  # CLI program tool
+    gow sudo  less bat tre-command recycle-bin file  # CLI basic tool
+    global go lua nodejs-lts python rust winget git  # CLI program tool
     lf eza lua fd ripgrep z.lua fzf pscolor psfzf    # CLI super tool
     # Cli super tool in rust
     bat delta dust eza fd fselect grex hyperfine lsd tokei ripgrep sd
-    starship watchexec zoxide 
+    starship tealdeer watchexec zoxide 
     # Cli super tool in golang
     lf fzf
     # Final
@@ -212,7 +212,6 @@ Function Scoop-install {
     If (Test-Path "$env:scoop\apps\global\current\bin") {
         EnvPathUserInsertIfNoExists 0 "$Env:SCOOP\apps\global\current\bin"
     }
-    EnvPathUserInsertIfNoExists -1 "$Env:USERPROFILE\.cargo\bin"
 
     return
 }
@@ -240,6 +239,23 @@ Function Winget-install() {
     Foreach ($app in $apps) {
         winget install --id="$app" -e --no-upgrade -l "$env:WINGET"
     }
+}
+
+Function RustTool-install {
+    fmt_info "RustTool-install: Start"
+    If (!(Test-CommandExists cargo-binstall)) {
+        fmt_info "RustTool-install: Install Cargo-binstall.exe first"
+        iex (iwr "https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.ps1").Content
+        set-psdebug -trace 0
+        EnvPathUserInsertIfNoExists -1 "$Env:USERPROFILE\.cargo\bin"
+    }
+    cargo-binstall -y --no-discover-github-token            `
+                    --disable-strategies compile            `
+                    bat fd-find ripgrep zoxide eza              `
+                    bandwhich bottom difftastic du-dust fselect `
+                    hexyl hyperfine lsd mcfly procs sd starship `
+                    tealdeer tokei watchexec-cli
+    return
 }
 
 Function Psmodule-Install {
@@ -314,6 +330,7 @@ Function main {
     # Chocolatey-install
     Psmodule-install
     Winget-install
+    RustTool-install
     custom-install
     Set-Shuangpin
     New-Item ~/.root -Force

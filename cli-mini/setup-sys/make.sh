@@ -79,14 +79,14 @@ try_get_download_url() {
                         match("'$file_pattern'")).browser_download_url'  )
     if [ $? -ne 0 ] || [ -z "$dl_url" ]; then
         fmt_error "Get dl_url fail, file_pattern match nothing"
-        return -1
+        return 1
     else
         echo "$dl_url"  # output
     fi
     return
 }
 
-base_binstall() {
+base_app_binstall() {
     local language=$1
     local bin_name=$2
     local repo_name=$3
@@ -94,9 +94,10 @@ base_binstall() {
     local GITHUB_API_REMAIN_COUNTS=$(curl -sf https://api.github.com/rate_limit \
                                                 | jq '.rate.remaining')
     if [ $GITHUB_API_REMAIN_COUNTS -lt 30 ]; then
-        fmt_info "Github API count has be exhausted, use github token."
+        fmt_info "Github API count has be exhausted with remaining $GITHUB_API_REMAIN_COUNTS,"\
+                    "use github token to download instead."
         if [ -z $GITHUB_TOKEN ]; then
-            fmt_error "Please set GITHUB_TOKEN into env"
+            fmt_error "Fail to curl github API. Please set GITHUB_TOKEN into env"
             return -1
         else
             local CURL_OPTION="--header \"Authorization: Bearer $GITHUB_TOKEN\""
@@ -107,15 +108,15 @@ base_binstall() {
         fmt_error "Curl github api fail"
         return -1
     fi
-    # if [ -z "$release_info" ] ; then
-    #     fmt_error "curl github api ok, but release_info is null"
-    #     return -1
-    # fi
+    if [ -z "$release_info" ] ; then
+        fmt_error "curl github api ok, but release_info is null"
+        return -1
+    fi
     # if echo "$release_info" | grep "API rate limit" ; then
     #     fmt_error "github API rate limit!\n$release_info"
     #     return -1
     # fi
-    fmt_error "$release_info" 2>&1 | head -n5
+    fmt_error "release_info is $release_info" 2>&1 | head -n5
     local dl_url=$(try_get_download_url "$language" "$release_info" "$file_pattern")
     if [ $? -ne 0 ] ; then
         fmt_error "dl_url get fail $dl_url "
@@ -165,23 +166,24 @@ base_binstall() {
     esac
 }
 
-cargo_binstall() {
-    base_binstall "rust" "${@}"
+cargo_app_binstall() {
+    base_app_binstall "rust" "${@}"
     return $?
 }
 
-golang_binstall() {
-    base_binstall "golang" "${@}"
+golang_app_binstall() {
+    base_app_binstall "golang" "${@}"
     return $?
 }
 
-golang_tools_install_by_direct_download() {
-    golang_binstall "lf"              "gokcehan/lf"
-    golang_binstall "cloudpan189-go"  "tickstep/cloudpan189-go"
+golang_apps_download_by_direct_download() {
+    golang_app_binstall "lf"              "gokcehan/lf"
+    golang_app_binstall "cloudpan189-go"  "tickstep/cloudpan189-go"
 }
 
-rust_tools_install_by_cargo_binstall() {
-    cargo_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
+rust_tools_download_by_cargo_binstall() {
+    cargo_app_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
+    # curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
     local cpu_arch=$(uname -m)
     $buildDir/bin/cargo-binstall -y --no-discover-github-token  \
                     --disable-strategies compile                \
@@ -190,14 +192,15 @@ rust_tools_install_by_cargo_binstall() {
                     --install-path $buildDir/bin                \
                     bat fd-find ripgrep zoxide eza              \
                     bandwhich bottom difftastic du-dust fselect \
-                    hexyl hyperfine lsd mcfly procs sd starship \
-                    tealdeer tokei watchexec-cli
+                    git-delta hexyl hyperfine joshuto lsd mcfly \
+                    procs sd starship tealdeer tokei            \
+                    watchexec-cli
     return
 }
 
 # this func only for x86, unable to compat for multi os
 rust_tools_install_by_direct_download() {
-    # cargo_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
+    # cargo_app_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
 
     # $buildDir/bin/cargo-binstall -y --install-path \
     #                 $buildDir/bin fd rg zoxide eza \
@@ -211,32 +214,32 @@ rust_tools_install_by_direct_download() {
     # grex is not support in aarch64
 
     # golang - direct download
-    cargo_binstall "lf"        "gokcehan/lf"         "lf-linux-amd64.tar.gz$"
+    cargo_app_binstall "lf"        "gokcehan/lf"         "lf-linux-amd64.tar.gz$"
 
     # rust - direct download
-    cargo_binstall "delta"     "dandavison/delta"
-    cargo_binstall "difft"     "Wilfred/difftastic"  "difft-x86_64-unknown-linux-gnu.tar.gz"
-    cargo_binstall "grex"      "pemistahl/grex"
+    cargo_app_binstall "delta"     "dandavison/delta"
+    cargo_app_binstall "difft"     "Wilfred/difftastic"  "difft-x86_64-unknown-linux-gnu.tar.gz"
+    cargo_app_binstall "grex"      "pemistahl/grex"
 
     # rust - cargo-binstall
-    cargo_binstall "fd"        "sharkdp/fd"
-    cargo_binstall "rg"        "BurntSushi/ripgrep"
-    cargo_binstall "eza"       "eza-community/eza"
-    cargo_binstall "bat"       "sharkdp/bat"
-    cargo_binstall "watchexec" "watchexec/watchexec"
-    cargo_binstall "zoxide"    "ajeetdsouza/zoxide"
+    cargo_app_binstall "fd"        "sharkdp/fd"
+    cargo_app_binstall "rg"        "BurntSushi/ripgrep"
+    cargo_app_binstall "eza"       "eza-community/eza"
+    cargo_app_binstall "bat"       "sharkdp/bat"
+    cargo_app_binstall "watchexec" "watchexec/watchexec"
+    cargo_app_binstall "zoxide"    "ajeetdsouza/zoxide"
 
-    cargo_binstall "bandwhich" "imsnif/bandwhich"
-    cargo_binstall "btm"       "ClementTsang/bottom"
-    cargo_binstall "dust"      "bootandy/dust"
-    cargo_binstall "fselect"   "jhspetersson/fselect" "fselect-x86_64-linux-musl.gz$"
-    cargo_binstall "hyperfine" "sharkdp/hyperfine"
+    cargo_app_binstall "bandwhich" "imsnif/bandwhich"
+    cargo_app_binstall "btm"       "ClementTsang/bottom"
+    cargo_app_binstall "dust"      "bootandy/dust"
+    cargo_app_binstall "fselect"   "jhspetersson/fselect" "fselect-x86_64-linux-musl.gz$"
+    cargo_app_binstall "hyperfine" "sharkdp/hyperfine"
 
-    cargo_binstall "lsd"       "lsd-rs/lsd"
-    cargo_binstall "mcfly"     "cantino/mcfly"
-    cargo_binstall "sd"        "chmln/sd"
-    cargo_binstall "starship"  "starship/starship"
-    cargo_binstall "tokei"     "XAMPPRocky/tokei"
+    cargo_app_binstall "lsd"       "lsd-rs/lsd"
+    cargo_app_binstall "mcfly"     "cantino/mcfly"
+    cargo_app_binstall "sd"        "chmln/sd"
+    cargo_app_binstall "starship"  "starship/starship"
+    cargo_app_binstall "tokei"     "XAMPPRocky/tokei"
 
 
     return
@@ -293,23 +296,7 @@ zlua_config() {
     return
 }
 
-# ./make all should not polute other dir but itself.
-MakeAll() {
-    # make -p
-    fmt_info "Construct buildDir"
-    for d in "${subdir[@]}"; do
-        fmt_info "make dir $buildDir/$d"
-        mkdir -p $buildDir/$d
-    done
-
-    fmt_info "Generate bashrc for tmux"
-    echo "$bashrc_for_tmux" > $InstallDir/etc/bashrc  # hook in tmux conf
-
-    fmt_info "Generate tmux config"
-    local tmuxConfig=$(GetTmuxConfig )
-    echo "$tmuxConfig" > $buildDir/etc/tmux.conf
-
-    # check network proxy
+Set_all_proxy() {
     local os_release=$(cat /etc/os-release | grep -xoP 'ID=\K.*' | tr -d '"')
     local proxy_server_address
     if [ -n "$all_proxy" ]; then
@@ -333,6 +320,30 @@ MakeAll() {
         fmt_info "Env all_proxy set to $proxy_server_address"
         export all_proxy=$proxy_server_address
     fi
+}
+
+# ./make all should not polute other dir but itself.
+MakeAll() {
+    # make -p
+    fmt_info "Construct buildDir"
+    for d in "${subdir[@]}"; do
+        fmt_info "make dir $buildDir/$d"
+        mkdir -p $buildDir/$d
+    done
+
+    fmt_info "Generate bashrc for tmux"
+    echo "$bashrc_for_tmux" > $InstallDir/etc/bashrc  # hook in tmux conf
+
+    fmt_info "Generate tmux config"
+    local tmuxConfig=$(GetTmuxConfig )
+    echo "$tmuxConfig" > $buildDir/etc/tmux.conf
+
+    Set_all_proxy
+    if [ $? -ne 0 ]; then
+        fmt_error "Set all_proxy fail!"
+        return -1
+    fi
+
     if ! curl -s www.google.com --connect-timeout 3 > /dev/null; then
         fmt_error "Proxy fail. Please check proxy port 10809."
         fmt_error "1. SSH login from wsl ? Exec in wsl: ssh $(whoami)@xx"
@@ -343,12 +354,13 @@ MakeAll() {
         fmt_error '   sudo Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)".'
         exit -1
     else
+        # distro-irrelevant 
         fmt_info "Proxy ok."
         # fzf. build bin file need github.
         zlua_config download
         fzf_config  download
-        golang_tools_install_by_direct_download
-        rust_tools_install_by_cargo_binstall
+        golang_apps_download_by_direct_download
+        rust_tools_download_by_cargo_binstall
     fi
 }
 

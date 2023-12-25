@@ -10,18 +10,18 @@ trap 'echo "\"${last_command}\" command filed with exit code $?."' EXIT
 # glocal var
 curOsName=$(GetCurOsName)
 appsCommonStr="
-    fd-find global python3-pip universal-ctags vim-gtk
+    cargo fd-find global python3-pip universal-ctags vim-gtk
     ranger newsboat openssh-server tree trash-cli wmctrl
     x11-apps xclip xbindkeys xautomation xvkbd zsh
     "
 
 case $curOsName in
     uos)
-    appsExpected="$appsCommonStr"
-    ;;
+        appsExpected="$appsCommonStr"
+        ;;
     ubuntu)
-    appsExpected="$appsCommonStr clangd bat wl-clipboard "
-    ;;
+        appsExpected="$appsCommonStr clangd bat wl-clipboard "
+        ;;
 esac
 
 main() {
