@@ -5,7 +5,7 @@ scriptDir=$(dirname $0)
 
 if [ -z $scriptDir ]; then
     fmt_error "\$scriptDir is None"
-    exit -1
+    exit 1
 fi
 # global var
 subdir=(bin etc repo)
@@ -72,7 +72,7 @@ try_get_download_url() {
             ;;
         *)
             fmt_error "unknown type $type"
-            return -1
+            return 1
     esac
     local file_pattern="${basename_pattern}.${ext_pattern}$"
     local dl_url=$(echo "$release_info" | jq -r '.assets[] | select(.name |
@@ -98,29 +98,29 @@ base_app_binstall() {
                     "use github token to download instead."
         if [ -z $GITHUB_TOKEN ]; then
             fmt_error "Fail to curl github API. Please set GITHUB_TOKEN into env"
-            return -1
+            return 1
         else
             local CURL_OPTION="--header \"Authorization: Bearer $GITHUB_TOKEN\""
+            local GITHUB_API_REMAIN_COUNTS=$(curl -sf $CURL_OPTION \
+                        https://api.github.com/rate_limit | jq '.rate.remaining')
+            fmt_info "Github token has remaining counts $GITHUB_API_REMAIN_COUNTS."
         fi
     fi
+
     local release_info=$(curl -sf $CURL_OPTION https://api.github.com/repos/$repo_name/releases/latest)
     if [ $? -ne 0 ] ; then
         fmt_error "Curl github api fail"
-        return -1
+        return 1
     fi
     if [ -z "$release_info" ] ; then
-        fmt_error "curl github api ok, but release_info is null"
-        return -1
+        fmt_error "Curl github api ok, but release_info is null"
+        return 1
     fi
-    # if echo "$release_info" | grep "API rate limit" ; then
-    #     fmt_error "github API rate limit!\n$release_info"
-    #     return -1
-    # fi
-    fmt_error "release_info is $release_info" 2>&1 | head -n5
+    # fmt_error "release_info is $release_info" 2>&1 | head -n5
     local dl_url=$(try_get_download_url "$language" "$release_info" "$file_pattern")
     if [ $? -ne 0 ] ; then
         fmt_error "dl_url get fail $dl_url "
-        return -1
+        return 1
     fi
 
     local dl_file=${dl_url##*/}
@@ -192,9 +192,10 @@ rust_tools_download_by_cargo_binstall() {
                     --install-path $buildDir/bin                \
                     bat fd-find ripgrep zoxide eza              \
                     bandwhich bottom difftastic du-dust fselect \
-                    git-delta hexyl hyperfine joshuto lsd mcfly \
-                    procs sd starship tealdeer tokei            \
-                    watchexec-cli
+                    git-delta hexyl hyperfine jless joshuto     \
+                    lsd mcfly                                   \
+                    procs rm-improved sd starship tealdeer      \
+                    tokei watchexec-cli
     return
 }
 
@@ -314,7 +315,7 @@ Set_all_proxy() {
                 ;;
             *)
                 fmt_error "Unknown system type $os_release"
-                return -1
+                return 1
                 ;;
         esac
         fmt_info "Env all_proxy set to $proxy_server_address"
@@ -341,7 +342,7 @@ MakeAll() {
     Set_all_proxy
     if [ $? -ne 0 ]; then
         fmt_error "Set all_proxy fail!"
-        return -1
+        return 1
     fi
 
     if ! curl -s www.google.com --connect-timeout 3 > /dev/null; then
@@ -352,7 +353,7 @@ MakeAll() {
         fmt_error "4. WIN proxy is ok for 10809 ?"
         fmt_error "5. WIN firewall is opened for wsl? If not, try the following command in powershell."
         fmt_error '   sudo Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)".'
-        exit -1
+        exit 1
     else
         # distro-irrelevant 
         fmt_info "Proxy ok."
@@ -415,7 +416,7 @@ MakeClean() {
 MakeUninstall() {
     if [ -z "$InstallDir" ]; then
         fmt_error "\$InstallDir is none!"
-        return -1
+        return 1
     fi
     fmt_info "Delete Hook in config file"
     DeleteHookInConfigFile ~/.tmux.conf
