@@ -1,17 +1,27 @@
 
 zshroot=$(dirname $0)
 
-source $zshroot/basic/banner.sh
 source $zshroot/basic/log.sh
+source $zshroot/InstallDir.sh
+
+if [ -n "$InstallDir" ] ; then
+    fmt_info "Install dir is $InstallDir"
+else
+    fmt_error "\$InstallDir is empty, please set it"
+fi
+
+source $zshroot/basic/banner.sh
+source $zshroot/basic/func.sh
 source $zshroot/basic/alias.sh
 source $zshroot/basic/basic.sh
 source $zshroot/basic/export.sh
 source $zshroot/basic/keybindings.sh
-source $zshroot/basic/func.sh
 
+source $zshroot/utils/ohmyzsh.sh
+source $zshroot/utils/tmux.sh
+source $zshroot/utils/zlua.sh
 source $zshroot/utils/zplug.sh
 source $zshroot/utils/fzf.sh
-source $zshroot/utils/tmux.sh
 
 source $zshroot/wsl/wsl.sh
 

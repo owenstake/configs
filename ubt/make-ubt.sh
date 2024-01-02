@@ -1,85 +1,186 @@
 #!/usr/bin/bash
-source lib.sh
-ScriptDir=$(realpath $(dirname $0))
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
+source lib-cli.sh
+source lib-ui.sh
+
+set -e   # exit bash script when cmd fail
+
+scriptDir=$(realpath $(dirname $0))
+
+# global var
+subdir=(bin etc repo)
+buildDir=$scriptDir/output
+mkdir -p $buildDir
+
+InstallDir="$HOME/.dotfile"
+mkdir -p $InstallDir
+
+Make() {  # should not polute the file outside this dir
+    fmt_info "Construct buildDir"
+    for d in "${subdir[@]}"; do
+        fmt_info "make dir $buildDir/$d"
+        mkdir -p $buildDir/$d
+    done
+    # Cli tool bin install
+
+    fmt_info "Construct $buildDir/etc"
+    DeployConfigDir  ../common/etc  "$buildDir/etc"
+    DeployConfigDir  etc            "$buildDir/etc"
+    if InWsl ; then
+        generate_ssh_config_file $InstallDir/etc/ssh/sshconfig
+    fi
+
+    fmt_info "Construct $buildDir/repo"
+    zlua_config     download "$buildDir/repo/zlua"
+    fzf_config      download "$buildDir/repo/fzf"
+    ohmyzsh_config  download "$buildDir/repo/ohmyzsh"
+    zplug_config    download "$buildDir/repo/zplug"
+    ohmytmux_config download "$buildDir/repo/ohmytmux"
+
+    fmt_info "Construct $buildDir/bin"
+    DeployConfigDir    bin "$buildDir/bin"
+    cli_tool_download  "$buildDir/bin"
+
+    if command_exists apt ; then
+        InstallNodejs
+        if InOs uos ; then
+            InstallV2rayA
+        fi
+    fi
+    # install v2rayA
+    set_all_proxy
+    test_connectivity_to_google # check network proxy
+    # InstallOhmytmux $InstallDir
+    InstallWudaoDict $InstallDir/repo/wudaoDict
+    InstallGolang
+
+    return
+}
+
+MakeClean() {
+    if [ ! -e "$buildDir" ]; then
+        fmt_error "\$buildDir is no exists"
+        return
+    fi
+    fmt_info "Clean build dir $buildDir"
+    rm -r $buildDir
+    return
+}
 
 MakeInstall() {
 	## override config
 	# mkdir -p ~/.local $$ mkdir -p ~/.config
-	DeployConfigDir   etc/ranger     $HOME/.config/ranger/
-	DeployConfigDir   etc/fzf        $HOME/.config/fzf/
+	fmt_info "Make install. Copy $buildDir to $InstallDir"
+    DeployConfigDir  "$buildDir"  "$InstallDir"
 
-	# local config
-	# DeployConfigDir   ../common/etc/vim ~/.config/vim
-	DeployConfigDir   ../common/etc/vim   $OwenInstallDir/etc/vim/
-	DeployConfigDir   etc/tmux            $OwenInstallDir/etc/tmux/
-	DeployConfigDir   etc/zsh             $OwenInstallDir/etc/zsh/
-	DeployConfigDir   etc/newsboat        $OwenInstallDir/etc/newsboat/
+	fmt_info "Write InstallDir path to InstallDir.sh"
+    local foundFile=$(search_config_file "InstallDir.sh")
+    if [ $? -eq 0 ] ; then
+        AddHookToConfigFile   \
+            "$foundFile"      \
+            "export InstallDir=$InstallDir"
+    else
+        fmt_error "No found file InstallDir.sh"
+        return 1
+    fi
 
-	DeployConfigDir   etc/keymap        $OwenInstallDir/etc/keymap/
-	DeployConfigDir   bin               $OwenInstallDir/bin
-
+	fmt_info "Override config file"
+	DeployConfigDir   etc/ranger    $HOME/.config/ranger/
 	if [ -f ../common/etc/init-in-one.lua ] ; then
 		DeployConfigFile ../common/etc/init-in-one.lua \
 							~/.config/nvim/init.lua
 	fi
+    fmt_info "Install fzf"
+	DeployConfigDir   etc/fzf       $HOME/.config/fzf/
+    fzf_config install
 
-	# echo "export PATH=$PATH:$OwenInstallDir/bin" >> ~/.profile
+    fmt_info "Install ohmyzsh"
+    ohmyzsh_config install
+
+    fmt_info "Install zplug"
+    zplug_config   install "$InstallDir/repo/zplug"
+
+    fmt_info "Install ohmytmux"
+    ohmytmux_config install "$InstallDir/repo/ohmytmux"
+
+    fmt_info "Install zlua"
+    zlua_config install
+
+    fmt_info "Install tmux-tpm"
+    InstallTmuxTPM  $XDG_CONFIG_HOME/tmux/plugins/tpm
 
 	# xbindkeys config
 	if ! InWsl ; then
+        fmt_info "Config keymap"
 		# keybind only for no-wsl. wsl already has win ahk for keybind.
 		if command_exists xbindkeys; then
-			DeployConfigFile etc/keymap/xbindkeysrc ~/.xbindkeysrc
+            local foundFile=$(search_config_file  "xbindkeysrc")
+			DeployConfigFile $foundFile ~/.xbindkeysrc
 		fi
 
 		# xmodmap config
 		if command_exists xmodmap; then
-			DeployConfigFile etc/keymap/xmodmap ~/.Xmodmap
-		fi
-	fi
-
-	# Generate ssh config file
-	if InWsl ; then
-		fmt_info "Generate ssh config and install"
-		jsonConfig=$(find .. -name "proxy.json" -exec realpath {} \;)
-		if [[ -z $jsonConfig ]] ; then
-			fmt_error "No found file proxy.json"
-		else
-			SearchAndExecFile \
-				".." \
-				"sshconfig.py" \
-				$jsonConfig \
-				$OwenInstallDir/etc/ssh/config
+            local foundFile=$(search_config_file  "xmodmap")
+			DeployConfigFile $foundFile ~/.Xmodmap
 		fi
 	fi
 
 	fmt_info "-- Deploy hooks to config file ---------"
+    local foundFile=$(search_config_file "vimrc")
 	AddHookToConfigFile   \
 		~/.vimrc      \
-		"source $OwenInstallDir/etc/vim/vimrc"   '"'
+		"source $foundFile"   '"'
+
 	AddHookToConfigFile   \
-		~/.zshrc      \
-		"source $OwenInstallDir/etc/zsh/zshrc"
+		~/.zprofile      \
+		"export ZDOTDIR=\$HOME/.config/zsh"
+
+    local foundFile=$(search_config_file "zshrc")
 	AddHookToConfigFile   \
-		~/.tmux.conf  \
-		"source $OwenInstallDir/etc/tmux/tmux.conf"
+		~/.config/zsh/.zshrc      \
+		"source $foundFile"
+
+    local foundFile=$(search_config_file "tmux.conf")
 	AddHookToConfigFile   \
-		~/.ssh/config \
-		"Include $OwenInstallDir/etc/ssh/config"
-	AddHookToConfigFile   \
-		~/.profile    \
-		"[ -d $OwenInstallDir/bin ] && PATH=\"$OwenInstallDir/bin:\$PATH\""
+		"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \
+		"source $foundFile"
+
+    if InWsl ; then
+        local foundFile=$(search_config_file  "sshconfig")
+        AddHookToConfigFile   \
+            ~/.ssh/config \
+            "Include $foundFile"
+    fi
+
+	# AddHookToConfigFile   \
+	# 	~/.profile    \
+	# 	"[ -d $InstallDir/bin ] && PATH=\"$InstallDir/bin:\$PATH\""
 
 	# WSL config.
-	if [[ $(uname -a) == *WSL* ]]; then
+	if InWsl ; then
 		fmt_info "We are in wsl~~~"
-		# powershell.exe -c "../win/make-win.ps1 install"
 	fi
+}
 
+MakeUninstall() {
+    if [ ! -e "$InstallDir" ]; then
+        fmt_error "\$InstallDir is none!"
+        return 1
+    fi
+    fmt_info "Delete Hook in config file at ${ConfigFile[@]}"
+    local ConfigFile=(~/.zshrc ~/.vimrc ~/.tmux.conf ~/.ssh/config ~/.profile)
+    for f in "${ConfigFile[@]}"; do
+        DeleteHookInConfigFile "$f"
+        # DeleteHookInConfigFile ~/.config/nvim/init.vim
+    done
+
+    fmt_info "Clean install dir $InstallDir"
+    rm -r $InstallDir
+    return
 }
 
 main() {
-	action=${1:-"install"}
+	action=${1:-"all"}
 	case $action in
 		install)
 			fmt_info "Installing ~~"
@@ -87,15 +188,18 @@ main() {
 			;;
 		uninstall)
 			fmt_info "Uninstalling ~~"
+			MakeUninstall
 			;;
 		clean)
 			fmt_info "Cleaning ~~"
+            MakeClean
 			;;
 		all)
-			fmt_info "Cleaning ~~"
+			fmt_info "Make ~~"
+			Make
 			;;
 		*)
-			fmt_error "unknown action $1"
+			fmt_error "Unknown action $1"
 	esac
 }
 

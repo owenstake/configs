@@ -249,12 +249,18 @@ Function RustTool-install {
         set-psdebug -trace 0
         EnvPathUserInsertIfNoExists -1 "$Env:USERPROFILE\.cargo\bin"
     }
-    cargo-binstall -y --no-discover-github-token            `
-                    --disable-strategies compile            `
-                    bat fd-find ripgrep zoxide eza              `
+
+    $rustAppStr =  "bat fd-find ripgrep zoxide eza              `
                     bandwhich bottom difftastic du-dust fselect `
-                    hexyl hyperfine lsd mcfly procs sd starship `
+                    hexyl hyperfine jless lsd mcfly procs sd starship `
                     tealdeer tokei watchexec-cli
+                    "
+    $rustApps = @()
+    Foreach ($s in $rustAppStr) {
+        $rustApps    += FormatAppsStr $s
+    }
+    cargo-binstall -y --no-discover-github-token            `
+                    --disable-strategies compile  @($rustApps)
     return
 }
 

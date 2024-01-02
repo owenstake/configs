@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-source lib.sh
 
 scriptDir=$(dirname $0)
 
@@ -7,324 +6,19 @@ if [ -z $scriptDir ]; then
     fmt_error "\$scriptDir is None"
     exit 1
 fi
+
 # global var
 subdir=(bin etc repo)
 buildDir=$scriptDir/output
-mkdir $buildDir
+mkdir -p $buildDir
 
 InstallDir="$HOME/z/.dotfile"
 mkdir -p $InstallDir
-mkdir -p $InstallDir/etc
-mkdir -p $InstallDir/repo
-mkdir -p $InstallDir/bin
 
-
-bash_config="
-    # configed
-    alias ta='tmux a'
-    alias tn='tmux new -s'
-    alias tk='tmux kill-session -t'
-    alias tls='tmux ls'
-    alias tat='tmux a -t'
-    alias tmuxc='vim ~/.tmux.conf'
-    alias tmuxs='tmux source ~/.tmux.conf'
-"
-
-bashrc_for_tmux="
-    export EDITOR=vim # configed
-    source ~/.bashrc
-    # export PATH=\$PATH:\$HOME/.cargo/bin
-    export PATH=\$PATH:$InstallDir/bin
-    alias rp='realpath'
-    alias zc='z -c'
-    alias zb='z -b'
-    alias zf='z -I'
-    alias reboot='echo reboot use \\reboot'
-    rgf () {
-        rg --color=always --line-number --no-heading             \\
-            --smart-case '\${*:-}' |                             \\
-            fzf --ansi                                           \\
-            --color 'hl:-1:underline,hl+:-1:underline:reverse'   \\
-            --delimiter : --preview 'bat --color=always {1}      \\
-            --highlight-line {2}'                                \\
-            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'  \\
-            --bind 'enter:become(vim {1} +{2})'
-    }
-    eval \"\$(lua $InstallDir/repo/zlua/z.lua --init bash)\"
-    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-"
-
-vim_config="inoremap jk <esc>"
-
-try_get_download_url() {
-    local type=$1
-    local release_info=$2
-    local ext_pattern="(t.*[xg]z|zip)"  # match .tar.gz .tar.xa .tgz
-    case $type in
-        rust)
-            local cpu_arch=$(uname -m)
-            # TODO: need support linux-gnu ? Too complicated.
-            local basename_pattern="${cpu_arch}-unknown-linux-musl"
-            ;;
-        golang)
-            local cpu_arch=$(uname -m | sed s/aarch64/arm64/ | sed s/x86_64/amd64/)
-            local basename_pattern="linux[-_]${cpu_arch}"
-            ;;
-        *)
-            fmt_error "unknown type $type"
-            return 1
-    esac
-    local file_pattern="${basename_pattern}.${ext_pattern}$"
-    local dl_url=$(echo "$release_info" | jq -r '.assets[] | select(.name |
-                        match("'$file_pattern'")).browser_download_url'  )
-    if [ $? -ne 0 ] || [ -z "$dl_url" ]; then
-        fmt_error "Get dl_url fail, file_pattern match nothing"
-        return 1
-    else
-        echo "$dl_url"  # output
-    fi
-    return
-}
-
-base_app_binstall() {
-    local language=$1
-    local bin_name=$2
-    local repo_name=$3
-    fmt_info "Download $bin_name in $file_pattern from $repo_name"
-    local GITHUB_API_REMAIN_COUNTS=$(curl -sf https://api.github.com/rate_limit \
-                                                | jq '.rate.remaining')
-    if [ $GITHUB_API_REMAIN_COUNTS -lt 30 ]; then
-        fmt_info "Github API count has be exhausted with remaining $GITHUB_API_REMAIN_COUNTS,"\
-                    "use github token to download instead."
-        if [ -z $GITHUB_TOKEN ]; then
-            fmt_error "Fail to curl github API. Please set GITHUB_TOKEN into env"
-            return 1
-        else
-            local CURL_OPTION="--header \"Authorization: Bearer $GITHUB_TOKEN\""
-            local GITHUB_API_REMAIN_COUNTS=$(curl -sf $CURL_OPTION \
-                        https://api.github.com/rate_limit | jq '.rate.remaining')
-            fmt_info "Github token has remaining counts $GITHUB_API_REMAIN_COUNTS."
-        fi
-    fi
-
-    local release_info=$(curl -sf $CURL_OPTION https://api.github.com/repos/$repo_name/releases/latest)
-    if [ $? -ne 0 ] ; then
-        fmt_error "Curl github api fail"
-        return 1
-    fi
-    if [ -z "$release_info" ] ; then
-        fmt_error "Curl github api ok, but release_info is null"
-        return 1
-    fi
-    # fmt_error "release_info is $release_info" 2>&1 | head -n5
-    local dl_url=$(try_get_download_url "$language" "$release_info" "$file_pattern")
-    if [ $? -ne 0 ] ; then
-        fmt_error "dl_url get fail $dl_url "
-        return 1
-    fi
-
-    local dl_file=${dl_url##*/}
-    # local dl_dir=${dl_tgz%%.tar.gz}
-    # fmt_info "Download from $dl_url"
-    # fmt_info "Retrieve $dl_dir/$bin_name from download url"
-    # fmt_info "Deploy bin to $InstallDir/bin"
-    local dst_dir="$buildDir/bin"
-    fmt_info "Download url is $dl_url"
-    # dl_file_ext=${dl_file#*.}
-    case $dl_file in
-        *.tar.[xg]z | *.tgz )
-            # Get final part of filename splitted by "."
-            local zipMethod=${dl_file: -2}  # get last two charactors
-            # default local array
-            declare -A zipMapOption=([gz]="--gzip" [xz]="--xz")
-            local option=${zipMapOption[$zipMethod]}
-            if [ -z "$option" ]; then
-                fmt_error "unknown zipMethod $zipMethod"
-                return
-            fi
-            curl -sL $dl_url | tar -x $option -C $dst_dir \
-                                    --transform='s%.*/%%' \
-                                    --no-anchor "$bin_name"
-            ;;
-        *.gz)
-            local bin_file="$buildDir/bin/$bin_name"
-            curl -sL $dl_url | gunzip -c > $bin_file && chmod +x $bin_file
-            ;;
-        *.zip)
-            # unzip can not read from stdin
-            # echo " curl -sL $dl_url | unzip - -Wjo "**$bin_name" -d $dst_dir"
-            # curl -sL $dl_url | unzip - -Wo "**$bin_name" -d $dst_dir -j
-            echo "zip url dl_url"
-            tmpfile=$(mktemp)
-            curl -L $dl_url -o $tmpfile && 
-                    unzip -jo $tmpfile "**/$bin_name" -d $dst_dir &&
-                    rm $tmpfile
-            ;;
-        *)
-            fmt_error "unknow ext decompress for $dl_file"
-            ;;
-    esac
-}
-
-cargo_app_binstall() {
-    base_app_binstall "rust" "${@}"
-    return $?
-}
-
-golang_app_binstall() {
-    base_app_binstall "golang" "${@}"
-    return $?
-}
-
-golang_apps_download_by_direct_download() {
-    golang_app_binstall "lf"              "gokcehan/lf"
-    golang_app_binstall "cloudpan189-go"  "tickstep/cloudpan189-go"
-}
-
-rust_tools_download_by_cargo_binstall() {
-    cargo_app_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
-    # curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-    local cpu_arch=$(uname -m)
-    $buildDir/bin/cargo-binstall -y --no-discover-github-token  \
-                    --disable-strategies compile                \
-                    --targets "${cpu_arch}-unknown-linux-musl"  \
-                    --targets "${cpu_arch}-unknown-linux-gnu"   \
-                    --install-path $buildDir/bin                \
-                    bat fd-find ripgrep zoxide eza              \
-                    bandwhich bottom difftastic du-dust fselect \
-                    git-delta hexyl hyperfine jless joshuto     \
-                    lsd mcfly                                   \
-                    procs rm-improved sd starship tealdeer      \
-                    tokei watchexec-cli
-    return
-}
-
-# this func only for x86, unable to compat for multi os
-rust_tools_install_by_direct_download() {
-    # cargo_app_binstall "cargo-binstall"  "cargo-bins/cargo-binstall"
-
-    # $buildDir/bin/cargo-binstall -y --install-path \
-    #                 $buildDir/bin fd rg zoxide eza \
-    #                 bat bandwhich btm delta difftastic dust fselect \
-    #                 grex hyperfine lsd mcfly sd starship tokei watchexec
-
-    # rust install for compile
-    # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    # lf is golang tool
-    # delta do no support cargo-binstall
-    # grex is not support in aarch64
-
-    # golang - direct download
-    cargo_app_binstall "lf"        "gokcehan/lf"         "lf-linux-amd64.tar.gz$"
-
-    # rust - direct download
-    cargo_app_binstall "delta"     "dandavison/delta"
-    cargo_app_binstall "difft"     "Wilfred/difftastic"  "difft-x86_64-unknown-linux-gnu.tar.gz"
-    cargo_app_binstall "grex"      "pemistahl/grex"
-
-    # rust - cargo-binstall
-    cargo_app_binstall "fd"        "sharkdp/fd"
-    cargo_app_binstall "rg"        "BurntSushi/ripgrep"
-    cargo_app_binstall "eza"       "eza-community/eza"
-    cargo_app_binstall "bat"       "sharkdp/bat"
-    cargo_app_binstall "watchexec" "watchexec/watchexec"
-    cargo_app_binstall "zoxide"    "ajeetdsouza/zoxide"
-
-    cargo_app_binstall "bandwhich" "imsnif/bandwhich"
-    cargo_app_binstall "btm"       "ClementTsang/bottom"
-    cargo_app_binstall "dust"      "bootandy/dust"
-    cargo_app_binstall "fselect"   "jhspetersson/fselect" "fselect-x86_64-linux-musl.gz$"
-    cargo_app_binstall "hyperfine" "sharkdp/hyperfine"
-
-    cargo_app_binstall "lsd"       "lsd-rs/lsd"
-    cargo_app_binstall "mcfly"     "cantino/mcfly"
-    cargo_app_binstall "sd"        "chmln/sd"
-    cargo_app_binstall "starship"  "starship/starship"
-    cargo_app_binstall "tokei"     "XAMPPRocky/tokei"
-
-
-    return
-}
-
-fzf_config() {
-    local fzf_dir="$InstallDir/repo/fzf"
-    action=${1}
-    case $action in
-        download)
-            if [[ ! -e $fzf_dir ]]; then
-                # make
-                fmt_info "Download fzf through proxy"
-                git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
-                # --all for set short-cut <ctrl-t> <ctrl-r>
-                # make install
-            else
-                fmt_info "Skip download fzf, $fzf_dir is already exists, "
-            fi
-            ;;
-        install)
-            fmt_info "Install fzf through proxy"
-            $fzf_dir/install --all --no-update-rc
-            # bashrc config already
-            ;;
-        *)
-            fmt_error "unknown action $action"
-            return
-            ;;
-    esac
-}
-
-zlua_config() {
-    local zlua_dir="$buildDir/repo/zlua"
-    # local zlua_install_dir="$InstallDir/repo/zlua"
-    # make
-    action=${1}
-    case $action in
-        download)
-            fmt_info "Download zlua"
-            if [[ ! -e $zlua_dir ]]; then
-                git clone --depth 1 https://gitee.com/mirrors/z.lua.git $zlua_dir \
-                        && rm -rf $_/.git
-            fi
-            ;;
-        install)
-            fmt_info "Install zlua"
-            # bashrc config already
-            ;;
-        *)
-            fmt_error "unknown action $action"
-            ;;
-    esac
-    return
-}
-
-Set_all_proxy() {
-    local os_release=$(cat /etc/os-release | grep -xoP 'ID=\K.*' | tr -d '"')
-    local proxy_server_address
-    if [ -n "$all_proxy" ]; then
-        fmt_info "Env all_proxy is configed already."
-    else
-        case $os_release in
-            centos)
-                proxy_server_address=http://127.0.0.1:10809
-                ;;
-            uos)
-                proxy_server_address=http://127.0.0.1:20171
-                ;;
-            ubuntu)
-                proxy_server_address=http://$WINIP:10809
-                ;;
-            *)
-                fmt_error "Unknown system type $os_release"
-                return 1
-                ;;
-        esac
-        fmt_info "Env all_proxy set to $proxy_server_address"
-        export all_proxy=$proxy_server_address
-    fi
-}
+source lib.sh  # dep on $InstallDir
 
 # ./make all should not polute other dir but itself.
-MakeAll() {
+MakeCliMini() {
     # make -p
     fmt_info "Construct buildDir"
     for d in "${subdir[@]}"; do
@@ -333,6 +27,7 @@ MakeAll() {
     done
 
     fmt_info "Generate bashrc for tmux"
+    local bashrc_for_tmux=$(GetBashrcForTmux $InstallDir )
     echo "$bashrc_for_tmux" > $InstallDir/etc/bashrc  # hook in tmux conf
 
     fmt_info "Generate tmux config"
@@ -358,10 +53,9 @@ MakeAll() {
         # distro-irrelevant 
         fmt_info "Proxy ok."
         # fzf. build bin file need github.
-        zlua_config download
-        fzf_config  download
-        golang_apps_download_by_direct_download
-        rust_tools_download_by_cargo_binstall
+        zlua_config download $buildDir/repo
+        fzf_config  download $buildDir/repo
+        cli_tool_download $buildDir/bin
     fi
 }
 
@@ -375,16 +69,11 @@ MakeInstall() {
     DeployConfigDir  $buildDir  $InstallDir
 
     fmt_info "Write config to file"
-    # set ls color. Beautify the color for ls dir
-    # echo 'DIR 01;36' > ~/.dir_colors # fix by set terminal color mode to xterm
     # vim config
     if [ ! -e ~/.vimrc ] || ! grep -q "inoremap jk"  ~/.vimrc ; then
+        local vim_config="inoremap jk <esc>"
         echo "$vim_config" >> ~/.vimrc
         # echo "$vim_config" >> ~/.vimrc
-    fi
-    # bashrc
-    if ! grep -q "# configed" ~/.bashrc ; then
-        echo "$bash_config" >> ~/.bashrc
     fi
 
     fmt_info "Add hook to config file"
@@ -404,8 +93,8 @@ MakeInstall() {
 }
 
 MakeClean() {
-    if [ -z "$buildDir" ]; then
-        fmt_error "\$buildDir is none"
+    if [ ! -e "$buildDir" ]; then
+        fmt_error "\$buildDir is no exists"
         return
     fi
     fmt_info "Clean build dir $buildDir"
@@ -414,7 +103,7 @@ MakeClean() {
 }
 
 MakeUninstall() {
-    if [ -z "$InstallDir" ]; then
+    if [ ! -e "$InstallDir" ]; then
         fmt_error "\$InstallDir is none!"
         return 1
     fi
@@ -428,8 +117,6 @@ MakeUninstall() {
 }
 
 main() {
-    setup_log_color
-
     target=${1:-"all"}
     case $target in
         install)
@@ -446,7 +133,7 @@ main() {
             ;;
         all)
             fmt_info "Building ~~"
-            MakeAll
+            MakeCliMini
             ;;
         *)
             fmt_error "unknown target $1"

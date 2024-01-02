@@ -40,5 +40,5 @@ function _fzf_complete_ping () {
 }
 
 # FZF - https://github.com/junegunn/fzf#using-git {{{
+test -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh && source $_
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && source ~/.fzf/shell/key-bindings.zsh

@@ -1,3 +1,9 @@
+local foundFile=$(search_file "$XDG_CONFIG_HOME" tpm)
+if [ $? -eq 0 ] ; then
+    export TMUX_TPM="$foundFile"
+else
+    fmt_error "No found tmux tpm."
+fi
 
 # Tmux config in fzf way - now is rarely used {{{
     # https://github.com/junegunn/fzf/wiki/examples#tmux

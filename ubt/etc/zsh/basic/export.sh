@@ -15,10 +15,6 @@
 
 # Export {{{
     export EDITOR=vim   # For hjkl move
-
-    # lua setting
-    export ZLUA_SCRIPT="~/.zplug/repos/skywind3000/z.lua/z.lua"
-    # export RANGER_ZLUA=${ZLUA_SCRIPT:-"~/.zplug/repos/skywind3000/z.lua/z.lua"}
-    export _ZL_ROOT_MARKERS=".git,.svn,.hg,.root,package.json"    # for `z -b` to return to root dir
-    export _ZL_ECHO=1
+    export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
+    [ -d $InstallDir/bin ] && PATH="$InstallDir/bin:$PATH"
 # }}}
