@@ -55,3 +55,20 @@ search_config_file() {
     return $?
 }
 
+generate_tempest_html() {
+	local pattern=$1
+	mkdir -p "./log"
+	local log_file="./log/$(date '+%m%d%H%M').subunit"
+	local html_file=${log_file/subunit/html}
+	msg="log file $log_file , html file $html_file"
+	echo "$msg"
+	proxychains stestr run --subunit $pattern 2>&1 | tee -a $log_file
+	if [ -f $log_file ]; then
+		subunit2html $log_file $html_file
+		echo "$msg"
+	else
+		echo "ERORR test fail"
+		return -1
+	fi
+}
+
