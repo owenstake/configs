@@ -2,6 +2,7 @@
 zshroot=$(dirname $0)
 
 source $zshroot/basic/log.sh
+source $zshroot/basic/func.sh
 source $zshroot/InstallDir.sh
 
 if [ -n "$InstallDir" ] ; then
@@ -11,8 +12,6 @@ else
 fi
 
 source $zshroot/basic/banner.sh
-source $zshroot/basic/func.sh
-source $zshroot/basic/alias.sh
 source $zshroot/basic/basic.sh
 source $zshroot/basic/export.sh
 source $zshroot/basic/keybindings.sh
@@ -22,7 +21,9 @@ source $zshroot/utils/ohmyzsh.sh
 source $zshroot/utils/tmux.sh
 source $zshroot/utils/zlua.sh
 source $zshroot/utils/zplug.sh
-source $zshroot/utils/fzf.sh   # fzf must be last to make ctrl+r take effect
 
+# final to avoid override
+source $zshroot/basic/alias.sh
+source $zshroot/utils/fzf.sh   # fzf must be last to make ctrl+r take effect
 source $zshroot/wsl/wsl.sh
 

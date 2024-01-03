@@ -1,7 +1,14 @@
 # Aliases ----------------------------------------- {{{
 newsboat_config_file=$(search_config_file "rss_links.txt")
-if [ $? -ne 0 ] ; then
-    fmt_error "No found config file rss_links.txt"
+if [ $? -eq 0 ] ; then
+    alias nb="newsboat -ru $newsboat_config_file"
+fi
+
+if command_exists eza ; then
+    fmt_info "alias ls to eza"
+    alias ls=eza
+else
+    fmt_error "No found eza"
 fi
 
 # Basic alias{{{
@@ -10,7 +17,6 @@ fi
     fd='fdfind'                                       \
     hi='history'                                      \
     lz='lazygit'                                      \
-    nb="newsboat -ru $newsboat_config_file"           \
     pg="grep -P"                                      \
     pac="vim ~/.local/etc/pac.txt"                    \
     pc='proxychains'                                  \

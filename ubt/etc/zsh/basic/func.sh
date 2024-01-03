@@ -1,4 +1,8 @@
 
+command_exists() {
+    command -v "$@" >/dev/null 2>&1
+}
+
 tard() {
 	dir=$1
 	if [ -z "$1" ]; then
