@@ -127,12 +127,12 @@ MakeInstall() {
 
 	fmt_info "-- Deploy hooks to config file ---------"
     local foundFile=$(search_config_file "vimrc")
-	AddHookToConfigFile   \
-		~/.vimrc      \
+	AddHookToConfigFile    \
+		~/.vimrc           \
 		"source $foundFile"   '"'
 
 	AddHookToConfigFile   \
-		~/.zprofile      \
+		~/.zshenv         \
 		"export ZDOTDIR=\$HOME/.config/zsh"
 
     local foundFile=$(search_config_file "zshrc")
