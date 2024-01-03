@@ -8,7 +8,9 @@
         fmt_error "No found zplug dir."
         return
     fi
+    # ZPLUG_REPOS can take effective after reboot, we do it now.
     export ZPLUG_REPOS=$ZPLUG_HOME/repos
+    export ZPLUG_CACHE_DIR=$ZPLUG_HOME/.cache
     if [[ -f $ZPLUG_HOME/init.zsh ]] {
         fmt_info "source zplug"
         source $ZPLUG_HOME/init.zsh

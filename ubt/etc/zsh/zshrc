@@ -17,11 +17,12 @@ source $zshroot/basic/basic.sh
 source $zshroot/basic/export.sh
 source $zshroot/basic/keybindings.sh
 
+# plugin
 source $zshroot/utils/ohmyzsh.sh
 source $zshroot/utils/tmux.sh
 source $zshroot/utils/zlua.sh
 source $zshroot/utils/zplug.sh
-source $zshroot/utils/fzf.sh
+source $zshroot/utils/fzf.sh   # fzf must be last to make ctrl+r take effect
 
 source $zshroot/wsl/wsl.sh
 

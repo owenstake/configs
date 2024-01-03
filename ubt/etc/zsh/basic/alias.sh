@@ -19,7 +19,8 @@
     vic='vim ~/.vimrc'                                    \
     pc='proxychains'                                      \
     psg='ps -ef | grep '                                  \
-    py=python
+    py=python                                             \
+    sudo='\sudo -E env "PATH=$PATH"'
 # }}}
 
 # zlua {{{
