@@ -1,25 +1,29 @@
 # Aliases ----------------------------------------- {{{
+newsboat_config_file=$(search_config_file "rss_links.txt")
+if [ $? -ne 0 ] ; then
+    fmt_error "No found config file rss_links.txt"
+fi
 
 # Basic alias{{{
-    alias                                                 \
-    ap='apropos'                                          \
-    rp='realpath'                                         \
-    vi='vim'                                              \
-    hi='history'                                          \
-    xc='xclip'                                            \
-    fd='fdfind'                                           \
-    ra='ranger'                                           \
-    wt='curl -s "wttr.in/~haizhu+guangzhou?m" | less'     \
-    wtq='curl -s "wttr.in/~QuanGang+Fujian?m" | less'    \
-    wtx='curl -s "wttr.in/~xiamen+Fujian?m" | less'       \
-    lz='lazygit'                                          \
-    nb='newsboat -ru $OwenInstallDir/etc/newsboat/rss_links.txt' \
-    pg='grep -P'                                          \
-    pac="vim ~/.local/etc/pac.txt"                        \
-    vic='vim ~/.vimrc'                                    \
-    pc='proxychains'                                      \
-    psg='ps -ef | grep '                                  \
-    py=python                                             \
+    alias                                             \
+    ap='apropos'                                      \
+    fd='fdfind'                                       \
+    hi='history'                                      \
+    lz='lazygit'                                      \
+    nb="newsboat -ru $newsboat_config_file"           \
+    pg="grep -P"                                      \
+    pac="vim ~/.local/etc/pac.txt"                    \
+    pc='proxychains'                                  \
+    psg='ps -ef | grep '                              \
+    py=python                                         \
+    ra='ranger'                                       \
+    rp='realpath'                                     \
+    vi='vim'                                          \
+    vic="vim ~/.vimrc"                                \
+    wt='curl -s "wttr.in/~haizhu+guangzhou?m" | less' \
+    wtq='curl -s "wttr.in/~QuanGang+Fujian?m" | less' \
+    wtx='curl -s "wttr.in/~xiamen+Fujian?m" | less'   \
+    xc='xclip'                                        \
     sudo='\sudo -E env "PATH=$PATH"'
 # }}}
 
