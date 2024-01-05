@@ -1,0 +1,29 @@
+# scriptDir=$(dirname $0)
+scriptDir="."
+
+source $scriptDir/basic/log.sh
+source $scriptDir/basic/func.sh
+source $scriptDir/InstallDir.sh
+
+if [ -n "$InstallDir" ] ; then
+    fmt_info "Install dir is $InstallDir"
+else
+    fmt_error "\$InstallDir is empty, please set it"
+fi
+
+# source $scriptDir/basic/banner.sh
+# source $scriptDir/basic/basic.sh
+source $scriptDir/basic/export.sh
+# source $scriptDir/basic/keybindings.sh
+
+# plugin
+# source $scriptDir/utils/ohmyzsh.sh
+source $scriptDir/utils/tmux.sh
+source $scriptDir/utils/zlua.sh
+# source $scriptDir/utils/zplug.sh
+
+# final to avoid override
+source $scriptDir/basic/alias.sh  # avoid ls been overwrite by oh-my-zsh
+source $scriptDir/utils/fzf.sh   # fzf must be last to make ctrl+r take effect, avoiding overwrite by ohmyzsh
+# source $scriptDir/wsl/wsl.sh
+
