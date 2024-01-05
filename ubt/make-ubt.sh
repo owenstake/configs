@@ -33,9 +33,9 @@ Make() {  # should not polute the file outside this dir
     fmt_info "Construct $buildDir/repo"
     zlua_config     download "$buildDir/repo/zlua"
     fzf_config      download "$buildDir/repo/fzf"
+    ohmytmux_config download "$buildDir/repo/ohmytmux"
     ohmyzsh_config  download "$buildDir/repo/ohmyzsh"
     zplug_config    download "$buildDir/repo/zplug"
-    ohmytmux_config download "$buildDir/repo/ohmytmux"
 
     fmt_info "Construct $buildDir/bin"
     DeployConfigDir    bin "$buildDir/bin"
@@ -84,8 +84,10 @@ MakeInstall() {
         return 1
     fi
 
-	fmt_info "Override config file"
+	fmt_info "Override config file which can not be specified"
 	DeployConfigDir   etc/ranger    $HOME/.config/ranger/
+	DeployConfigDir   etc/newsboat    $HOME/.config/newsboat/
+
 	if [ -f ../common/etc/init-in-one.lua ] ; then
 		DeployConfigFile ../common/etc/init-in-one.lua \
 							~/.config/nvim/init.lua
@@ -94,20 +96,21 @@ MakeInstall() {
 	DeployConfigDir   etc/fzf       $HOME/.config/fzf/
     fzf_config install
 
+    fmt_info "Install zlua"
+    zlua_config install
+
+    fmt_info "Install ohmytmux"
+    ohmytmux_config install "$InstallDir/repo/ohmytmux"
+
     fmt_info "Install ohmyzsh"
     ohmyzsh_config install
 
     fmt_info "Install zplug"
     zplug_config   install "$InstallDir/repo/zplug"
 
-    fmt_info "Install ohmytmux"
-    ohmytmux_config install "$InstallDir/repo/ohmytmux"
-
-    fmt_info "Install zlua"
-    zlua_config install
-
-    fmt_info "Install tmux-tpm"
-    InstallTmuxTPM  $XDG_CONFIG_HOME/tmux/plugins/tpm
+    # TPM is already in oh my tmux 
+    # fmt_info "Install tmux-tpm"
+    # InstallTmuxTPM  $XDG_CONFIG_HOME/tmux/plugins/tpm
 
 	# xbindkeys config
 	if ! InWsl ; then

@@ -15,6 +15,9 @@ If (($Env:OwenInstallDir) -and
         exp $file
 }
 
+[void][System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
+[void][System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
+
 # $env:PAGER  = "bat"
 $env:EDITOR = "vim"
 # $env:SHELL="powershell"

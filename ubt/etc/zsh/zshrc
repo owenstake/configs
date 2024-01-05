@@ -1,9 +1,8 @@
+scriptDir=$(dirname $0)
 
-zshroot=$(dirname $0)
-
-source $zshroot/basic/log.sh
-source $zshroot/basic/func.sh
-source $zshroot/InstallDir.sh
+source $scriptDir/basic/log.sh
+source $scriptDir/basic/func.sh
+source $scriptDir/InstallDir.sh
 
 if [ -n "$InstallDir" ] ; then
     fmt_info "Install dir is $InstallDir"
@@ -11,19 +10,19 @@ else
     fmt_error "\$InstallDir is empty, please set it"
 fi
 
-source $zshroot/basic/banner.sh
-source $zshroot/basic/basic.sh
-source $zshroot/basic/export.sh
-source $zshroot/basic/keybindings.sh
+source $scriptDir/basic/banner.sh
+source $scriptDir/basic/basic.sh
+source $scriptDir/basic/export.sh
+source $scriptDir/basic/keybindings.sh
 
 # plugin
-source $zshroot/utils/ohmyzsh.sh
-source $zshroot/utils/tmux.sh
-source $zshroot/utils/zlua.sh
-source $zshroot/utils/zplug.sh
+source $scriptDir/utils/ohmyzsh.sh
+source $scriptDir/utils/tmux.sh
+source $scriptDir/utils/zlua.sh
+source $scriptDir/utils/zplug.sh
 
 # final to avoid override
-source $zshroot/basic/alias.sh
-source $zshroot/utils/fzf.sh   # fzf must be last to make ctrl+r take effect
-source $zshroot/wsl/wsl.sh
+source $scriptDir/basic/alias.sh
+source $scriptDir/utils/fzf.sh   # fzf must be last to make ctrl+r take effect, avoiding overwrite by ohmyzsh
+source $scriptDir/wsl/wsl.sh
 

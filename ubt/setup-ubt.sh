@@ -36,18 +36,6 @@ main() {
     #     bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
     # fi
 
-    # # fzf
-    # if [[ ! -e ~/.fzf ]]; then
-    #     GitClone https://github.com/junegunn/fzf.git ~/.fzf
-    #     ~/.fzf/install --all  # --all for set short-cut <ctrl-t> <ctrl-r>
-    #     # echo '[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh # owen' >> ~/.zshrc
-    # fi
-
-    # zlua (already installed in zplug)
-    # if ! command_exists z; then
-    #     export RANGER_ZLUA="~/.zplug/repos/skywind3000/z.lua/z.lua"
-    # fi
-
     # vim plug. auto trigger install
 
     # wsl config

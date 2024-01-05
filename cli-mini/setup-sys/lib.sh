@@ -18,6 +18,9 @@ fmt_error() {
 GetTmuxConfig() {
 	tmux_base_config="
 		# configed
+        # set -g default-terminal xterm  # to fix ctrl-L in tmux3.2
+		setw -g mode-keys vi # hjkl move in copy mode
+
 		bind h select-pane -L
 		bind j select-pane -D
 		bind k select-pane -U
@@ -27,7 +30,6 @@ GetTmuxConfig() {
 
 		set -g base-index 1
 		setw -g pane-base-index 1
-		setw -g mode-keys vi
 		set-option -g default-command 'TMOUT=0 bash --rcfile $InstallDir/etc/bashrc'
 		set-option -g allow-rename off
 	"
@@ -43,6 +45,12 @@ GetTmuxConfig() {
 	tmux32a_extra_config="
 		set -g mouse on
 		set-window-option -g window-status-current-style bg=yellow
+
+        set -g window-status-last-style fg=yellow,bold
+
+        bind-key -T copy-mode-vi 'v' send -X begin-selection     # Begin selection in copy mode.
+        bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle  # Begin selection in copy mode.
+        bind-key -T copy-mode-vi 'y' send -X copy-selection      # Yank selection in copy mode.
 	"
 	local tmux_version=$(tmux -V | cut -d' ' -f2)
 	case $tmux_version in
@@ -442,6 +450,7 @@ GetBashrcForTmux() {
         source ~/.bashrc
         # export PATH=\$PATH:\$HOME/.cargo/bin
         export PATH=\$PATH:$InstallDir/bin
+        alias vim='nvim'
         alias rp='realpath'
         alias zc='z -c'
         alias zb='z -b'

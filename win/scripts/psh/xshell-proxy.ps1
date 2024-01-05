@@ -215,6 +215,9 @@ Function UpdateXshell($config, $XshellconfigFile) {
             'ExpectSend_Count'      = 1
             'UseExpectSend'         = 1
         }
+        'TERMINAL'                  = @{
+            'Type'                  = "xterm-256color"
+        }
         'TERMINAL:WINDOW'           = @{
             'ColorScheme'           = "XTerm"
         }

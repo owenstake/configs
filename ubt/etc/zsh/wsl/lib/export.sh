@@ -1,3 +1,19 @@
+
+# Intro {{{
+    # Just for my own notes / confirmation and to help anybody else, the ultimate order is .zshenv 鈫? [.zprofile if login] 鈫? [.zshrc if interactive] 鈫? [.zlogin if login] 鈫? [.zlogout sometimes].
+
+    # manual config is needed to confirm and add to ~/.zshrc
+    export WinUserName=$(echo $PATH | sed 's#.*/mnt/c/Users/\([^/]*\)/.*#\1#')
+    export WinUserHome=/mnt/c/Users/${WinUserName}
+    export WinUserDownloads=${WinUserHome}/Downloads
+    export WinUserDesktop=${WinUserHome}/Desktop
+    export WinUserWeiyun="/mnt/c/Weiyun/Personal"
+    export WinUserWeiyunNote="/mnt/c/Weiyun/Personal/my_note"
+    export OwenInstallDir="$HOME/.dotfiles"
+# }}}
+
+
+
 # export POWERSHELL_PATH="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powerShell.exe"
 export VSCODE_PATH="/mnt/c/Program Files/Microsoft VS Code/bin/code"
 export EXPLORER_PATH="/mnt/c/Windows/explorer.exe"
