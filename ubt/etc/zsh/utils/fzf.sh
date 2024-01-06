@@ -40,5 +40,5 @@ function _fzf_complete_ping () {
 }
 
 # FZF - https://github.com/junegunn/fzf#using-git {{{
-test -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.${SHELL#/bin/} && source $_
+test -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.${SHELL##*/} && source $_
 

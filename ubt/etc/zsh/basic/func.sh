@@ -72,3 +72,12 @@ generate_tempest_html() {
 	fi
 }
 
+ssh() {    # auto rename window with ssh target hostname
+    local hostname=$(echo "${@}" | sed -E 's/.*@(\S*).*/\1/')
+    echo ${hostname}
+    if [ "$TMUX_PANE" == "%0" ] ; then
+        tmux rename-window "${hostname##*x86-}"
+    fi
+    /bin/ssh "${@}"
+}
+

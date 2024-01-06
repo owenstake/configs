@@ -119,6 +119,14 @@ InOs() {
     return $?
 }
 
+InUos() {
+    InOs "uos"
+}
+
+InCentos() {
+    InOs "centos"
+}
+
 GetCurOsName() {
     local curOsName=$(grep "^NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
     echo ${curOsName,,}

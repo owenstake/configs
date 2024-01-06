@@ -155,8 +155,8 @@ InstallNodejs() {
     # Nodejs install
     if ! command_exists node ; then
         NODE_MAJOR=20
-        CUR_NODE_MAJOR=$(node --version | cut -d'.' -f1 | tr -d 'v')
-        if [ $CUR_NODE_MAJOR -lt $NODE_MAJOR ] ; then
+        # CUR_NODE_MAJOR=$(node --version | cut -d'.' -f1 | tr -d 'v')
+        # if [ "$CUR_NODE_MAJOR" -lt "$NODE_MAJOR" ] ; then
             fmt_info "Install nodejs $NODE_MAJOR"
             sudo apt install -y ca-certificates curl gnupg
             sudo mkdir -p /etc/apt/keyrings
@@ -166,7 +166,7 @@ InstallNodejs() {
                     "https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | \
                     sudo tee /etc/apt/sources.list.d/nodesource.list
             sudo apt install nodejs -y
-        fi
+        # fi
     fi
 }
 

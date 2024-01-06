@@ -34,25 +34,27 @@ Make() {  # should not polute the file outside this dir
     zlua_config     download "$buildDir/repo/zlua"
     fzf_config      download "$buildDir/repo/fzf"
     ohmytmux_config download "$buildDir/repo/ohmytmux"
-    ohmyzsh_config  download "$buildDir/repo/ohmyzsh"
-    zplug_config    download "$buildDir/repo/zplug"
+    if InWsl || InUos ; then
+        ohmyzsh_config  download "$buildDir/repo/ohmyzsh"
+        zplug_config    download "$buildDir/repo/zplug"
+    fi
 
     fmt_info "Construct $buildDir/bin"
     DeployConfigDir    bin "$buildDir/bin"
     cli_tool_download  "$buildDir/bin"
 
-    if command_exists apt ; then
+    if InWsl || InUos ; then
         InstallNodejs
-        if InOs uos ; then
-            InstallV2rayA
-        fi
+        InstallWudaoDict $InstallDir/repo/wudaoDict
+        InstallGolang
+    fi
+    if InUos ; then
+        InstallV2rayA
     fi
     # install v2rayA
     set_all_proxy
     test_connectivity_to_google # check network proxy
     # InstallOhmytmux $InstallDir
-    InstallWudaoDict $InstallDir/repo/wudaoDict
-    InstallGolang
 
     return
 }
@@ -84,14 +86,6 @@ MakeInstall() {
         return 1
     fi
 
-	fmt_info "Override config file which can not be specified"
-	DeployConfigDir   etc/ranger    $HOME/.config/ranger/
-	DeployConfigDir   etc/newsboat    $HOME/.config/newsboat/
-
-	if [ -f ../common/etc/init-in-one.lua ] ; then
-		DeployConfigFile ../common/etc/init-in-one.lua \
-							~/.config/nvim/init.lua
-	fi
     fmt_info "Install fzf"
 	DeployConfigDir   etc/fzf       $HOME/.config/fzf/
     fzf_config install
@@ -102,18 +96,27 @@ MakeInstall() {
     fmt_info "Install ohmytmux"
     ohmytmux_config install "$InstallDir/repo/ohmytmux"
 
-    fmt_info "Install ohmyzsh"
-    ohmyzsh_config install
+    if InWsl || InUos ; then
+        fmt_info "Override config file which can not be specified"
+        DeployConfigDir   etc/ranger    $HOME/.config/ranger/
+        DeployConfigDir   etc/newsboat    $HOME/.config/newsboat/
+        if [ -f ../common/etc/init-in-one.lua ] ; then
+            DeployConfigFile ../common/etc/init-in-one.lua \
+                                ~/.config/nvim/init.lua
+        fi
+        fmt_info "Install ohmyzsh"
+        ohmyzsh_config install
 
-    fmt_info "Install zplug"
-    zplug_config   install "$InstallDir/repo/zplug"
+        fmt_info "Install zplug"
+        zplug_config   install "$InstallDir/repo/zplug"
+    fi
 
     # TPM is already in oh my tmux 
     # fmt_info "Install tmux-tpm"
     # InstallTmuxTPM  $XDG_CONFIG_HOME/tmux/plugins/tpm
 
 	# xbindkeys config
-	if ! InWsl ; then
+	if InUos ; then
         fmt_info "Config keymap"
 		# keybind only for no-wsl. wsl already has win ahk for keybind.
 		if command_exists xbindkeys; then
@@ -129,40 +132,47 @@ MakeInstall() {
 	fi
 
 	fmt_info "-- Deploy hooks to config file ---------"
-    local foundFile=$(search_config_file "vimrc")
-	AddHookToConfigFile    \
-		~/.vimrc           \
-		"source $foundFile"   '"'
+    if InWsl || InUos ; then
+        local foundFile=$(search_config_file "vimrc")
+        AddHookToConfigFile    \
+            ~/.vimrc           \
+            "source $foundFile"   '"'
 
-	AddHookToConfigFile   \
-		~/.zshenv         \
-		"export ZDOTDIR=\$HOME/.config/zsh"
+        AddHookToConfigFile   \
+            ~/.zshenv         \
+            "export ZDOTDIR=\$HOME/.config/zsh"
 
-    local foundFile=$(search_config_file "zshrc")
-	AddHookToConfigFile   \
-		~/.config/zsh/.zshrc      \
-		"source $foundFile"
+        local foundFile=$(search_config_file "zshrc")
+        AddHookToConfigFile   \
+            ~/.config/zsh/.zshrc      \
+            "source $foundFile"
+    fi
 
-    local foundFile=$(search_config_file "tmux.conf")
-	AddHookToConfigFile   \
-		"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \
-		"source $foundFile"
+    local foundFile1=$(search_file $InstallDir ".tmux.conf.local")
+    local foundFile2=$(search_config_file "tmux.conf")
+    cat "$foundFile1" "$foundFile2" > "$XDG_CONFIG_HOME/tmux/tmux.conf.local"  
 
+    if InCentos ; then
+        local tmux_extra_config="set-option -g default-command 'TMOUT=0 bash --rcfile $InstallDir/etc/bashrc'"
+        echo "$tmux_extra_config" >> "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
+    fi
+
+	# AddHookToConfigFile   \
+	# 	"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \
+	# 	"source $foundFile2"
+
+	# WSL config.
     if InWsl ; then
         local foundFile=$(search_config_file  "sshconfig")
         AddHookToConfigFile   \
             ~/.ssh/config \
             "Include $foundFile"
+		fmt_info "We are in wsl~~~"
     fi
 
 	# AddHookToConfigFile   \
 	# 	~/.profile    \
 	# 	"[ -d $InstallDir/bin ] && PATH=\"$InstallDir/bin:\$PATH\""
-
-	# WSL config.
-	if InWsl ; then
-		fmt_info "We are in wsl~~~"
-	fi
 }
 
 MakeUninstall() {
