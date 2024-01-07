@@ -1,6 +1,7 @@
 #### glocal var #####################
 curOsName=$(GetCurOsName)
 appsCommonStr="
+    jq unzip
     cargo fd-find global python3-pip universal-ctags vim-gtk
     ranger newsboat openssh-server tree trash-cli wmctrl
     x11-apps xclip xbindkeys xautomation xvkbd zsh

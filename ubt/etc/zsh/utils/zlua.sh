@@ -1,5 +1,5 @@
 # lua setting
-local found_file=$(search_file $InstallDir z.lua)
+found_file=$(search_file $InstallDir z.lua)
 if [ $? -eq 0 ] ; then
     export ZLUA_SCRIPT="$found_file"
     fmt_info "ZLUA_SCRIPT=$ZLUA_SCRIPT"
@@ -11,4 +11,4 @@ fi
 export _ZL_ROOT_MARKERS=".git,.svn,.hg,.root,package.json"    # for `z -b` to return to root dir
 export _ZL_ECHO=1
 export _ZL_DATA=$InstallDir/.zlua
-eval "$(lua $ZLUA_SCRIPT --init zsh enhanced once fzf)"
+eval "$(lua $ZLUA_SCRIPT --init ${SHELL##*/} enhanced once fzf)"

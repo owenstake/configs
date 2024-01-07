@@ -114,7 +114,7 @@ InWsl() {
 
 InOs() {
     local name=$1
-    local curOsName=$(grep "^NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    local curOsName=$(grep "^ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
     [ "${name,,}" = "${curOsName,,}" ]   # ,, is for low-case
     return $?
 }
@@ -128,7 +128,7 @@ InCentos() {
 }
 
 GetCurOsName() {
-    local curOsName=$(grep "^NAME" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    local curOsName=$(grep "^ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
     echo ${curOsName,,}
 }
 

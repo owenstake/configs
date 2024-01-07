@@ -5,6 +5,8 @@ source lib-ui.sh
 
 set -e   # exit bash script when cmd fail
 
+fmt_info "This script depends on jq, unzip"
+
 scriptDir=$(realpath $(dirname $0))
 
 # global var
@@ -54,7 +56,6 @@ Make() {  # should not polute the file outside this dir
     # install v2rayA
     set_all_proxy
     test_connectivity_to_google # check network proxy
-    # InstallOhmytmux $InstallDir
 
     return
 }
@@ -153,7 +154,8 @@ MakeInstall() {
     cat "$foundFile1" "$foundFile2" > "$XDG_CONFIG_HOME/tmux/tmux.conf.local"  
 
     if InCentos ; then
-        local tmux_extra_config="set-option -g default-command 'TMOUT=0 bash --rcfile $InstallDir/etc/bashrc'"
+        local foundFile=$(search_file $InstallDir "bashrc")
+        local tmux_extra_config="set-option -g default-command 'TMOUT=0 bash --rcfile $foundFile'"
         echo "$tmux_extra_config" >> "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
     fi
 

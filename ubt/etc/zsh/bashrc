@@ -1,5 +1,5 @@
 # scriptDir=$(dirname $0)
-scriptDir="."
+scriptDir=$(dirname ${BASH_SOURCE[0]})
 
 source $scriptDir/basic/log.sh
 source $scriptDir/basic/func.sh
