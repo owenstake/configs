@@ -12,7 +12,7 @@
     }
 
     function fmt_warn() {
-        printf '%sWARN: %s%s\n' "${FMT_YELLOW}${FMT_BOLD}" "$*" "$FMT_RESET"
+        printf '%sWARN: %s%s\n' "${FMT_YELLOW}${FMT_BOLD}" "$*" "$FMT_RESET" 1>&2
     }
 
     function fmt_error() {

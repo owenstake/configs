@@ -11,6 +11,9 @@ else
     fmt_error "\$InstallDir is empty, please set it"
 fi
 
+fmt_info "source ~/.bashrc first"
+source ~/.bashrc
+
 # source $scriptDir/basic/banner.sh
 # source $scriptDir/basic/basic.sh
 source $scriptDir/basic/export.sh

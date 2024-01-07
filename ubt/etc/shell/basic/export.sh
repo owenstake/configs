@@ -4,4 +4,15 @@
     export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
     [ -d $InstallDir/bin ] && PATH="$PATH:$InstallDir/bin"
     PATH="$PATH:$HOME/.local/bin"
+
+    if [ -n "$BASH_VERSION" ] ; then
+        export CURRENT_SHELL=bash
+    else
+        if [ -n "$ZSH_VERSION" ] ; then
+            export CURRENT_SHELL=zsh
+        else
+            fmt_error "Unknow current shell."
+        fi
+    fi
+
 # }}}

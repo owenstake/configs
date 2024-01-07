@@ -66,7 +66,7 @@ MakeClean() {
         return
     fi
     fmt_info "Clean build dir $buildDir"
-    rm -r $buildDir
+    rm -r --interactive=never $buildDir
     return
 }
 
@@ -190,7 +190,7 @@ MakeUninstall() {
     done
 
     fmt_info "Clean install dir $InstallDir"
-    rm -r $InstallDir
+    rm -r --interactive=never $InstallDir
     return
 }
 

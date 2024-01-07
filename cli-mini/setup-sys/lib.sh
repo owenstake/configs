@@ -11,6 +11,10 @@ fmt_info() {
     printf '%sINFO: %s%s\n' "${FMT_GREEN}${FMT_BOLD}" "$*" "$FMT_RESET"
 }
 
+fmt_warn() {
+    printf '%sWARN: %s%s\n' "${FMT_YELLOW}${FMT_BOLD}" "$*" "$FMT_RESET"
+}
+
 fmt_error() {
     printf '%sERRO: [%s] %s%s\n' "${FMT_RED}${FMT_BOLD}" "$funcstack[2] $@" "$@" "$FMT_RESET"  1>&2
 }
@@ -128,7 +132,7 @@ InCentos() {
 }
 
 GetCurOsName() {
-    local curOsName=$(grep "^ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
+    local curOsName=$(grep -w "^ID" /etc/os-release | cut -d'=' -f2 | tr -d '"')
     echo ${curOsName,,}
 }
 
@@ -507,7 +511,7 @@ search_base() {
         return 1
     fi
     if [ 1 -ne $(echo "$rst" | wc -l) ] ; then
-        fmt_error "Find multi $search_type by $file_pattern in dir $dir_been_search"
+        fmt_warn "Find multi $search_type by $file_pattern in dir $dir_been_search"
     fi
     echo "$rst" | head -n1
     return

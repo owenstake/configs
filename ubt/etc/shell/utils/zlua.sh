@@ -11,4 +11,4 @@ fi
 export _ZL_ROOT_MARKERS=".git,.svn,.hg,.root,package.json"    # for `z -b` to return to root dir
 export _ZL_ECHO=1
 export _ZL_DATA=$InstallDir/.zlua
-eval "$(lua $ZLUA_SCRIPT --init ${SHELL##*/} enhanced once fzf)"
+eval "$(lua $ZLUA_SCRIPT --init ${CURRENT_SHELL} enhanced once fzf)"

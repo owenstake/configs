@@ -34,7 +34,7 @@ search_base() {
         return 1
     fi
     if [ 1 -ne $(echo "$rst" | wc -l) ] ; then
-        fmt_error "Find multi $search_type by $file_pattern in dir $dir_been_search"
+        fmt_warn "Find multi $search_type by $file_pattern in dir $dir_been_search"
     fi
     echo "$rst" | head -n1
     return
