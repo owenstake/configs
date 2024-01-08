@@ -159,12 +159,12 @@ MakeInstall() {
     local foundFile=$(search_file $InstallDir "tmux")
     if ! command_exists tmux ; then
         fmt_info "Tmux is not installed, use self-compiled tmux"
-        test ! -e ~/.local/bin && mkdir -p $_ && cp $foundFile $_
+        test ! -e ~/.local/bin && mkdir -p $_ ; cp $foundFile $_
     else
         TMUX_VERSION=$(tmux -V | sed -En "s/^tmux[^0-9]*([0-9]+).*/\1/p")
         if [ "$TMUX_VERSION" -lt 3 ] ; then
             fmt_info "Current tmux version $TMUX_VERSION is to old, use self-compiled instead."
-            test ! -e $InstallDir/bintop && mkdir -p $_ && cp $foundFile $_
+            test ! -e $InstallDir/bintop && mkdir -p $_ ; cp $foundFile $_
         fi
     fi
 
