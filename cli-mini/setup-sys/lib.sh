@@ -259,6 +259,9 @@ base_app_bin_download() {
     fmt_info "Download $bin_name in $file_pattern from $repo_name"
     local GITHUB_API_REMAIN_COUNTS=$(curl -sf https://api.github.com/rate_limit \
                                                 | jq '.rate.remaining')
+    if [ -f "token" ] ; then
+        GITHUB_TOKEN=$(cat token)
+    fi
     if [ $GITHUB_API_REMAIN_COUNTS -lt 30 ]; then
         fmt_info "Github API count has be exhausted with remaining $GITHUB_API_REMAIN_COUNTS,"\
                     "use github token to download instead."
