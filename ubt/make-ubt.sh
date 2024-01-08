@@ -149,27 +149,30 @@ MakeInstall() {
             "source $foundFile"
     fi
 
+    fmt_info "Configure tmux"
     local foundFile1=$(search_file $InstallDir ".tmux.conf.local")
     local foundFile2=$(search_config_file "tmux.conf")
     cat "$foundFile1" "$foundFile2" > "$XDG_CONFIG_HOME/tmux/tmux.conf.local"  
 
     if InCentos ; then
+        fmt_info "Install tmux in centos to ~/.local/bin ."
+        test ! -e $InstallDir/bintop && mkdir -p $_
+        local foundFile=$(search_file $InstallDir "tmux")
+        if ! command_exists tmux ; then
+            cp $foundFile ~/.local/bin
+        else
+            TMUX_VERSION=$(tmux -V | sed -En "s/^tmux[^0-9]*([0-9]+).*/\1/p")
+            if [ "$TMUX_VERSION" -lt 3 ] ; then
+                cp $foundFile $InstallDir/bintop
+            fi
+        fi
+
+        fmt_info "Configure tmux extra in centos"
         local foundFile=$(search_file $InstallDir "bashrc")
         local tmux_extra_config="set-option -g default-command 'TMOUT=0 bash --rcfile $foundFile'"
         echo "$tmux_extra_config" >> "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
     fi
 
-    test ! -e ~/.local/bin && mkdir -p $_
-    local foundFile=$(search_file $InstallDir "tmux")
-    # install tmux
-    if ! command_exists tmux ; then
-        cp $foundFile ~/.local/bin
-    else
-        TMUX_VERSION=$(tmux -V | sed -En "s/^tmux[^0-9]*([0-9]+).*/\1/p")
-        if [ "$TMUX_VERSION" -lt 3 ] ; then
-            cp $foundFile ~/.local/bin
-        fi
-    fi
 
 	# AddHookToConfigFile   \
 	# 	"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \

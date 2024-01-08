@@ -4,6 +4,7 @@
     export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
     [ -d $InstallDir/bin ] && PATH="$PATH:$InstallDir/bin"
     PATH="$PATH:$HOME/.local/bin"
+    PATH="$InstallDir/bintop:$PATH"
 
     if [ -n "$BASH_VERSION" ] ; then
         export CURRENT_SHELL=bash
