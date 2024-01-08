@@ -11,10 +11,13 @@ else
     fmt_error "No found eza"
 fi
 
+if ! command_exists fd  && command_exists fdfind; then
+    alias fd=fdfind
+fi
+
 # Basic alias{{{
     alias                                             \
     ap='apropos'                                      \
-    fd='fdfind'                                       \
     hi='history'                                      \
     lz='lazygit'                                      \
     pg="grep -P"                                      \
