@@ -159,6 +159,18 @@ MakeInstall() {
         echo "$tmux_extra_config" >> "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
     fi
 
+    test ! -e ~/.local/bin && mkdir -p $_
+    local foundFile=$(search_file $InstallDir "tmux")
+    # install tmux
+    if ! command_exists tmux ; then
+        cp $foundFile ~/.local/bin
+    else
+        TMUX_VERSION=$(tmux -V | sed -En "s/^tmux[^0-9]*([0-9]+).*/\1/p")
+        if [ "$TMUX_VERSION" -lt 3 ] ; then
+            cp $foundFile ~/.local/bin
+        fi
+    fi
+
 	# AddHookToConfigFile   \
 	# 	"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \
 	# 	"source $foundFile2"
