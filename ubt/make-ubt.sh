@@ -20,7 +20,7 @@ mkdir -p $InstallDir
 Make() {  # should not polute the file outside this dir
     fmt_info "Construct buildDir"
     for d in "${subdir[@]}"; do
-        fmt_info "Make dir $buildDir/$d"
+        fmt_info "Make directory $buildDir/$d"
         mkdir -p $buildDir/$d
     done
     # Cli tool bin install
@@ -153,9 +153,9 @@ MakeInstall() {
     local foundFile1=$(search_file $InstallDir ".tmux.conf.local")
     local foundFile2=$(search_config_file "tmux.conf")
     cat "$foundFile1" "$foundFile2" > "$XDG_CONFIG_HOME/tmux/tmux.conf.local"  
-
-    # fmt_info "Install self-compiled tmux bin to $installDir/bintop override the other tmux bin"
-    # fmt_info "Install tmux in centos to ~/.local/bin ."
+    if test -e ~/.tmux.conf && ! test -s $_ ; then
+        fmt_info "Remove empty file ~/.tmux.conf to make tmux using ~/.config/tmux/tmux.conf"
+    fi
     local foundFile=$(search_file $InstallDir "tmux")
     if ! command_exists tmux ; then
         fmt_info "Tmux is not installed, use self-compiled tmux"
@@ -167,15 +167,12 @@ MakeInstall() {
             test ! -e $InstallDir/bintop && mkdir -p $_ ; cp $foundFile $_
         fi
     fi
-
     if InCentos ; then
         fmt_info "Configure tmux extra in centos"
         local foundFile=$(search_file $InstallDir "bashrc")
         local tmux_extra_config="set-option -g default-command 'TMOUT=0 bash --rcfile $foundFile'"
         echo "$tmux_extra_config" >> "$XDG_CONFIG_HOME/tmux/tmux.conf.local"
     fi
-
-
 	# AddHookToConfigFile   \
 	# 	"$XDG_CONFIG_HOME/tmux/tmux.conf.local"  \
 	# 	"source $foundFile2"
