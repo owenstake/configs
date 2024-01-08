@@ -20,7 +20,7 @@ mkdir -p $InstallDir
 Make() {  # should not polute the file outside this dir
     fmt_info "Construct buildDir"
     for d in "${subdir[@]}"; do
-        fmt_info "make dir $buildDir/$d"
+        fmt_info "Make dir $buildDir/$d"
         mkdir -p $buildDir/$d
     done
     # Cli tool bin install

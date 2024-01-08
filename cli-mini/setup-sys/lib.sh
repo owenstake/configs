@@ -352,7 +352,8 @@ golang_apps_download() {
 rust_tools_download() {
     cargo_app_bin_download "cargo-binstall"  "cargo-bins/cargo-binstall" "$buildDir/bin"
     local cpu_arch=$(uname -m)
-    $buildDir/bin/cargo-binstall -y --no-discover-github-token  \
+    # $buildDir/bin/cargo-binstall -y --no-discover-github-token  \
+    $buildDir/bin/cargo-binstall -y                             \
                     --disable-strategies compile                \
                     --targets "${cpu_arch}-unknown-linux-musl"  \
                     --targets "${cpu_arch}-unknown-linux-gnu"   \
