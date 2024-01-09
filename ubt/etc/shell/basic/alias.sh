@@ -15,6 +15,10 @@ if ! command_exists fd  && command_exists fdfind; then
     alias fd=fdfind
 fi
 
+if command_exists delta ; then
+    alias delta='\delta --line-numbers --side-by-side --hunk-header-style raw'
+fi
+
 # Basic alias{{{
     alias                                             \
     ap='apropos'                                      \

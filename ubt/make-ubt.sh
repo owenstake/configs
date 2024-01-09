@@ -14,7 +14,12 @@ subdir=(bin etc repo)
 buildDir=$scriptDir/output
 mkdir -p $buildDir
 
-InstallDir="$HOME/.dotfile"
+if InCentos ; then
+    InstallDir="$HOME/z/.dotfile"
+else
+    InstallDir="$HOME/.dotfile"
+fi
+
 mkdir -p $InstallDir
 
 Make() {  # should not polute the file outside this dir
@@ -154,6 +159,7 @@ MakeInstall() {
     local foundFile2=$(search_config_file "tmux.conf")
     cat "$foundFile1" "$foundFile2" > "$XDG_CONFIG_HOME/tmux/tmux.conf.local"  
     if test -e ~/.tmux.conf && ! test -s $_ ; then
+        rm $_
         fmt_info "Remove empty file ~/.tmux.conf to make tmux using ~/.config/tmux/tmux.conf"
     fi
     local foundFile=$(search_file $InstallDir "tmux")
