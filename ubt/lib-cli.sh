@@ -303,7 +303,7 @@ rust_tools_download() {
                     --targets "${cpu_arch}-unknown-linux-musl"  \
                     --targets "${cpu_arch}-unknown-linux-gnu"   \
                     --install-path $buildDir/bin                \
-                    bat fd-find ripgrep zoxide eza              \
+                    atuin bat fd-find ripgrep zoxide eza        \
                     bandwhich bottom difftastic du-dust         \
                     fselect git-delta grex hexyl hyperfine      \
                     jless joshuto lsd mcfly                     \
@@ -325,7 +325,7 @@ fzf_config() {
         download)
             if [[ ! -e "$fzf_dir" ]]; then
                 # make
-                fmt_info "Download fzf through proxy"
+                fmt_info "Download fzf"
                 git clone --quiet --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
                 # --all for set short-cut <ctrl-t> <ctrl-r>
                 # make install
@@ -334,7 +334,7 @@ fzf_config() {
             fi
             ;;
         install)
-            fmt_info "Install fzf through proxy"
+            fmt_info "Install fzf"
             local foundFile=$(search_file $InstallDir "**/fzf/install")
             eval "$foundFile --all --no-update-rc --xdg"
             ;;

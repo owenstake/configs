@@ -2,7 +2,7 @@
 # ohmytmux will source tpm automatically.
 if [[ "$SHELL" = *bash ]] && [ -n $TMUX ] ; then
     # Auto rename in centos server
-    rename_tmux_pane() {
+    rename_tmux_window() {
         local hostname=$1
         local name=${hostname##*x86-}
         if [ -n "$name" ] ; then
@@ -19,15 +19,17 @@ if [[ "$SHELL" = *bash ]] && [ -n $TMUX ] ; then
         # pre login
         if [ "$TMUX_PANE" == "%0" ] ; then
             local name=${hostname##*x86-}
-            rename_tmux_pane $name
+            rename_tmux_window $name
         fi
         # ssh
         /bin/ssh "${@}"
         # after logout
         if [ "$TMUX_PANE" == "%0" ] ; then
             local name=${cur_win_name}
-            rename_tmux_pane $name  # restore win name
+            rename_tmux_window $name  # restore win name
         fi
     }
-    rename_tmux_pane ${HOSTNAME##*x86-}
+    if [ "$TMUX_PANE" == "%0" ] ; then
+        rename_tmux_window ${HOSTNAME##*x86-}
+    fi
 fi
