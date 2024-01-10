@@ -4,11 +4,11 @@ if [ $? -eq 0 ] ; then
     alias nb="newsboat -ru $newsboat_config_file"
 fi
 
-if command_exists eza ; then
-    fmt_info "alias ls to eza"
-    alias ls=eza
+if command_exists lsd ; then
+    fmt_info "alias ls to lsd"
+    alias ls="lsd --icon never"
 else
-    fmt_error "No found eza"
+    fmt_error "No found lsd"
 fi
 
 if ! command_exists fd  && command_exists fdfind; then

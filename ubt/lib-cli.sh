@@ -19,62 +19,6 @@ fmt_error() {
     printf '%sERRO: [%s] %s%s\n' "${FMT_RED}${FMT_BOLD}" "$funcstack[2] $@" "$@" "$FMT_RESET"  1>&2
 }
 
-GetTmuxConfig() {
-	tmux_base_config="
-		# configed
-        # set -g default-terminal xterm  # to fix ctrl-L in tmux3.2
-		setw -g mode-keys vi # hjkl move in copy mode
-
-		bind h select-pane -L
-		bind j select-pane -D
-		bind k select-pane -U
-		bind l select-pane -R
-		bind - split-window -v
-		bind tab last-window
-
-		set -g base-index 1
-		setw -g pane-base-index 1
-		set-option -g default-command 'TMOUT=0 bash --rcfile $InstallDir/etc/bashrc'
-		set-option -g allow-rename off
-	"
-
-	tmux18_extra_config="
-		set -g mode-mouse on         # tmux1.8
-		set -g mouse-resize-pane on  # tmux1.8
-		set -g mouse-select-pane on  # tmux1.8
-		set -g mouse-select-window   # tmux1.8
-		set -g window-status-current-bg yellow   # tmux1.8
-	"
-
-	tmux32a_extra_config="
-		set -g mouse on
-		set-window-option -g window-status-current-style bg=yellow
-
-        set -g window-status-last-style fg=yellow,bold
-
-        bind-key -T copy-mode-vi 'v' send -X begin-selection     # Begin selection in copy mode.
-        bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle  # Begin selection in copy mode.
-        bind-key -T copy-mode-vi 'y' send -X copy-selection      # Yank selection in copy mode.
-	"
-	local tmux_version=$(tmux -V | cut -d' ' -f2)
-	case $tmux_version in
-		1.8)
-			local tmux_config="${tmux_base_config} ${tmux18_extra_config}"
-			;;
-		2.8)
-			local tmux_config="${tmux_base_config} ${tmux32a_extra_config}"
-			;;
-		3.2a)
-			local tmux_config="${tmux_base_config} ${tmux32a_extra_config}"
-			;;
-		*)
-			fmt_error "Unknow tmux version"
-			return -1
-			;;
-	esac
-    echo "$tmux_config"
-}
-
 command_exists() {
     command -v "$@" >/dev/null 2>&1
 }
@@ -454,48 +398,6 @@ set_all_proxy() {
         fmt_info "Env all_proxy set to $proxy_server_address"
         export all_proxy=$proxy_server_address
     fi
-}
-
-GetBashrcForTmux() {
-    if [ -z "$1" ] ; then
-        fmt_error "InstallDir is null"
-        return 1
-    fi
-    local InstallDir=$1
-    local bashrc_for_tmux="
-        export EDITOR=vim # configed
-        source ~/.bashrc
-        # export PATH=\$PATH:\$HOME/.cargo/bin
-        export PATH=\$PATH:$InstallDir/bin
-        alias vim='nvim'
-        alias rp='realpath'
-        alias zc='z -c'
-        alias zb='z -b'
-        alias zf='z -I'
-        alias reboot='echo reboot use \\reboot'
-        # tmux
-        alias ta='tmux a'
-        alias tn='tmux new -s'
-        alias tk='tmux kill-session -t'
-        alias tls='tmux ls'
-        alias tat='tmux a -t'
-        alias tmuxc='vim ~/.tmux.conf'
-        alias tmuxs='tmux source ~/.tmux.conf'
-        rgf () {
-            rg --color=always --line-number --no-heading             \\
-                --smart-case '\${*:-}' |                             \\
-                fzf --ansi                                           \\
-                --color 'hl:-1:underline,hl+:-1:underline:reverse'   \\
-                --delimiter : --preview 'bat --color=always {1}      \\
-                --highlight-line {2}'                                \\
-                --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'  \\
-                --bind 'enter:become(vim {1} +{2})'
-        }
-        eval \"\$(lua $(search_file $InstallDir z.lua) --init bash)\"
-        [ -f ~/.config/fzf.bash ] && source ~/.config/fzf.bash
-    "
-    echo "$bashrc_for_tmux"
-    return
 }
 
 search_base() {

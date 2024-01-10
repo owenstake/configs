@@ -38,4 +38,5 @@ export CONFIG_INSTALL_DIR_IN_WSL=
 export PshDir='D:\.dotfiles\scripts\psh\'
 
 export PATH="$PATH:/mnt/c/Windows/System32/WindowsPowerShell/v1.0"
+export PATH="$PATH:/mnt/c/Windows/system32"
 

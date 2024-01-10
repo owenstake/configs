@@ -20,6 +20,8 @@ else
     InstallDir="$HOME/.dotfile"
 fi
 
+fmt_info "InstallDir=$InstallDir"
+
 mkdir -p $InstallDir
 
 Make() {  # should not polute the file outside this dir
@@ -94,6 +96,11 @@ MakeInstall() {
 
     fmt_info "Install fzf"
 	DeployConfigDir   etc/fzf       $HOME/.config/fzf/
+    local foundFile=$(search_file $InstallDir  "fzf")
+    if [ $? -eq 0 ] ; then
+        # skip download fzf at its install
+        mkdir -p ~/.local/bin; cp $foundFile $_
+    fi
     fzf_config install
 
     fmt_info "Install zlua"
