@@ -2,7 +2,7 @@
 found_file=$(search_file $InstallDir z.lua)
 if [ $? -eq 0 ] ; then
     export ZLUA_SCRIPT="$found_file"
-    fmt_info "ZLUA_SCRIPT=$ZLUA_SCRIPT"
+    fmt_info "Load zlua"
 else
     fmt_error "No found z.lua"
     return

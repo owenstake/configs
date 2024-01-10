@@ -5,10 +5,7 @@ if [ $? -eq 0 ] ; then
 fi
 
 if command_exists lsd ; then
-    fmt_info "alias ls to lsd"
     alias ls="lsd --icon never"
-else
-    fmt_error "No found lsd"
 fi
 
 if ! command_exists fd  && command_exists fdfind; then

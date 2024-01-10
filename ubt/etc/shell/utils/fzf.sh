@@ -40,5 +40,10 @@ function _fzf_complete_ping () {
 }
 
 # FZF - https://github.com/junegunn/fzf#using-git {{{
-test -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.${CURRENT_SHELL} && source $_
+if test -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.${CURRENT_SHELL} ; then
+    source $_
+    fmt_warn "Load fzf"
+else
+    fmt_warn "No found $_"
+fi
 
