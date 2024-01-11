@@ -37,29 +37,6 @@ fi
     sudo='\sudo -E env "PATH=$PATH"'
 # }}}
 
-# zlua {{{
-    # <ctrl-t><ctrl-t> for zf in fzf
-    # already define in z.lua
-    # zz='z -i'  \
-    # zf='z -I'  \
-    # zb='z -b'  \
-    # zbi='z -b -i'  \
-    # zbf='z -b -I'  \
-    # zh='z -I -t .'  \
-    # zzc='zz -c' \
-    alias                          \
-    zi='z -i'                      \
-    zl='z -l'                      \
-    zc='z -c'                      \
-    zcl='z -c -l'                  \
-    zcf='z -c -I'                  \
-    zch='z -c -I -t .'             \
-    zd="cd $WinUserHome/Downloads" \
-    zr="cd $WinUserHome/Desktop"   \
-    zp="cd $WinUserWeiyun"         \
-    zn="cd $WinUserWeiyun/my_note" \
-# }}}
-
 # tar .tgz alias {{{
     alias tarc='tar -czvf'
     alias tarl='tar -tf'

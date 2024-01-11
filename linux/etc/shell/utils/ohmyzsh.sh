@@ -1,4 +1,4 @@
-if export ZSH=search_dir $InstallDir "ohmyzsh" ; then
+if export ZSH=$(search_dir $InstallDir "ohmyzsh") ; then
     fmt_info "Load ohmyzsh"
 else
     return

@@ -1,6 +1,6 @@
 ## oh-my-zsh plugins # Supports oh-my-zsh plugins and the like
 ## Config plugin
-if export ZPLUG_HOME=$(search_dir $InstallDir zplug) ; then
+if export ZPLUG_HOME=$(search_dir $InstallDir zplug-dir) ; then
     fmt_info "Load zplug"
 else
     return
@@ -12,7 +12,7 @@ export ZPLUG_THREADS=4
 export ZPLUG_REPOS=$ZPLUG_HOME/repos
 export ZPLUG_CACHE_DIR=$ZPLUG_HOME/.cache
 if [[ -f $ZPLUG_HOME/init.zsh ]] {
-    fmt_info "source zplug"
+    # fmt_info "source zplug"
     source $ZPLUG_HOME/init.zsh
     # oh-my-zsh inner option plugins
     zplug "plugins/colored-man-pages", from:oh-my-zsh, depth:1

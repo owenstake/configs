@@ -45,7 +45,7 @@ Make() {  # should not polute the file outside this dir
     ohmytmux_config download "$buildDir/repo/ohmytmux"
     if InWsl || InUos ; then
         ohmyzsh_config  download "$buildDir/repo/ohmyzsh"
-        zplug_config    download "$buildDir/repo/zplug"
+        zplug_config    download "$buildDir/repo/zplug-dir"
     fi
 
     fmt_info "Construct $buildDir/bin"
