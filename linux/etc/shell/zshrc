@@ -24,6 +24,6 @@ source $scriptDir/utils/zplug.sh
 # final to avoid override
 source $scriptDir/basic/alias.sh
 source $scriptDir/utils/fzf.sh   # fzf must be last to make ctrl+r take effect, avoiding overwrite by ohmyzsh
-source $scriptDir/utils/atuin.sh # override ctrl+r
+# source $scriptDir/utils/atuin.sh # override ctrl+r . sucks
 source $scriptDir/wsl/wsl.sh
 
